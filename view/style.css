@@ -1,0 +1,30 @@
+.button1 {
+    -fx-background-color: #0057FF; 
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: bold;
+	-fx-background-radius: 10px;
+	-fx-cursor: hand;
+}
+
+.button1:hover {
+    -fx-background-color: linear-gradient(to bottom,#2E74FA,#93b9ff);
+}
+
+.text-field-custom {
+	-fx-border-radius: 10px;  
+    -fx-border-color: #ECECEC;
+    -fx-background-radius: 10px; 
+	-fx-focus-color: #ECECEC;
+}
+
+.label-Login {
+	-fx-text-fill: red;        
+    -fx-font-weight: bold;   
+    -fx-font-size: 14px;
+	-fx-underline: true; 
+	-fx-cursor: hand;
+}
+
+.mouse-hover {
+	-fx-cursor: hand;
+}

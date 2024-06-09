@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ChoiceBox?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@/view/style.css" xmlns="http://javafx.com/javafx/8.0.371" xmlns:fx="http://javafx.com/fxml">
+
+    <ImageView fx:id="firstBackground" fitHeight="700.0" fitWidth="1000.0">
+        <image>
+            <Image url="@/util/first-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="clienteCadastroBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/cliente-cadastro-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="empresaCadastroBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/empresa-cadastro-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="clienteLoginBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/cliente-login-background.png" />
+        </image>
+    </ImageView>
+
+      <ImageView fx:id="empresaLoginBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/empresa-login-background.png" />
+        </image>
+    </ImageView>
+
+     <!-- Cliente -->
+    <Button fx:id="botaoInicialCliente" text="Sou cliente"
+            layoutX="150" layoutY="525" 
+            prefWidth="200" prefHeight="50" styleClass="button1" onAction="#botaoClienteEscolhido"/> 
+
+	 <!-- Empresa -->
+	<Button fx:id="botaoInicialEmpresa" text="Sou empresa"
+            layoutX="395" layoutY="525" 
+            prefWidth="200" prefHeight="50" styleClass="button1"  onAction="#botaoEmpresaEscolhido"/> 
+
+    <!-- Cliente Cadastro -->
+    <Button fx:id="botaoLoginPelaPrimeiraVezCliente" text="Criar"
+            layoutX="640" layoutY="550" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#cadastroCliente"/> 
+
+    <TextField fx:id="campoCadastroClienteNome" promptText="Nome" layoutX="600" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroClienteEmail" promptText="E-mail" layoutX="600" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroClienteSenha" promptText="Senha" layoutX="600" layoutY="480" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+
+    <ImageView fx:id="jumpingBackLoginCliente" fitHeight="30.0" fitWidth="43.0" layoutX="480.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarLoginCliente" styleClass="mouse-hover">
+		<image>
+			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    <Label fx:id="labelLoginCliente" text="Faça Login!" layoutX="695" layoutY="200" styleClass="label-Login" onMouseClicked="#irParaLoginCliente"/>
+
+    <!-- Empresa Cadastro -->
+    <TextField fx:id="campoCadastroEmpresaNome" promptText="Nome" layoutX="140" layoutY="250" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaEmail" promptText="E-mail" layoutX="140" layoutY="330" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaDescricao" promptText="Descricao" layoutX="140" layoutY="410" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaData" promptText="Data" layoutX="140" layoutY="490" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaSenha" promptText="Senha" layoutX="140" layoutY="570" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+
+     <Button fx:id="botaoLoginPelaPrimeiraVezEmpresa" text="Criar"
+            layoutX="200" layoutY="630" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#cadastroEmpresa"/> 
+
+    <ImageView fx:id="jumpingBackLoginEmpresa" fitHeight="30.0" fitWidth="43.0" layoutX="20.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarLoginEmpresa" styleClass="mouse-hover">
+		<image>
+			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    
+    <Label fx:id="labelLoginEmpresa" text="Faça Login!" layoutX="240" layoutY="180" styleClass="label-Login" onMouseClicked="#irParaLoginEmpresa"/>
+
+
+    <!-- Cliente Login -->
+    <TextField fx:id="campoLoginClienteEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoLoginClienteSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+
+    <Button fx:id="botaoLoginCliente" text="Entrar"
+            layoutX="380" layoutY="465" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#loginCliente"/> 
+
+    <!-- Empresa Login -->
+    <TextField fx:id="campoLoginEmpresaEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoLoginEmpresaSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+
+    <Button fx:id="botaoLoginEmpresa" text="Entrar"
+            layoutX="380" layoutY="465" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#loginEmpresa"/> 
+
+    <!--Pagina de confirmacao de cadastro -->
+     <ImageView fx:id="thankYouBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/thank-you-page.png" />
+        </image>
+    </ImageView>
+
+    <Label fx:id="counter" text="5" layoutX="500" layoutY="600" visible="false" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    
+
+
+</AnchorPane>
