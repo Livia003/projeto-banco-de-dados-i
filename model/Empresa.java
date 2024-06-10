@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Empresa {
@@ -14,6 +15,7 @@ public class Empresa {
 
     private List<Reclamacao> reclamacoesRecebidas;
     private List<Devolucao> pedidosDevolucaoRecebidos;
+    private static List<Empresa> empresas = new ArrayList<>();
 
     public Empresa(String nome, String email, String descricao, String data, String senha) {
         this.id = proximoId++;
@@ -22,15 +24,55 @@ public class Empresa {
         this.descricao = descricao;
         this.data = data;
         this.senha = senha;
+        this.reclamacoesRecebidas = new ArrayList<>();
+        this.pedidosDevolucaoRecebidos = new ArrayList<>();
+        empresas.add(this);
     }
 
-    // Construtor
-    public Empresa(List<Reclamacao> reclamacoesRecebidas, List<Devolucao> pedidosDevolucaoRecebidos) {
-        this.reclamacoesRecebidas = reclamacoesRecebidas;
-        this.pedidosDevolucaoRecebidos = pedidosDevolucaoRecebidos;
+    public int getId() {
+        return id;
     }
 
-    // Getters e Setters para reclamacoesRecebidas
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
     public List<Reclamacao> getReclamacoesRecebidas() {
         return reclamacoesRecebidas;
     }
@@ -39,7 +81,6 @@ public class Empresa {
         this.reclamacoesRecebidas = reclamacoesRecebidas;
     }
 
-    // Getters e Setters para pedidosDevolucaoRecebidos
     public List<Devolucao> getPedidosDevolucaoRecebidos() {
         return pedidosDevolucaoRecebidos;
     }
@@ -47,4 +88,9 @@ public class Empresa {
     public void setPedidosDevolucaoRecebidos(List<Devolucao> pedidosDevolucaoRecebidos) {
         this.pedidosDevolucaoRecebidos = pedidosDevolucaoRecebidos;
     }
+
+    public static List<Empresa> getEmpresas() {
+        return empresas;
+    }
+
 }

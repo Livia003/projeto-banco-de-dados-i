@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -46,6 +47,9 @@ public class ControllerGeral implements Initializable {
     private ImageView firstBackground;
 
     @FXML
+    private ImageView homeBackground;
+
+    @FXML
     private ImageView jumpingBackLoginCliente;
 
     @FXML
@@ -67,6 +71,9 @@ public class ControllerGeral implements Initializable {
     private ImageView thankYouBackground;
 
     @FXML
+    private ImageView complaintForm;
+
+    @FXML
     private Button botaoInicialCliente;
 
     @FXML
@@ -80,6 +87,12 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private Button botaoLoginCliente;
+
+    @FXML
+    private Button botaoFazerReclamacao;
+
+    @FXML
+    private Button botaoPedirDevolucao;
 
     @FXML
     private TextField campoCadastroClienteNome;
@@ -101,6 +114,9 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private Label labelLoginEmpresa;
+
+    @FXML
+    private Label nomeCliente;
 
     @FXML
     private Label counter;
@@ -129,11 +145,41 @@ public class ControllerGeral implements Initializable {
     @FXML
     private Button botaoLoginEmpresa;
 
+    @FXML
+    private ChoiceBox<String> empresasCadastradas;
+
+    @FXML
+    private ChoiceBox<String> motivoReclamacao;
+
+    @FXML
+    private TextField idProduto;
+
+    @FXML
+    private TextField justificativaReclamacao;
+
+    @FXML
+    private Button botaoEnviarReclamacao;
+
+    @FXML
+    private ImageView jumpingBackLoginReclamacao;
+
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
 
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
+
+        empresasCadastradas.getItems().addAll("Empresa do Seu Ze");
+
+        motivoReclamacao.getItems().addAll("Produto defeituoso ou danificado",
+                "Produto incorreto",
+                "Atraso na entrega",
+                "Produto falsificado",
+                "Problemas com uma conta",
+                "Cobranca incorreta",
+                "Falta de pecas ou acessorios",
+                "Problemas com uma assinatura",
+                "Nenhum dos motivos acima");
     }
 
     @FXML
@@ -151,6 +197,7 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Insira um e-mail valido.");
             }
 
+            atualizarNomeCliente(nome);
             Cliente novoCliente = new Cliente(nome, email, senha);
             clienteController.cadastrarNovoCliente(novoCliente);
             mostrarPaginaConfirmacao();
@@ -182,6 +229,7 @@ public class ControllerGeral implements Initializable {
 
             Empresa novaEmpresa = new Empresa(nome, email, descricao, data, senha);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
+            atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao();
 
         } catch (IllegalArgumentException e) {
@@ -201,6 +249,15 @@ public class ControllerGeral implements Initializable {
         alert.showAndWait();
     }
 
+    private void atualizarChoiceBoxEmpresas() {
+        empresasCadastradas.getItems().clear();
+        empresasCadastradas.getItems().addAll(empresaController.getNomesEmpresas());
+    }
+
+    private void atualizarNomeCliente(String nome) {
+        nomeCliente.setText(nome);
+    }
+
     public void mostrarPaginaConfirmacao() {
         thankYouBackground.setVisible(true);
         counter.setVisible(true);
@@ -216,7 +273,7 @@ public class ControllerGeral implements Initializable {
                     if (segundos[0] == 0) {
                         counter.setVisible(false);
                         thankYouBackground.setVisible(false);
-                        telaInicial();
+                        mostrarHome();
                     }
                 }));
 
@@ -269,6 +326,21 @@ public class ControllerGeral implements Initializable {
         // BANCO DE DADOS
     }
 
+    @FXML
+    private void voltarLoginCliente() {
+        telaInicial();
+    }
+
+    @FXML
+    private void voltarLoginEmpresa() {
+        telaInicial();
+    }
+
+    @FXML
+    private void voltarFormReclamacao() {
+        mostrarHome();
+    }
+
     public void telaInicial() {
         firstBackground.setVisible(true);
         botaoInicialCliente.setVisible(true);
@@ -297,16 +369,40 @@ public class ControllerGeral implements Initializable {
         campoLoginEmpresaEmail.setVisible(false);
         campoLoginEmpresaSenha.setVisible(false);
         botaoLoginEmpresa.setVisible(false);
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        complaintForm.setVisible(false);
+        empresasCadastradas.setVisible(false);
+        motivoReclamacao.setVisible(false);
+        idProduto.setVisible(false);
+        justificativaReclamacao.setVisible(false);
+        botaoEnviarReclamacao.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
+    }
+
+    private void mostrarHome() {
+        homeBackground.setVisible(true);
+        botaoPedirDevolucao.setVisible(true);
+        botaoFazerReclamacao.setVisible(true);
+        nomeCliente.setVisible(true);
+        complaintForm.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
+        esconderElementosDentroDoLogin();
     }
 
     @FXML
-    private void voltarLoginCliente() {
-        telaInicial();
-    }
-
-    @FXML
-    private void voltarLoginEmpresa() {
-        telaInicial();
+    private void fazerReclamacao() {
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        complaintForm.setVisible(true);
+        empresasCadastradas.setVisible(true);
+        motivoReclamacao.setVisible(true);
+        idProduto.setVisible(true);
+        justificativaReclamacao.setVisible(true);
+        botaoEnviarReclamacao.setVisible(true);
+        jumpingBackLoginReclamacao.setVisible(true);
     }
 
     public void esconderElementosDentroDoLogin() {
@@ -326,6 +422,12 @@ public class ControllerGeral implements Initializable {
         campoCadastroEmpresaSenha.setVisible(false);
         botaoLoginPelaPrimeiraVezEmpresa.setVisible(false);
         labelLoginEmpresa.setVisible(false);
+        empresasCadastradas.setVisible(false);
+        motivoReclamacao.setVisible(false);
+        idProduto.setVisible(false);
+        justificativaReclamacao.setVisible(false);
+        botaoEnviarReclamacao.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
     }
 
     @FXML

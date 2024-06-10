@@ -11,10 +11,11 @@
 }
 
 .text-field-custom {
-	-fx-border-radius: 10px;  
+	-fx-border-radius: 5px;  
     -fx-border-color: #ECECEC;
     -fx-background-radius: 10px; 
 	-fx-focus-color: #ECECEC;
+	-fx-border-color: white;
 }
 
 .label-Login {
@@ -27,4 +28,10 @@
 
 .mouse-hover {
 	-fx-cursor: hand;
+}
+
+.choicebox {
+    -fx-border-radius: 5; 
+	-fx-background-color: white; 
+	-fx-border-color: white;
 }
