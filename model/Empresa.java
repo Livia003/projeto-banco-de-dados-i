@@ -77,20 +77,38 @@ public class Empresa {
         return reclamacoesRecebidas;
     }
 
-    public void setReclamacoesRecebidas(List<Reclamacao> reclamacoesRecebidas) {
-        this.reclamacoesRecebidas = reclamacoesRecebidas;
+    public void adicionarReclamacao(Reclamacao reclamacao) {
+        this.reclamacoesRecebidas.add(reclamacao);
     }
 
     public List<Devolucao> getPedidosDevolucaoRecebidos() {
         return pedidosDevolucaoRecebidos;
     }
 
-    public void setPedidosDevolucaoRecebidos(List<Devolucao> pedidosDevolucaoRecebidos) {
-        this.pedidosDevolucaoRecebidos = pedidosDevolucaoRecebidos;
+    public void adicionarDevolucao(Devolucao devolucao) {
+        this.pedidosDevolucaoRecebidos.add(devolucao);
     }
 
     public static List<Empresa> getEmpresas() {
         return empresas;
+    }
+
+    public static Empresa buscarEmpresaPorId(int id) {
+        for (Empresa empresa : empresas) {
+            if (empresa.getId() == id) {
+                return empresa;
+            }
+        }
+        return null;
+    }
+
+    public static Empresa buscarEmpresaPorNome(String nome) {
+        for (Empresa empresa : empresas) {
+            if (empresa.getNome().equals(nome)) {
+                return empresa;
+            }
+        }
+        return null;
     }
 
 }

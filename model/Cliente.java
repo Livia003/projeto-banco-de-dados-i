@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Cliente extends Usuario {
 
+    private static List<Cliente> clientes = new ArrayList<>();
     private List<Reclamacao> reclamacoes;
     private int id;
     private static int proximoId = 0;
@@ -13,6 +14,7 @@ public class Cliente extends Usuario {
         super(nome, email, senha);
         this.id = proximoId++;
         this.reclamacoes = new ArrayList<>();
+        clientes.add(this);
     }
 
     public List<Reclamacao> getReclamacoes() {
@@ -25,6 +27,23 @@ public class Cliente extends Usuario {
 
     public void adicionarReclamacao(Reclamacao reclamacao) {
         this.reclamacoes.add(reclamacao);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public static Cliente buscarClientePorId(int id) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getId() == id) {
+                return cliente;
+            }
+        }
+        return null;
     }
 
 }

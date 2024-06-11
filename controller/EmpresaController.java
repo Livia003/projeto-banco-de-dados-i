@@ -7,22 +7,37 @@ import model.Empresa;
 
 public class EmpresaController {
 
-    private List<Empresa> empresas = new ArrayList<>();
-
     public void cadastrarNovaEmpresa(Empresa empresa) {
-        empresas.add(empresa);
+        Empresa.getEmpresas().add(empresa);
     }
 
     public List<Empresa> getEmpresas() {
-        return empresas;
+        return Empresa.getEmpresas();
     }
 
     public List<String> getNomesEmpresas() {
         List<String> nomes = new ArrayList<>();
-        for (Empresa empresa : empresas) {
+        for (Empresa empresa : Empresa.getEmpresas()) {
             nomes.add(empresa.getNome());
         }
         return nomes;
+    }
+
+    public Empresa buscarEmpresaPorId(int id) {
+        return Empresa.buscarEmpresaPorId(id);
+    }
+
+    public Empresa buscarEmpresaPorNome(String nome) {
+        return Empresa.buscarEmpresaPorNome(nome);
+    }
+
+    public Empresa buscarEmpresaPorEmailESenha(String email, String senha) {
+        for (Empresa empresa : Empresa.getEmpresas()) {
+            if (empresa.getEmail().equals(email) && empresa.getSenha().equals(senha)) {
+                return empresa;
+            }
+        }
+        return null;
     }
 
 }

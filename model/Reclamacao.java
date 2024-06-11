@@ -2,6 +2,7 @@ package model;
 
 public class Reclamacao {
 
+    private static int proximoId = 1;
     private int id;
     private int clienteId;
     private int empresaId;
@@ -11,16 +12,13 @@ public class Reclamacao {
     private StatusReclamacao status;
 
     // Construtor
-    public Reclamacao(int id, int clienteId, int empresaId, int produtoId, String descricao, String resposta,
-            StatusReclamacao status) {
-
-        this.id = id;
+    public Reclamacao(int clienteId, int empresaId, int produtoId, String descricao) {
+        this.id = proximoId++;
         this.clienteId = clienteId;
         this.empresaId = empresaId;
         this.produtoId = produtoId;
         this.descricao = descricao;
-        this.resposta = resposta;
-        this.status = status;
+        this.status = StatusReclamacao.ABERTA;
     }
 
     // Getters
@@ -48,10 +46,6 @@ public class Reclamacao {
         return resposta;
     }
 
-    public StatusReclamacao getStatus() {
-        return status;
-    }
-
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -75,6 +69,10 @@ public class Reclamacao {
 
     public void setResposta(String resposta) {
         this.resposta = resposta;
+    }
+
+    public StatusReclamacao getStatus() {
+        return status;
     }
 
     public void setStatus(StatusReclamacao status) {

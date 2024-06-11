@@ -165,11 +165,17 @@
 
      <Button fx:id="botaoEnviarReclamacao" text="Enviar"
             layoutX="376" layoutY="620" 
-            prefWidth="210" prefHeight="50" styleClass="button1" visible="false"/> 
+            prefWidth="210" prefHeight="50" styleClass="button1" visible="false" onAction="#enviarReclamacao"/> 
 
     <ImageView fx:id="jumpingBackLoginReclamacao" fitHeight="30.0" fitWidth="43.0" layoutX="20.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarFormReclamacao" styleClass="mouse-hover">
 		<image>
 			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    <ImageView fx:id="logOutSymbol" fitHeight="70.0" fitWidth="70.0" layoutX="47.0" layoutY="565.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#voltarParaOInicio">
+		<image>
+			<Image url="@/util/log-out-symbol.png" />
 		</image>
 	</ImageView>
 

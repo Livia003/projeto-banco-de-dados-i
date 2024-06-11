@@ -1,10 +1,29 @@
 package controller;
 
+import java.util.List;
+
 import model.Cliente;
 
 public class ClienteController {
 
     public void cadastrarNovoCliente(Cliente cliente) {
-        // SALVAR NO BANCO DE DADOS
+        Cliente.getClientes().add(cliente);
+    }
+
+    public List<Cliente> getClientes() {
+        return Cliente.getClientes();
+    }
+
+    public Cliente buscarClientePorId(int id) {
+        return Cliente.buscarClientePorId(id);
+    }
+
+    public Cliente buscarClientePorEmailESenha(String email, String senha) {
+        for (Cliente cliente : Cliente.getClientes()) {
+            if (cliente.getEmail().equals(email) && cliente.getSenha().equals(senha)) {
+                return cliente;
+            }
+        }
+        return null;
     }
 }

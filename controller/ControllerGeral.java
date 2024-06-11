@@ -163,8 +163,13 @@ public class ControllerGeral implements Initializable {
     @FXML
     private ImageView jumpingBackLoginReclamacao;
 
+    @FXML
+    private ImageView logOutSymbol;
+
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
+
+    int idCliente, idEmpresa;
 
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
@@ -198,9 +203,15 @@ public class ControllerGeral implements Initializable {
             }
 
             atualizarNomeCliente(nome);
+
             Cliente novoCliente = new Cliente(nome, email, senha);
             clienteController.cadastrarNovoCliente(novoCliente);
+            idCliente = novoCliente.getId();
             mostrarPaginaConfirmacao();
+
+            campoCadastroClienteNome.clear();
+            campoCadastroClienteEmail.clear();
+            campoCadastroClienteSenha.clear();
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
@@ -232,6 +243,12 @@ public class ControllerGeral implements Initializable {
             atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao();
 
+            campoCadastroEmpresaNome.clear();
+            campoCadastroEmpresaEmail.clear();
+            campoCadastroEmpresaDescricao.clear();
+            campoCadastroEmpresaData.clear();
+            campoCadastroEmpresaSenha.clear();
+
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
 
@@ -241,24 +258,86 @@ public class ControllerGeral implements Initializable {
 
     }
 
-    private void exibirMensagemErro(String mensagem) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erro no preenchimento dos dados!");
-        alert.setHeaderText(null);
-        alert.setContentText(mensagem);
-        alert.showAndWait();
+    @FXML
+    private void loginCliente() {
+        try {
+
+            String email = campoLoginClienteEmail.getText();
+            String senha = campoLoginClienteSenha.getText();
+
+            if (email.isEmpty() || senha.isEmpty()) {
+                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
+            }
+
+            if (!email.contains("@")) {
+                throw new IllegalArgumentException("Insira um e-mail valido.");
+            }
+
+            ClienteController clienteController = new ClienteController();
+            Cliente cliente = clienteController.buscarClientePorEmailESenha(email, senha);
+
+            if (cliente == null) {
+                throw new IllegalArgumentException("Email ou senha incorretos.");
+            }
+
+            idCliente = cliente.getId();
+            atualizarNomeCliente(cliente.getNome());
+            mostrarPaginaConfirmacao();
+
+            campoLoginClienteEmail.clear();
+            campoLoginClienteSenha.clear();
+
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void atualizarChoiceBoxEmpresas() {
-        empresasCadastradas.getItems().clear();
-        empresasCadastradas.getItems().addAll(empresaController.getNomesEmpresas());
-    }
+    @FXML
+    private void loginEmpresa() {
+        try {
+            String email = campoLoginEmpresaEmail.getText();
+            String senha = campoLoginEmpresaSenha.getText();
 
-    private void atualizarNomeCliente(String nome) {
-        nomeCliente.setText(nome);
+            if (email.isEmpty() || senha.isEmpty()) {
+                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
+            }
+
+            if (!email.contains("@")) {
+                throw new IllegalArgumentException("Insira um e-mail valido.");
+            }
+
+            EmpresaController empresaController = new EmpresaController();
+            Empresa empresa = empresaController.buscarEmpresaPorEmailESenha(email, senha);
+
+            if (empresa == null) {
+                throw new IllegalArgumentException("Email ou senha incorretos.");
+            }
+
+            idEmpresa = empresa.getId();
+            mostrarPaginaConfirmacao();
+            atualizarChoiceBoxEmpresas();
+
+            campoCadastroEmpresaNome.clear();
+            campoCadastroEmpresaEmail.clear();
+            campoCadastroEmpresaDescricao.clear();
+            campoCadastroEmpresaData.clear();
+            campoCadastroEmpresaSenha.clear();
+
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // BANCO DE DADOS
     }
 
     public void mostrarPaginaConfirmacao() {
+        jumpingBackLoginCliente.setVisible(false);
+        jumpingBackLoginEmpresa.setVisible(false);
         thankYouBackground.setVisible(true);
         counter.setVisible(true);
         esconderElementosDentroDoLogin();
@@ -282,48 +361,60 @@ public class ControllerGeral implements Initializable {
     }
 
     @FXML
-    private void loginCliente() {
+    private void enviarReclamacao() {
         try {
-            String email = campoLoginClienteEmail.getText();
-            String senha = campoLoginClienteSenha.getText();
+            String empresaSelecionada = empresasCadastradas.getValue();
+            String motivoSelecionado = motivoReclamacao.getValue();
+            String produtoId = idProduto.getText();
+            String justificativa = justificativaReclamacao.getText();
 
-            if (email.isEmpty() || senha.isEmpty()) {
-                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
+            if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
+                    || justificativa.isEmpty()) {
+                throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail valido.");
+            int produtoIdInt;
+
+            try {
+                produtoIdInt = Integer.parseInt(produtoId);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
+
+            EmpresaController empresaController = new EmpresaController();
+            Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+
+            if (empresa == null) {
+                throw new IllegalArgumentException("Empresa nao encontrada.");
+            }
+
+            Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, justificativa);
+            empresa.adicionarReclamacao(reclamacao);
+
+            System.out.print("Reclamacao enviada!");
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // BANCO DE DADOS
     }
 
-    @FXML
-    private void loginEmpresa() {
-        try {
-            String email = campoLoginEmpresaEmail.getText();
-            String senha = campoLoginEmpresaSenha.getText();
+    private void exibirMensagemErro(String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erro no preenchimento dos dados!");
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
 
-            if (email.isEmpty() || senha.isEmpty()) {
-                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
-            }
+    private void atualizarChoiceBoxEmpresas() {
+        // empresasCadastradas.getItems().clear();
+        empresasCadastradas.getItems().addAll(empresaController.getNomesEmpresas());
+    }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail valido.");
-            }
-
-        } catch (IllegalArgumentException e) {
-            exibirMensagemErro(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // BANCO DE DADOS
+    private void atualizarNomeCliente(String nome) {
+        nomeCliente.setText(nome);
     }
 
     @FXML
@@ -339,6 +430,19 @@ public class ControllerGeral implements Initializable {
     @FXML
     private void voltarFormReclamacao() {
         mostrarHome();
+    }
+
+    @FXML
+    private void voltarParaOInicio() {
+        homeBackground.setVisible(false);
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        complaintForm.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
+        esconderElementosDentroDoLogin();
+        logOutSymbol.setVisible(false);
+        telaInicial();
     }
 
     public void telaInicial() {
@@ -379,9 +483,12 @@ public class ControllerGeral implements Initializable {
         justificativaReclamacao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
+        logOutSymbol.setVisible(false);
     }
 
     private void mostrarHome() {
+        jumpingBackLoginCliente.setVisible(false);
+        jumpingBackLoginEmpresa.setVisible(false);
         homeBackground.setVisible(true);
         botaoPedirDevolucao.setVisible(true);
         botaoFazerReclamacao.setVisible(true);
@@ -389,6 +496,7 @@ public class ControllerGeral implements Initializable {
         complaintForm.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
         esconderElementosDentroDoLogin();
+        logOutSymbol.setVisible(true);
     }
 
     @FXML
@@ -403,6 +511,7 @@ public class ControllerGeral implements Initializable {
         justificativaReclamacao.setVisible(true);
         botaoEnviarReclamacao.setVisible(true);
         jumpingBackLoginReclamacao.setVisible(true);
+        logOutSymbol.setVisible(false);
     }
 
     public void esconderElementosDentroDoLogin() {
@@ -428,6 +537,7 @@ public class ControllerGeral implements Initializable {
         justificativaReclamacao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
+
     }
 
     @FXML
