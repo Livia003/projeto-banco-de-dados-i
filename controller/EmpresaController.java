@@ -23,8 +23,14 @@ public class EmpresaController {
         return nomes;
     }
 
-    public Empresa buscarEmpresaPorId(int id) {
-        return Empresa.buscarEmpresaPorId(id);
+    public static Empresa buscarEmpresaPorId(int id) {
+        List<Empresa> empresas = Empresa.getEmpresas();
+        for (Empresa empresa : empresas) {
+            if (empresa.getId() == id) {
+                return empresa;
+            }
+        }
+        return null;
     }
 
     public Empresa buscarEmpresaPorNome(String nome) {

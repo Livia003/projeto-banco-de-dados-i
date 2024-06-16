@@ -28,7 +28,7 @@
 
 .mouse-hover {
 	-fx-cursor: hand;
-    -fx-transition: all 0.2s ease-in-out; /* Transição suave */
+    -fx-transition: all 0.2s ease-in-out; 
 }
 
 .choicebox {
@@ -38,6 +38,6 @@
 }
 
 .mouse-hover:hover {
-    -fx-scale-x: 1.1; /* Escala no eixo X */
-    -fx-scale-y: 1.1; /* Escala no eixo Y */
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1; 
 }

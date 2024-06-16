@@ -14,8 +14,14 @@ public class ClienteController {
         return Cliente.getClientes();
     }
 
-    public Cliente buscarClientePorId(int id) {
-        return Cliente.buscarClientePorId(id);
+    public static Cliente buscarClientePorId(int id) {
+        List<Cliente> clientes = Cliente.getClientes();
+        for (Cliente cliente : clientes) {
+            if (cliente.getId() == id) {
+                return cliente;
+            }
+        }
+        return null;
     }
 
     public Cliente buscarClientePorEmailESenha(String email, String senha) {

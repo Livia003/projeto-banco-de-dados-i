@@ -18,6 +18,8 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+
 
 <AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@/view/style.css" xmlns="http://javafx.com/javafx/8.0.371" xmlns:fx="http://javafx.com/fxml">
 
@@ -139,6 +141,14 @@
             layoutX="590" layoutY="410" 
             prefWidth="210" prefHeight="50" styleClass="button1" visible="false"/> 
 
+     <ImageView fx:id="botaoVerReclamacao" fitHeight="80.0" fitWidth="80.0" layoutX="457.0" layoutY="554.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#consultarReclamacoes">
+		<image>
+			<Image url="@/util/view-complaint-button.png" />
+		</image>
+	</ImageView>
+    
+
+
     <Label fx:id="nomeCliente" text="nome" layoutX="275" layoutY="155" visible="false" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;"/>
 
     <!-- Formulario Reclamacao -->
@@ -178,5 +188,15 @@
 			<Image url="@/util/log-out-symbol.png" />
 		</image>
 	</ImageView>
+
+     <!-- Ver Reclamacoes -->
+    <ImageView fx:id="complaintViewer" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/complaint-viewer.png" />
+        </image>
+    </ImageView>
+
+     <TextArea fx:id="textAreaConsultaReclamacoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+
 
 </AnchorPane>

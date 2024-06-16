@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -16,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
@@ -72,6 +74,9 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private ImageView complaintForm;
+
+    @FXML
+    private ImageView complaintViewer;
 
     @FXML
     private Button botaoInicialCliente;
@@ -161,10 +166,16 @@ public class ControllerGeral implements Initializable {
     private Button botaoEnviarReclamacao;
 
     @FXML
+    private ImageView botaoVerReclamacao;
+
+    @FXML
     private ImageView jumpingBackLoginReclamacao;
 
     @FXML
     private ImageView logOutSymbol;
+
+    @FXML
+    private TextArea textAreaConsultaReclamacoes;
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
@@ -174,7 +185,27 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
-        empresasCadastradas.getItems().addAll("Empresa do Seu Ze");
+        Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
+                "Especializada em soluções tecnológicas", "2023-05-01", "senha123");
+
+        Empresa empresa2 = new Empresa("Express Logistica e Transporte", "expresslogistica@example.com",
+                "Entregas rápidas e seguras em todo o país", "2023-05-02", "senha456");
+
+        Empresa empresa3 = new Empresa("Comida Facil Delivery", "comidafacil@example.com",
+                "Serviço de delivery de refeições práticas", "2023-05-03", "senha789");
+
+        Empresa empresa4 = new Empresa("Construcoes Urbanas S.A.", "construcoesurbanas@example.com",
+                "Projetos e obras para o desenvolvimento urbano", "2023-05-04", "senhaabc");
+
+        Empresa empresa5 = new Empresa("Clinica Bem-Estar", "clinicabemestar@example.com",
+                "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz");
+
+        empresasCadastradas.getItems().addAll(
+                "Tech Solutions Ltda.",
+                "Express Logistica e Transporte",
+                "Comida Facil Delivery",
+                "Construcoes Urbanas S.A.",
+                "Clinica Bem-Estar");
 
         motivoReclamacao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
@@ -389,15 +420,79 @@ public class ControllerGeral implements Initializable {
             }
 
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, justificativa);
+
             empresa.adicionarReclamacao(reclamacao);
 
-            System.out.print("Reclamacao enviada!");
+            Cliente cliente = Cliente.buscarClientePorId(idCliente);
+            if (cliente != null) {
+                cliente.adicionarReclamacao(reclamacao);
+            }
+
+            empresasCadastradas.setValue(null);
+            motivoReclamacao.setValue(null);
+            idProduto.clear();
+            justificativaReclamacao.clear();
+
+            Alert alert = new Alert(AlertType.CONFIRMATION,
+                    "Reclamacao enviada com sucesso! Uma resposta sera recebida em ate 72h.", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    mostrarHome();
+                }
+            });
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @FXML
+    private void consultarReclamacoes() {
+        try {
+            Cliente cliente = Cliente.buscarClientePorId(idCliente);
+
+            if (cliente == null) {
+                throw new IllegalArgumentException("Cliente nao encontrado.");
+            }
+
+            List<Reclamacao> reclamacoes = cliente.getReclamacoes();
+
+            StringBuilder reclamacoesTexto = new StringBuilder();
+            for (Reclamacao reclamacao : reclamacoes) {
+                Empresa empresa = EmpresaController.buscarEmpresaPorId(reclamacao.getEmpresaId());
+
+                reclamacoesTexto.append("\nRECLAMACAO NUMERO ").append(reclamacao.getId()).append("\n")
+                        .append("STATUS: ").append(reclamacao.getStatus()).append("\n\n")
+                        .append("ID CLIENTE: ").append(reclamacao.getClienteId()).append("\n")
+                        .append("NOME DO CLIENTE: ")
+                        .append(cliente != null ? cliente.getNome() : "Cliente não encontrado").append("\n")
+                        .append("EMAIL DO CLIENTE: ")
+                        .append(cliente != null ? cliente.getEmail() : "Email não encontrado").append("\n")
+                        .append("EMPRESA: ").append(empresa != null ? empresa.getNome() : "Empresa não encontrada")
+                        .append("\n")
+                        .append("PRODUTO ID: ").append(reclamacao.getProdutoId()).append("\n")
+                        .append("JUSTIFICATIVA: ").append(reclamacao.getDescricao()).append("\n\n");
+            }
+
+            textAreaConsultaReclamacoes.setStyle("-fx-font-weight: bold;");
+            textAreaConsultaReclamacoes.setText(reclamacoesTexto.toString());
+
+            esconderElementosDentroDoLogin();
+            jumpingBackLoginReclamacao.setVisible(true);
+            jumpingBackLoginReclamacao.toFront();
+            complaintViewer.setVisible(true);
+            textAreaConsultaReclamacoes.setVisible(true);
+
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void exibirMensagemErro(String mensagem) {
@@ -409,7 +504,7 @@ public class ControllerGeral implements Initializable {
     }
 
     private void atualizarChoiceBoxEmpresas() {
-        // empresasCadastradas.getItems().clear();
+        empresasCadastradas.getItems().clear();
         empresasCadastradas.getItems().addAll(empresaController.getNomesEmpresas());
     }
 
@@ -442,6 +537,7 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginReclamacao.setVisible(false);
         esconderElementosDentroDoLogin();
         logOutSymbol.setVisible(false);
+        // idCliente = (Integer) null;
         telaInicial();
     }
 
@@ -484,6 +580,8 @@ public class ControllerGeral implements Initializable {
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
         logOutSymbol.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        textAreaConsultaReclamacoes.setVisible(false);
     }
 
     private void mostrarHome() {
@@ -497,6 +595,8 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginReclamacao.setVisible(false);
         esconderElementosDentroDoLogin();
         logOutSymbol.setVisible(true);
+        botaoVerReclamacao.setVisible(true);
+        complaintViewer.setVisible(false);
     }
 
     @FXML
@@ -512,6 +612,7 @@ public class ControllerGeral implements Initializable {
         botaoEnviarReclamacao.setVisible(true);
         jumpingBackLoginReclamacao.setVisible(true);
         logOutSymbol.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
     }
 
     public void esconderElementosDentroDoLogin() {
@@ -537,6 +638,8 @@ public class ControllerGeral implements Initializable {
         justificativaReclamacao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        textAreaConsultaReclamacoes.setVisible(false);
 
     }
 
