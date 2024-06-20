@@ -4,40 +4,20 @@ import model.*;
 import javafx.fxml.FXML;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.event.ActionEvent;
-import javafx.application.Platform;
 import javafx.scene.control.TextField;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.shape.Line;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class ControllerGeral implements Initializable {
@@ -74,6 +54,9 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private ImageView complaintForm;
+
+    @FXML
+    private ImageView returnForm;
 
     @FXML
     private ImageView complaintViewer;
@@ -154,16 +137,43 @@ public class ControllerGeral implements Initializable {
     private ChoiceBox<String> empresasCadastradas;
 
     @FXML
+    private ChoiceBox<String> empresasCadastradasDevolucao;
+
+    @FXML
     private ChoiceBox<String> motivoReclamacao;
+
+    @FXML
+    private ChoiceBox<String> motivoDevolucao;
 
     @FXML
     private TextField idProduto;
 
     @FXML
+    private TextField idProdutoDevolucao;
+
+    @FXML
     private TextField justificativaReclamacao;
 
     @FXML
+    private TextField justificativaDevolucao;
+
+    @FXML
+    private TextField dataCompraDevolucao;
+
+    @FXML
     private Button botaoEnviarReclamacao;
+
+    @FXML
+    private Button botaoEnviarDevolucao;
+
+    @FXML
+    private TextField quantidadesItensDevolucao;
+
+    @FXML
+    private TextField idSubstituicaoDevolucao;
+
+    @FXML
+    private TextField descricaoItemDevolucao;
 
     @FXML
     private ImageView botaoVerReclamacao;
@@ -208,6 +218,23 @@ public class ControllerGeral implements Initializable {
                 "Clinica Bem-Estar");
 
         motivoReclamacao.getItems().addAll("Produto defeituoso ou danificado",
+                "Produto incorreto",
+                "Atraso na entrega",
+                "Produto falsificado",
+                "Problemas com uma conta",
+                "Cobranca incorreta",
+                "Falta de pecas ou acessorios",
+                "Problemas com uma assinatura",
+                "Nenhum dos motivos acima");
+
+        empresasCadastradasDevolucao.getItems().addAll(
+                "Tech Solutions Ltda.",
+                "Express Logistica e Transporte",
+                "Comida Facil Delivery",
+                "Construcoes Urbanas S.A.",
+                "Clinica Bem-Estar");
+
+        motivoDevolucao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
                 "Atraso na entrega",
                 "Produto falsificado",
@@ -434,7 +461,8 @@ public class ControllerGeral implements Initializable {
             justificativaReclamacao.clear();
 
             Alert alert = new Alert(AlertType.CONFIRMATION,
-                    "Reclamacao enviada com sucesso! Uma resposta sera recebida em ate 72h.", ButtonType.OK);
+                    "Reclamacao enviada com sucesso! Uma resposta sera recebida em ate 72h. Acompanhe o status em nosso menu na Home.",
+                    ButtonType.OK);
             alert.setHeaderText(null);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
@@ -448,6 +476,87 @@ public class ControllerGeral implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    @FXML
+    private void enviarDevolucao() {
+        try {
+            String empresaSelecionada = empresasCadastradasDevolucao.getValue();
+            String motivoSelecionado = motivoDevolucao.getValue();
+            String produtoId = idProdutoDevolucao.getText();
+            String justificativa = justificativaDevolucao.getText();
+            String quantidadesItens = quantidadesItensDevolucao.getText();
+            String idSubstituicao = idSubstituicaoDevolucao.getText();
+            String descricaoItem = descricaoItemDevolucao.getText();
+
+            if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
+                    || justificativa.isEmpty() || quantidadesItens.isEmpty() || idSubstituicao.isEmpty()
+                    || descricaoItem.isEmpty()) {
+                throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
+            }
+
+            int produtoIdInt;
+
+            try {
+                produtoIdInt = Integer.parseInt(produtoId);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
+            }
+
+            int quantidadeItensInt;
+            try {
+                quantidadeItensInt = Integer.parseInt(quantidadesItens);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("A quantidade de itens deve ser um numero inteiro.");
+            }
+
+            int idSubstituicaoInt;
+            try {
+                idSubstituicaoInt = Integer.parseInt(idSubstituicao);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("ID de substituicao deve ser um numero inteiro.");
+            }
+
+            EmpresaController empresaController = new EmpresaController();
+            Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+
+            if (empresa == null) {
+                throw new IllegalArgumentException("Empresa nao encontrada.");
+            }
+
+            Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
+                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt);
+
+            empresa.adicionarDevolucao(devolucao);
+
+            empresasCadastradasDevolucao.setValue(null);
+            motivoDevolucao.setValue(null);
+            idProdutoDevolucao.clear();
+            justificativaDevolucao.clear();
+            quantidadesItensDevolucao.clear();
+            idSubstituicaoDevolucao.clear();
+            descricaoItemDevolucao.clear();
+            dataCompraDevolucao.clear();
+
+            Alert alert = new Alert(AlertType.CONFIRMATION,
+                    "Pedido de devolucao enviado. Acompanhe o status em nosso menu na Home.", ButtonType.OK);
+
+            alert.setHeaderText(null);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    mostrarHome();
+                }
+            });
+
+            Cliente cliente = Cliente.buscarClientePorId(idCliente);
+            if (cliente != null) {
+                cliente.adicionarDevolucao(devolucao);
+            }
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -574,7 +683,9 @@ public class ControllerGeral implements Initializable {
         nomeCliente.setVisible(false);
         complaintForm.setVisible(false);
         empresasCadastradas.setVisible(false);
+        empresasCadastradasDevolucao.setVisible(false);
         motivoReclamacao.setVisible(false);
+        motivoDevolucao.setVisible(false);
         idProduto.setVisible(false);
         justificativaReclamacao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
@@ -582,6 +693,13 @@ public class ControllerGeral implements Initializable {
         logOutSymbol.setVisible(false);
         botaoVerReclamacao.setVisible(false);
         textAreaConsultaReclamacoes.setVisible(false);
+        idProdutoDevolucao.setVisible(false);
+        dataCompraDevolucao.setVisible(false);
+        justificativaDevolucao.setVisible(false);
+        quantidadesItensDevolucao.setVisible(false);
+        idSubstituicaoDevolucao.setVisible(false);
+        descricaoItemDevolucao.setVisible(false);
+        botaoEnviarDevolucao.setVisible(false);
     }
 
     private void mostrarHome() {
@@ -597,6 +715,7 @@ public class ControllerGeral implements Initializable {
         logOutSymbol.setVisible(true);
         botaoVerReclamacao.setVisible(true);
         complaintViewer.setVisible(false);
+        returnForm.setVisible(false);
     }
 
     @FXML
@@ -613,6 +732,27 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginReclamacao.setVisible(true);
         logOutSymbol.setVisible(false);
         botaoVerReclamacao.setVisible(false);
+
+    }
+
+    @FXML
+    private void fazerDevolucao() {
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        returnForm.setVisible(true);
+        motivoDevolucao.setVisible(true);
+        empresasCadastradasDevolucao.setVisible(true);
+        logOutSymbol.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        idProdutoDevolucao.setVisible(true);
+        dataCompraDevolucao.setVisible(true);
+        justificativaDevolucao.setVisible(true);
+        idSubstituicaoDevolucao.setVisible(true);
+        descricaoItemDevolucao.setVisible(true);
+        botaoEnviarDevolucao.setVisible(true);
+        quantidadesItensDevolucao.setVisible(true);
+        jumpingBackLoginReclamacao.setVisible(true);
     }
 
     public void esconderElementosDentroDoLogin() {
@@ -633,13 +773,22 @@ public class ControllerGeral implements Initializable {
         botaoLoginPelaPrimeiraVezEmpresa.setVisible(false);
         labelLoginEmpresa.setVisible(false);
         empresasCadastradas.setVisible(false);
+        empresasCadastradasDevolucao.setVisible(false);
         motivoReclamacao.setVisible(false);
+        motivoDevolucao.setVisible(false);
         idProduto.setVisible(false);
+        idProdutoDevolucao.setVisible(false);
+        dataCompraDevolucao.setVisible(false);
         justificativaReclamacao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
         botaoVerReclamacao.setVisible(false);
         textAreaConsultaReclamacoes.setVisible(false);
+        justificativaDevolucao.setVisible(false);
+        quantidadesItensDevolucao.setVisible(false);
+        idSubstituicaoDevolucao.setVisible(false);
+        descricaoItemDevolucao.setVisible(false);
+        botaoEnviarDevolucao.setVisible(false);
 
     }
 

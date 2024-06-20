@@ -139,13 +139,15 @@
 
     <Button fx:id="botaoPedirDevolucao" text="Iniciar"
             layoutX="590" layoutY="410" 
-            prefWidth="210" prefHeight="50" styleClass="button1" visible="false"/> 
+            prefWidth="210" prefHeight="50" styleClass="button1" visible="false" onAction="#fazerDevolucao"/> 
 
      <ImageView fx:id="botaoVerReclamacao" fitHeight="80.0" fitWidth="80.0" layoutX="457.0" layoutY="554.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#consultarReclamacoes">
 		<image>
 			<Image url="@/util/view-complaint-button.png" />
 		</image>
 	</ImageView>
+
+
     
 
 
@@ -188,6 +190,40 @@
 			<Image url="@/util/log-out-symbol.png" />
 		</image>
 	</ImageView>
+
+    <!-- Formulario Devolucao -->
+     <ImageView fx:id="returnForm" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/return-form.png" />
+        </image>
+    </ImageView>
+
+     <VBox alignment="CENTER" spacing="10" layoutX="218" layoutY="180">
+		<children>
+			<ChoiceBox fx:id="empresasCadastradasDevolucao" prefHeight="40" prefWidth="255" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+    <VBox alignment="CENTER" spacing="10" layoutX="550" layoutY="180">
+		<children>
+			<ChoiceBox fx:id="motivoDevolucao" prefHeight="40" prefWidth="255" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+    <TextField fx:id="idProdutoDevolucao" promptText="ID do produto" layoutX="218" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="dataCompraDevolucao" promptText="dia/mes/anos" layoutX="218" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="justificativaDevolucao" promptText="Justificativa" layoutX="218" layoutY="500" prefWidth="280" prefHeight="100" styleClass="text-field-custom"/>
+    <TextField fx:id="quantidadesItensDevolucao" promptText="Quantidade de itens" layoutX="550" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="idSubstituicaoDevolucao" promptText="ID da troca" layoutX="550" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+     <TextField fx:id="descricaoItemDevolucao" promptText="Descricao do item" layoutX="550" layoutY="500" prefWidth="280" prefHeight="100" styleClass="text-field-custom"/>
+
+    
+     <Button fx:id="botaoEnviarDevolucao" text="Enviar"
+            layoutX="410" layoutY="627" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#enviarDevolucao"/> 
+
+   
+
 
      <!-- Ver Reclamacoes -->
     <ImageView fx:id="complaintViewer" fitHeight="700.0" fitWidth="1000.0" visible="false">

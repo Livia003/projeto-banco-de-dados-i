@@ -8,17 +8,23 @@ public class Devolucao {
     private String descricao;
     private String resposta;
     private StatusDevolucao status;
+    private String motivo;
+    private int quantidade;
+    private int idSubstituicao;
+    private static int proximoId = 1;
 
     // Construtor
-    public Devolucao(int id, int clienteId, int empresaId, int produtoId, String descricao, String resposta,
-            StatusDevolucao status) {
-        this.id = id;
+    public Devolucao(int clienteId, int empresaId, int produtoId, String descricao,
+            String motivo, int quantidade, int idSubstituicao) {
+        this.id = produtoId++;
         this.clienteId = clienteId;
         this.empresaId = empresaId;
         this.produtoId = produtoId;
         this.descricao = descricao;
-        this.resposta = resposta;
-        this.status = status;
+        this.motivo = motivo;
+        this.quantidade = quantidade;
+        this.idSubstituicao = idSubstituicao;
+
     }
 
     // Getters
