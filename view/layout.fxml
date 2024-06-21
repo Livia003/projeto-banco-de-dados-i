@@ -19,6 +19,9 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 
 <AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@/view/style.css" xmlns="http://javafx.com/javafx/8.0.371" xmlns:fx="http://javafx.com/fxml">
@@ -232,7 +235,14 @@
         </image>
     </ImageView>
 
-     <TextArea fx:id="textAreaConsultaReclamacoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+    <TextArea fx:id="textAreaConsultaReclamacoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+    <VBox fx:id="mainVBox" spacing="10" layoutX="96" layoutY="190" prefHeight="450" prefWidth="830" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="reclamacoesVBox" spacing="10" visible="false" styleClass="reclamacao-box">
+              
+            </VBox>
+        </ScrollPane>
+    </VBox>
 
 
 </AnchorPane>

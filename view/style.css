@@ -41,3 +41,9 @@
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1; 
 }
+
+.reclamacao-box {
+    -fx-border-color: rgb(255, 255, 255); 
+    -fx-border-radius: 10px; 
+    -fx-background-radius: 10px; 
+}

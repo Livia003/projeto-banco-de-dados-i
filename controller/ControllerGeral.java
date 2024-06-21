@@ -4,21 +4,30 @@ import model.*;
 import javafx.fxml.FXML;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
+
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
+
+import java.util.HashSet;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 public class ControllerGeral implements Initializable {
 
@@ -186,6 +195,12 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private TextArea textAreaConsultaReclamacoes;
+
+    @FXML
+    private VBox reclamacoesVBox;
+
+    @FXML
+    private VBox mainVBox;
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
@@ -559,49 +574,44 @@ public class ControllerGeral implements Initializable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void consultarReclamacoes() {
         try {
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
 
             if (cliente == null) {
-                throw new IllegalArgumentException("Cliente nao encontrado.");
+                throw new IllegalArgumentException("Cliente não encontrado.");
             }
 
             List<Reclamacao> reclamacoes = cliente.getReclamacoes();
 
-            StringBuilder reclamacoesTexto = new StringBuilder();
+            reclamacoesVBox.getChildren().clear();
+
+            Set<Integer> reclamacoesExibidas = new HashSet<>();
+
             for (Reclamacao reclamacao : reclamacoes) {
-                Empresa empresa = EmpresaController.buscarEmpresaPorId(reclamacao.getEmpresaId());
-
-                reclamacoesTexto.append("\nRECLAMACAO NUMERO ").append(reclamacao.getId()).append("\n")
-                        .append("STATUS: ").append(reclamacao.getStatus()).append("\n\n")
-                        .append("ID CLIENTE: ").append(reclamacao.getClienteId()).append("\n")
-                        .append("NOME DO CLIENTE: ")
-                        .append(cliente != null ? cliente.getNome() : "Cliente não encontrado").append("\n")
-                        .append("EMAIL DO CLIENTE: ")
-                        .append(cliente != null ? cliente.getEmail() : "Email não encontrado").append("\n")
-                        .append("EMPRESA: ").append(empresa != null ? empresa.getNome() : "Empresa não encontrada")
-                        .append("\n")
-                        .append("PRODUTO ID: ").append(reclamacao.getProdutoId()).append("\n")
-                        .append("JUSTIFICATIVA: ").append(reclamacao.getDescricao()).append("\n\n");
+                if (!reclamacoesExibidas.contains(reclamacao.getId())) {
+                    Empresa empresa = EmpresaController.buscarEmpresaPorId(reclamacao.getEmpresaId());
+                    adicionarReclamacao(reclamacao, cliente, empresa);
+                    reclamacoesExibidas.add(reclamacao.getId());
+                }
             }
-
-            textAreaConsultaReclamacoes.setStyle("-fx-font-weight: bold;");
-            textAreaConsultaReclamacoes.setText(reclamacoesTexto.toString());
 
             esconderElementosDentroDoLogin();
             jumpingBackLoginReclamacao.setVisible(true);
             jumpingBackLoginReclamacao.toFront();
             complaintViewer.setVisible(true);
-            textAreaConsultaReclamacoes.setVisible(true);
+            reclamacoesVBox.setVisible(true);
+            mainVBox.setVisible(true);
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void exibirMensagemErro(String mensagem) {
@@ -615,6 +625,41 @@ public class ControllerGeral implements Initializable {
     private void atualizarChoiceBoxEmpresas() {
         empresasCadastradas.getItems().clear();
         empresasCadastradas.getItems().addAll(empresaController.getNomesEmpresas());
+    }
+
+    public void adicionarReclamacao(Reclamacao reclamacao, Cliente cliente, Empresa empresa) {
+
+        BorderPane pane = new BorderPane();
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
+
+        VBox labelsVBox = new VBox(5);
+
+        Label idLabel = new Label("ID Cliente: " + reclamacao.getClienteId());
+        idLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label nomeLabel = new Label("Nome do Cliente: " + reclamacao.getClienteId());
+        nomeLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label emailLabel = new Label("Email do Cliente: " + cliente.getNome());
+        emailLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label empresaLabel = new Label("Empresa: " + empresa.getNome());
+        empresaLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label produtoLabel = new Label("Produto ID: " + reclamacao.getProdutoId());
+        produtoLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label justificativaLabel = new Label("Justificativa: " + reclamacao.getDescricao());
+        justificativaLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
+        statusLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        labelsVBox.getChildren().addAll(idLabel, nomeLabel, emailLabel, empresaLabel, produtoLabel, justificativaLabel,
+                statusLabel);
+
+        pane.setCenter(labelsVBox);
+        reclamacoesVBox.getChildren().add(pane);
     }
 
     private void atualizarNomeCliente(String nome) {
@@ -646,7 +691,6 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginReclamacao.setVisible(false);
         esconderElementosDentroDoLogin();
         logOutSymbol.setVisible(false);
-        // idCliente = (Integer) null;
         telaInicial();
     }
 
@@ -700,6 +744,8 @@ public class ControllerGeral implements Initializable {
         idSubstituicaoDevolucao.setVisible(false);
         descricaoItemDevolucao.setVisible(false);
         botaoEnviarDevolucao.setVisible(false);
+        reclamacoesVBox.setVisible(false);
+        mainVBox.setVisible(false);
     }
 
     private void mostrarHome() {
@@ -716,6 +762,8 @@ public class ControllerGeral implements Initializable {
         botaoVerReclamacao.setVisible(true);
         complaintViewer.setVisible(false);
         returnForm.setVisible(false);
+        reclamacoesVBox.setVisible(false);
+        mainVBox.setVisible(false);
     }
 
     @FXML
@@ -789,6 +837,8 @@ public class ControllerGeral implements Initializable {
         idSubstituicaoDevolucao.setVisible(false);
         descricaoItemDevolucao.setVisible(false);
         botaoEnviarDevolucao.setVisible(false);
+        reclamacoesVBox.setVisible(false);
+        mainVBox.setVisible(false);
 
     }
 
