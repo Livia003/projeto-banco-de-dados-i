@@ -23,6 +23,10 @@ public class Cliente extends Usuario {
         return reclamacoes;
     }
 
+    public List<Devolucao> getDevolucoes() {
+        return devolucoes;
+    }
+
     public void setReclamacoes(List<Reclamacao> reclamacoes) {
         this.reclamacoes = reclamacoes;
     }

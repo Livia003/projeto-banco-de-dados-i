@@ -1,9 +1,7 @@
 package model;
 
 public enum StatusDevolucao {
-    ABERTO,
-    EM_ANDAMENTO,
+    EM_ANALISE,
     APROVADO,
     NEGADO,
-    FECHADO;
 }

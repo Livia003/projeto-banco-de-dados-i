@@ -78,4 +78,5 @@ public class Reclamacao {
     public void setStatus(StatusReclamacao status) {
         this.status = status;
     }
+
 }

@@ -9,6 +9,10 @@ public class Devolucao {
     private String resposta;
     private StatusDevolucao status;
     private String motivo;
+
+    private String nomeCliente;
+    private String emailCliente;
+
     private int quantidade;
     private int idSubstituicao;
     private static int proximoId = 1;
@@ -24,6 +28,7 @@ public class Devolucao {
         this.motivo = motivo;
         this.quantidade = quantidade;
         this.idSubstituicao = idSubstituicao;
+        this.status = StatusDevolucao.EM_ANALISE;
 
     }
 
@@ -34,6 +39,14 @@ public class Devolucao {
 
     public int getClienteId() {
         return clienteId;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
     }
 
     public int getEmpresaId() {
@@ -84,4 +97,21 @@ public class Devolucao {
     public void setStatus(StatusDevolucao status) {
         this.status = status;
     }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getEmailCliente() {
+        return emailCliente;
+    }
+
+    public void setEmailCliente(String emailCliente) {
+        this.emailCliente = emailCliente;
+    }
+
 }

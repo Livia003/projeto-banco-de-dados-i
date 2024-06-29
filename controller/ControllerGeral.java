@@ -71,6 +71,15 @@ public class ControllerGeral implements Initializable {
     private ImageView complaintViewer;
 
     @FXML
+    private ImageView returnViewer;
+
+    @FXML
+    private ImageView homeSymbol;
+
+    @FXML
+    private ImageView complaintDiv;
+
+    @FXML
     private Button botaoInicialCliente;
 
     @FXML
@@ -188,6 +197,9 @@ public class ControllerGeral implements Initializable {
     private ImageView botaoVerReclamacao;
 
     @FXML
+    private ImageView botaoVerDevolucao;
+
+    @FXML
     private ImageView jumpingBackLoginReclamacao;
 
     @FXML
@@ -201,6 +213,30 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private VBox mainVBox;
+
+    @FXML
+    private TextArea textAreaConsultaDevolucoes;
+
+    @FXML
+    private VBox mainVBoxDevolucoes;
+
+    @FXML
+    private VBox devolucoesVBox;
+
+    @FXML
+    private VBox mainVBoxDevolucoesEmpresa;
+
+    @FXML
+    private VBox devolucoesVBoxEmpresa;
+
+    @FXML
+    private ImageView homeCompanyBackground;
+
+    @FXML
+    private VBox mainVBoxReclamacaoesEmpresa;
+
+    @FXML
+    private VBox reclamacoesVBoxEmpresa;
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
@@ -280,7 +316,7 @@ public class ControllerGeral implements Initializable {
             Cliente novoCliente = new Cliente(nome, email, senha);
             clienteController.cadastrarNovoCliente(novoCliente);
             idCliente = novoCliente.getId();
-            mostrarPaginaConfirmacao();
+            mostrarPaginaConfirmacao(1);
 
             campoCadastroClienteNome.clear();
             campoCadastroClienteEmail.clear();
@@ -313,8 +349,9 @@ public class ControllerGeral implements Initializable {
 
             Empresa novaEmpresa = new Empresa(nome, email, descricao, data, senha);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
+            idEmpresa = novaEmpresa.getId();
             atualizarChoiceBoxEmpresas();
-            mostrarPaginaConfirmacao();
+            mostrarPaginaConfirmacao(0);
 
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
@@ -355,7 +392,7 @@ public class ControllerGeral implements Initializable {
 
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
-            mostrarPaginaConfirmacao();
+            mostrarPaginaConfirmacao(1);
 
             campoLoginClienteEmail.clear();
             campoLoginClienteSenha.clear();
@@ -390,7 +427,7 @@ public class ControllerGeral implements Initializable {
             }
 
             idEmpresa = empresa.getId();
-            mostrarPaginaConfirmacao();
+            mostrarPaginaConfirmacao(0);
             atualizarChoiceBoxEmpresas();
 
             campoCadastroEmpresaNome.clear();
@@ -408,7 +445,7 @@ public class ControllerGeral implements Initializable {
         // BANCO DE DADOS
     }
 
-    public void mostrarPaginaConfirmacao() {
+    public void mostrarPaginaConfirmacao(int decideHome) {
         jumpingBackLoginCliente.setVisible(false);
         jumpingBackLoginEmpresa.setVisible(false);
         thankYouBackground.setVisible(true);
@@ -425,7 +462,11 @@ public class ControllerGeral implements Initializable {
                     if (segundos[0] == 0) {
                         counter.setVisible(false);
                         thankYouBackground.setVisible(false);
-                        mostrarHome();
+                        if (decideHome == 0) {
+                            mostrarHomeEmpresa();
+                        } else {
+                            mostrarHomeCliente();
+                        }
                     }
                 }));
 
@@ -481,7 +522,7 @@ public class ControllerGeral implements Initializable {
             alert.setHeaderText(null);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    mostrarHome();
+                    mostrarHomeCliente();
                 }
             });
 
@@ -559,7 +600,7 @@ public class ControllerGeral implements Initializable {
             alert.setHeaderText(null);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    mostrarHome();
+                    mostrarHomeCliente();
                 }
             });
 
@@ -574,9 +615,36 @@ public class ControllerGeral implements Initializable {
         }
     }
 
-    /**
-     * 
-     */
+    @FXML
+    private void consultarDevolucoes() {
+        Cliente cliente = Cliente.buscarClientePorId(idCliente);
+
+        if (cliente == null) {
+            throw new IllegalArgumentException("Cliente não encontrado.");
+        }
+
+        List<Devolucao> devolucoes = cliente.getDevolucoes();
+
+        devolucoesVBox.getChildren().clear();
+
+        Set<Integer> devolucoesExibidas = new HashSet<>();
+
+        for (Devolucao devolucao : devolucoes) {
+            if (!devolucoesExibidas.contains(devolucao.getId())) {
+                Empresa empresa = EmpresaController.buscarEmpresaPorId(devolucao.getEmpresaId());
+                adicionarDevolucao(devolucao, cliente, empresa);
+                devolucoesExibidas.add(devolucao.getId());
+            }
+        }
+
+        esconderElementosDentroDoLogin();
+        jumpingBackLoginReclamacao.setVisible(true);
+        jumpingBackLoginReclamacao.toFront();
+        returnViewer.setVisible(true);
+        devolucoesVBox.setVisible(true);
+        mainVBoxDevolucoes.setVisible(true);
+    }
+
     @FXML
     private void consultarReclamacoes() {
         try {
@@ -629,37 +697,77 @@ public class ControllerGeral implements Initializable {
 
     public void adicionarReclamacao(Reclamacao reclamacao, Cliente cliente, Empresa empresa) {
 
+        if (reclamacao == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Tente novamente!");
+            alert.setHeaderText(null);
+            alert.setContentText("Voce nao possui reclamacoes cadastradas.");
+            alert.showAndWait();
+            return;
+        }
+
         BorderPane pane = new BorderPane();
         pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
 
-        VBox labelsVBox = new VBox(5);
+        VBox labelsVBox = new VBox(3);
+        labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
 
         Label idLabel = new Label("ID Cliente: " + reclamacao.getClienteId());
-        idLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        idLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label nomeLabel = new Label("Nome do Cliente: " + reclamacao.getClienteId());
-        nomeLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        nomeLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label emailLabel = new Label("Email do Cliente: " + cliente.getNome());
-        emailLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        emailLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label empresaLabel = new Label("Empresa: " + empresa.getNome());
-        empresaLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label produtoLabel = new Label("Produto ID: " + reclamacao.getProdutoId());
-        produtoLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        produtoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label justificativaLabel = new Label("Justificativa: " + reclamacao.getDescricao());
-        justificativaLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        justificativaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
-        statusLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         labelsVBox.getChildren().addAll(idLabel, nomeLabel, emailLabel, empresaLabel, produtoLabel, justificativaLabel,
                 statusLabel);
 
         pane.setCenter(labelsVBox);
         reclamacoesVBox.getChildren().add(pane);
+
+    }
+
+    public void adicionarDevolucao(Devolucao devolucao, Cliente cliente, Empresa empresa) {
+
+        BorderPane pane = new BorderPane();
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
+
+        VBox labelsVBox = new VBox(3);
+        labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
+
+        Label idLabel = new Label("ID Cliente: " + devolucao.getClienteId());
+        idLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label empresaLabel = new Label("Empresa: " + empresa.getNome());
+        empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label produtoLabel = new Label("Produto ID: " + devolucao.getProdutoId());
+        produtoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label justificativaLabel = new Label("Justificativa: " + devolucao.getMotivo());
+        justificativaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label statusLabel = new Label("Status: " + devolucao.getStatus().toString());
+        statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        labelsVBox.getChildren().addAll(idLabel, empresaLabel, produtoLabel, justificativaLabel, statusLabel);
+
+        pane.setCenter(labelsVBox);
+        devolucoesVBox.getChildren().add(pane);
     }
 
     private void atualizarNomeCliente(String nome) {
@@ -678,7 +786,7 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private void voltarFormReclamacao() {
-        mostrarHome();
+        mostrarHomeCliente();
     }
 
     @FXML
@@ -692,6 +800,180 @@ public class ControllerGeral implements Initializable {
         esconderElementosDentroDoLogin();
         logOutSymbol.setVisible(false);
         telaInicial();
+    }
+
+    private void mostrarHomeCliente() {
+        jumpingBackLoginCliente.setVisible(false);
+        jumpingBackLoginEmpresa.setVisible(false);
+        homeBackground.setVisible(true);
+        botaoPedirDevolucao.setVisible(true);
+        botaoFazerReclamacao.setVisible(true);
+        nomeCliente.setVisible(true);
+        complaintForm.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
+        esconderElementosDentroDoLogin();
+        logOutSymbol.setVisible(true);
+        botaoVerReclamacao.setVisible(true);
+        botaoVerDevolucao.setVisible(true);
+        complaintViewer.setVisible(false);
+        returnForm.setVisible(false);
+        reclamacoesVBox.setVisible(false);
+        mainVBox.setVisible(false);
+        returnViewer.setVisible(false);
+        returnForm.setVisible(false);
+        devolucoesVBox.setVisible(false);
+        mainVBoxDevolucoes.setVisible(false);
+        homeSymbol.setVisible(true);
+    }
+
+    private void mostrarHomeEmpresa() {
+        jumpingBackLoginCliente.setVisible(false);
+        jumpingBackLoginEmpresa.setVisible(false);
+        esconderElementosDentroDoLogin();
+        homeCompanyBackground.setVisible(true);
+        mainVBoxReclamacaoesEmpresa.setVisible(true);
+        reclamacoesVBoxEmpresa.setVisible(true);
+        mainVBoxDevolucoesEmpresa.setVisible(true);
+        devolucoesVBoxEmpresa.setVisible(true);
+        logOutSymbol.setVisible(true);
+    }
+
+    @FXML
+    private void fazerReclamacao() {
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        complaintForm.setVisible(true);
+        empresasCadastradas.setVisible(true);
+        motivoReclamacao.setVisible(true);
+        idProduto.setVisible(true);
+        justificativaReclamacao.setVisible(true);
+        botaoEnviarReclamacao.setVisible(true);
+        jumpingBackLoginReclamacao.setVisible(true);
+        logOutSymbol.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        botaoVerDevolucao.setVisible(false);
+        homeSymbol.setVisible(false);
+        buscarTodasAsReclamacoesDaEmpresa();
+
+    }
+
+    private void buscarTodasAsReclamacoesDaEmpresa() {
+        try {
+
+            reclamacoesVBoxEmpresa.getChildren().clear();
+
+            Empresa empresa = Empresa.buscarEmpresaPorId(idEmpresa);
+
+            if (empresa == null) {
+                throw new IllegalArgumentException("Empresa não encontrada.");
+            }
+
+            List<Reclamacao> reclamacoes = empresa.getReclamacoesRecebidas();
+
+            for (Reclamacao reclamacao : reclamacoes) {
+                adicionarReclamacaoEmpresa(reclamacao, empresa);
+            }
+
+            mainVBoxReclamacaoesEmpresa.setVisible(true);
+            reclamacoesVBoxEmpresa.setVisible(true);
+
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void adicionarReclamacaoEmpresa(Reclamacao reclamacao, Empresa empresa) {
+        BorderPane pane = new BorderPane();
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
+
+        VBox labelsVBox = new VBox(3);
+        labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
+
+        Label empresaLabel = new Label("Empresa: " + empresa.getNome());
+        empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label produtoLabel = new Label("Produto ID: " + reclamacao.getProdutoId());
+        produtoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label justificativaLabel = new Label("Justificativa: " + reclamacao.getDescricao());
+        justificativaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
+        statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+        labelsVBox.getChildren().addAll(empresaLabel, produtoLabel,
+                justificativaLabel, statusLabel);
+
+        pane.setCenter(labelsVBox);
+        reclamacoesVBox.getChildren().add(pane);
+    }
+
+    @FXML
+    private void fazerDevolucao() {
+        botaoPedirDevolucao.setVisible(false);
+        botaoFazerReclamacao.setVisible(false);
+        nomeCliente.setVisible(false);
+        returnForm.setVisible(true);
+        motivoDevolucao.setVisible(true);
+        empresasCadastradasDevolucao.setVisible(true);
+        logOutSymbol.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        idProdutoDevolucao.setVisible(true);
+        dataCompraDevolucao.setVisible(true);
+        justificativaDevolucao.setVisible(true);
+        idSubstituicaoDevolucao.setVisible(true);
+        descricaoItemDevolucao.setVisible(true);
+        botaoEnviarDevolucao.setVisible(true);
+        quantidadesItensDevolucao.setVisible(true);
+        jumpingBackLoginReclamacao.setVisible(true);
+        jumpingBackLoginReclamacao.toFront();
+        jumpingBackLoginReclamacao.toFront();
+        homeSymbol.setVisible(false);
+    }
+
+    public void esconderElementosDentroDoLogin() {
+        firstBackground.setVisible(false);
+        botaoInicialCliente.setVisible(false);
+        botaoInicialEmpresa.setVisible(false);
+        campoCadastroClienteNome.setVisible(false);
+        campoCadastroClienteEmail.setVisible(false);
+        clienteCadastroBackground.setVisible(false);
+        botaoLoginPelaPrimeiraVezCliente.setVisible(false);
+        campoCadastroClienteSenha.setVisible(false);
+        labelLoginCliente.setVisible(false);
+        campoCadastroEmpresaNome.setVisible(false);
+        campoCadastroEmpresaEmail.setVisible(false);
+        campoCadastroEmpresaDescricao.setVisible(false);
+        campoCadastroEmpresaData.setVisible(false);
+        campoCadastroEmpresaSenha.setVisible(false);
+        botaoLoginPelaPrimeiraVezEmpresa.setVisible(false);
+        labelLoginEmpresa.setVisible(false);
+        empresasCadastradas.setVisible(false);
+        empresasCadastradasDevolucao.setVisible(false);
+        motivoReclamacao.setVisible(false);
+        motivoDevolucao.setVisible(false);
+        idProduto.setVisible(false);
+        idProdutoDevolucao.setVisible(false);
+        dataCompraDevolucao.setVisible(false);
+        justificativaReclamacao.setVisible(false);
+        botaoEnviarReclamacao.setVisible(false);
+        jumpingBackLoginReclamacao.setVisible(false);
+        botaoVerReclamacao.setVisible(false);
+        textAreaConsultaReclamacoes.setVisible(false);
+        justificativaDevolucao.setVisible(false);
+        quantidadesItensDevolucao.setVisible(false);
+        idSubstituicaoDevolucao.setVisible(false);
+        descricaoItemDevolucao.setVisible(false);
+        botaoEnviarDevolucao.setVisible(false);
+        reclamacoesVBox.setVisible(false);
+        mainVBox.setVisible(false);
+        botaoVerDevolucao.setVisible(false);
+        homeSymbol.setVisible(false);
+        empresaCadastroBackground.setVisible(false);
+
     }
 
     public void telaInicial() {
@@ -736,6 +1018,7 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginReclamacao.setVisible(false);
         logOutSymbol.setVisible(false);
         botaoVerReclamacao.setVisible(false);
+        botaoVerDevolucao.setVisible(false);
         textAreaConsultaReclamacoes.setVisible(false);
         idProdutoDevolucao.setVisible(false);
         dataCompraDevolucao.setVisible(false);
@@ -746,99 +1029,12 @@ public class ControllerGeral implements Initializable {
         botaoEnviarDevolucao.setVisible(false);
         reclamacoesVBox.setVisible(false);
         mainVBox.setVisible(false);
-    }
-
-    private void mostrarHome() {
-        jumpingBackLoginCliente.setVisible(false);
-        jumpingBackLoginEmpresa.setVisible(false);
-        homeBackground.setVisible(true);
-        botaoPedirDevolucao.setVisible(true);
-        botaoFazerReclamacao.setVisible(true);
-        nomeCliente.setVisible(true);
-        complaintForm.setVisible(false);
-        jumpingBackLoginReclamacao.setVisible(false);
-        esconderElementosDentroDoLogin();
-        logOutSymbol.setVisible(true);
-        botaoVerReclamacao.setVisible(true);
-        complaintViewer.setVisible(false);
-        returnForm.setVisible(false);
-        reclamacoesVBox.setVisible(false);
-        mainVBox.setVisible(false);
-    }
-
-    @FXML
-    private void fazerReclamacao() {
-        botaoPedirDevolucao.setVisible(false);
-        botaoFazerReclamacao.setVisible(false);
-        nomeCliente.setVisible(false);
-        complaintForm.setVisible(true);
-        empresasCadastradas.setVisible(true);
-        motivoReclamacao.setVisible(true);
-        idProduto.setVisible(true);
-        justificativaReclamacao.setVisible(true);
-        botaoEnviarReclamacao.setVisible(true);
-        jumpingBackLoginReclamacao.setVisible(true);
-        logOutSymbol.setVisible(false);
-        botaoVerReclamacao.setVisible(false);
-
-    }
-
-    @FXML
-    private void fazerDevolucao() {
-        botaoPedirDevolucao.setVisible(false);
-        botaoFazerReclamacao.setVisible(false);
-        nomeCliente.setVisible(false);
-        returnForm.setVisible(true);
-        motivoDevolucao.setVisible(true);
-        empresasCadastradasDevolucao.setVisible(true);
-        logOutSymbol.setVisible(false);
-        botaoVerReclamacao.setVisible(false);
-        idProdutoDevolucao.setVisible(true);
-        dataCompraDevolucao.setVisible(true);
-        justificativaDevolucao.setVisible(true);
-        idSubstituicaoDevolucao.setVisible(true);
-        descricaoItemDevolucao.setVisible(true);
-        botaoEnviarDevolucao.setVisible(true);
-        quantidadesItensDevolucao.setVisible(true);
-        jumpingBackLoginReclamacao.setVisible(true);
-    }
-
-    public void esconderElementosDentroDoLogin() {
-        firstBackground.setVisible(false);
-        botaoInicialCliente.setVisible(false);
-        botaoInicialEmpresa.setVisible(false);
-        campoCadastroClienteNome.setVisible(false);
-        campoCadastroClienteEmail.setVisible(false);
-        clienteCadastroBackground.setVisible(false);
-        botaoLoginPelaPrimeiraVezCliente.setVisible(false);
-        campoCadastroClienteSenha.setVisible(false);
-        labelLoginCliente.setVisible(false);
-        campoCadastroEmpresaNome.setVisible(false);
-        campoCadastroEmpresaEmail.setVisible(false);
-        campoCadastroEmpresaDescricao.setVisible(false);
-        campoCadastroEmpresaData.setVisible(false);
-        campoCadastroEmpresaSenha.setVisible(false);
-        botaoLoginPelaPrimeiraVezEmpresa.setVisible(false);
-        labelLoginEmpresa.setVisible(false);
-        empresasCadastradas.setVisible(false);
-        empresasCadastradasDevolucao.setVisible(false);
-        motivoReclamacao.setVisible(false);
-        motivoDevolucao.setVisible(false);
-        idProduto.setVisible(false);
-        idProdutoDevolucao.setVisible(false);
-        dataCompraDevolucao.setVisible(false);
-        justificativaReclamacao.setVisible(false);
-        botaoEnviarReclamacao.setVisible(false);
-        jumpingBackLoginReclamacao.setVisible(false);
-        botaoVerReclamacao.setVisible(false);
-        textAreaConsultaReclamacoes.setVisible(false);
-        justificativaDevolucao.setVisible(false);
-        quantidadesItensDevolucao.setVisible(false);
-        idSubstituicaoDevolucao.setVisible(false);
-        descricaoItemDevolucao.setVisible(false);
-        botaoEnviarDevolucao.setVisible(false);
-        reclamacoesVBox.setVisible(false);
-        mainVBox.setVisible(false);
+        homeSymbol.setVisible(false);
+        homeCompanyBackground.setVisible(false);
+        mainVBoxReclamacaoesEmpresa.setVisible(false);
+        reclamacoesVBoxEmpresa.setVisible(false);
+        mainVBoxDevolucoesEmpresa.setVisible(false);
+        devolucoesVBoxEmpresa.setVisible(false);
 
     }
 

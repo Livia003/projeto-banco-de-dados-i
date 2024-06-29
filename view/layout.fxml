@@ -129,7 +129,7 @@
 
     <Label fx:id="counter" text="5" layoutX="500" layoutY="600" visible="false" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;"/>
 
-    <!--Home -->
+    <!--Home Cliente -->
      <ImageView fx:id="homeBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
         <image>
             <Image url="@/util/home-background.png" />
@@ -149,6 +149,40 @@
 			<Image url="@/util/view-complaint-button.png" />
 		</image>
 	</ImageView>
+
+     <ImageView fx:id="botaoVerDevolucao" fitHeight="80.0" fitWidth="80.0" layoutX="842.0" layoutY="554.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#consultarDevolucoes">
+		<image>
+			<Image url="@/util/view-return-button.png" />
+		</image>
+	</ImageView>
+
+    <ImageView fx:id="homeSymbol" fitHeight="80.0" fitWidth="80.0" visible="false" layoutX="38.3" layoutY="132.0" styleClass="mouse-hover" >
+        <image>
+            <Image url="@/util/home-symbol.png" />
+        </image>
+    </ImageView>
+
+    <!--Home Empresa -->
+
+    <ImageView fx:id="homeCompanyBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/company-home-background.png" />
+        </image>
+    </ImageView>
+
+    <VBox fx:id="mainVBoxReclamacaoesEmpresa" spacing="10" layoutX="180" layoutY="250" prefHeight="450" prefWidth="330" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="reclamacoesVBoxEmpresa" spacing="10" visible="false"  style="-fx-border-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+    <VBox fx:id="mainVBoxDevolucoesEmpresa" spacing="10" layoutX="550" layoutY="250" prefHeight="450" prefWidth="330" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="devolucoesVBoxEmpresa" spacing="10" visible="false"  style="-fx-border-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+    
 
 
     
@@ -238,11 +272,31 @@
     <TextArea fx:id="textAreaConsultaReclamacoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
     <VBox fx:id="mainVBox" spacing="10" layoutX="96" layoutY="190" prefHeight="450" prefWidth="830" visible="false" styleClass="reclamacao-box">
         <ScrollPane fitToWidth="true">
-            <VBox fx:id="reclamacoesVBox" spacing="10" visible="false" styleClass="reclamacao-box">
-              
-            </VBox>
+            <VBox fx:id="reclamacoesVBox" spacing="10" visible="false"  style="-fx-border-color: white;"/>
         </ScrollPane>
     </VBox>
+
+     <ImageView fx:id="complaintDiv" layoutX="96" layoutY="190" fitHeight="270" fitWidth="530" visible="false">
+        <image>
+            <Image url="@/util/complaint-div.png" />
+        </image>
+    </ImageView>
+
+    <!-- Ver Devolucoes -->
+     <ImageView fx:id="returnViewer" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/return-viewer.png" />
+        </image>
+    </ImageView>
+
+    <TextArea fx:id="textAreaConsultaDevolucoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+    <VBox fx:id="mainVBoxDevolucoes" spacing="10" layoutX="96" layoutY="190" prefHeight="450" prefWidth="830" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="devolucoesVBox" spacing="10" visible="false"  style="-fx-border-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+
 
 
 </AnchorPane>
