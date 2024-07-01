@@ -18,13 +18,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import java.util.HashSet;
 import java.util.List;
+
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
 
 public class ControllerGeral implements Initializable {
@@ -69,6 +74,9 @@ public class ControllerGeral implements Initializable {
     private ImageView complaintViewer;
 
     @FXML
+    private ImageView sucessoEnvioReclamacao;
+
+    @FXML
     private ImageView returnViewer;
 
     @FXML
@@ -82,6 +90,9 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private Button botaoInicialEmpresa;
+
+    @FXML
+    private Button botaoReclamacaoEnviada;
 
     @FXML
     private Button botaoLoginPelaPrimeiraVezCliente;
@@ -111,7 +122,7 @@ public class ControllerGeral implements Initializable {
     private TextField campoLoginClienteEmail;
 
     @FXML
-    private TextField campoLoginClienteSenha;
+    private PasswordField campoLoginClienteSenha;
 
     @FXML
     private Label labelLoginCliente;
@@ -240,6 +251,9 @@ public class ControllerGeral implements Initializable {
     EmpresaController empresaController = new EmpresaController();
 
     int idCliente, idEmpresa;
+
+    private FadeTransition fadeTransition;
+    private TranslateTransition translateTransition;
 
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
@@ -370,11 +384,14 @@ public class ControllerGeral implements Initializable {
     private void loginCliente() {
         try {
 
+            campoLoginEmpresaEmail.toFront();
+            campoLoginEmpresaSenha.toFront();
+
             String email = campoLoginClienteEmail.getText();
             String senha = campoLoginClienteSenha.getText();
 
             if (email.isEmpty() || senha.isEmpty()) {
-                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
+                throw new IllegalArgumentException("Ambos os campos de e-mail e senha devem ser preenchidos.");
             }
 
             if (!email.contains("@")) {
@@ -406,11 +423,15 @@ public class ControllerGeral implements Initializable {
     @FXML
     private void loginEmpresa() {
         try {
+
+            campoLoginEmpresaEmail.toFront();
+            campoLoginEmpresaSenha.toFront();
+
             String email = campoLoginEmpresaEmail.getText();
             String senha = campoLoginEmpresaSenha.getText();
 
             if (email.isEmpty() || senha.isEmpty()) {
-                throw new IllegalArgumentException("Ambos os campos de email e senha devem ser preenchidos.");
+                throw new IllegalArgumentException("Ambos os campos de e-mail e senha devem ser preenchidos.");
             }
 
             if (!email.contains("@")) {
@@ -446,18 +467,23 @@ public class ControllerGeral implements Initializable {
     public void mostrarPaginaConfirmacao(int decideHome) {
         jumpingBackLoginCliente.setVisible(false);
         jumpingBackLoginEmpresa.setVisible(false);
-        thankYouBackground.setVisible(true);
         counter.setVisible(true);
         esconderElementosDentroDoLogin();
 
-        final int[] segundos = { 5 };
+        thankYouBackground.setOpacity(0.0);
+        thankYouBackground.setVisible(true);
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), thankYouBackground);
+        fadeTransition.setToValue(1.0);
+        fadeTransition.play();
 
-        Timeline timeline = new Timeline(new KeyFrame(
-                Duration.seconds(1),
-                event -> {
+        final int[] segundos = { 5 };
+        counter.setText(String.valueOf(segundos[0]));
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
                     segundos[0]--;
                     counter.setText(String.valueOf(segundos[0]));
                     if (segundos[0] == 0) {
+                        fadeTransition.stop();
                         counter.setVisible(false);
                         thankYouBackground.setVisible(false);
                         if (decideHome == 0) {
@@ -467,17 +493,18 @@ public class ControllerGeral implements Initializable {
                         }
                     }
                 }));
-
-        timeline.setCycleCount(5);
+        timeline.setCycleCount(segundos[0]);
         timeline.play();
     }
 
     @FXML
     private void enviarReclamacao() {
         try {
-            String empresaSelecionada = empresasCadastradas.getValue();
+            motivoReclamacao.toFront();
+            empresasCadastradas.toFront();
             String motivoSelecionado = motivoReclamacao.getValue();
             String produtoId = idProduto.getText();
+            String empresaSelecionada = empresasCadastradas.getValue();
             String justificativa = justificativaReclamacao.getText();
 
             if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
@@ -510,14 +537,17 @@ public class ControllerGeral implements Initializable {
             idProduto.clear();
             justificativaReclamacao.clear();
 
-            Alert alert = new Alert(AlertType.CONFIRMATION,
-                    "Reclamacao enviada com sucesso! Uma resposta sera recebida em ate 72h. Acompanhe o status em nosso menu na Home.",
-                    ButtonType.OK);
-            alert.setHeaderText(null);
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    mostrarHomeCliente();
-                }
+            sucessoEnvioReclamacao.setVisible(true);
+            sucessoEnvioReclamacao.toFront();
+            fadeInTransition(sucessoEnvioReclamacao);
+
+            botaoReclamacaoEnviada.setVisible(true);
+            botaoReclamacaoEnviada.toFront();
+            botaoReclamacaoEnviada.setOnAction(event -> {
+                fadeOutTransition(sucessoEnvioReclamacao);
+                sucessoEnvioReclamacao.setVisible(false);
+                botaoReclamacaoEnviada.setVisible(false);
+                mostrarHomeCliente();
             });
 
         } catch (IllegalArgumentException e) {
@@ -528,13 +558,28 @@ public class ControllerGeral implements Initializable {
 
     }
 
+    private void fadeInTransition(ImageView imageView) {
+        fadeTransition = new FadeTransition(Duration.seconds(1.0), imageView);
+        fadeTransition.setFromValue(0.0);
+        fadeTransition.setToValue(1.0);
+        fadeTransition.play();
+    }
+
+    private void fadeOutTransition(ImageView imageView) {
+        fadeTransition = new FadeTransition(Duration.seconds(1.0), imageView);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+        fadeTransition.play();
+    }
+
     @FXML
     private void enviarDevolucao() {
         try {
-            String empresaSelecionada = empresasCadastradasDevolucao.getValue();
+            motivoDevolucao.toFront();
             String motivoSelecionado = motivoDevolucao.getValue();
             String produtoId = idProdutoDevolucao.getText();
             String justificativa = justificativaDevolucao.getText();
+            String empresaSelecionada = empresasCadastradasDevolucao.getValue();
             String quantidadesItens = quantidadesItensDevolucao.getText();
             String idSubstituicao = idSubstituicaoDevolucao.getText();
             String descricaoItem = descricaoItemDevolucao.getText();
@@ -857,10 +902,6 @@ public class ControllerGeral implements Initializable {
 
             Empresa empresa = Empresa.buscarEmpresaPorId(idEmpresa);
 
-            if (empresa == null) {
-                throw new IllegalArgumentException("Empresa não encontrada.");
-            }
-
             List<Reclamacao> reclamacoes = empresa.getReclamacoesRecebidas();
 
             for (Reclamacao reclamacao : reclamacoes) {
@@ -971,8 +1012,29 @@ public class ControllerGeral implements Initializable {
     public void telaInicial() {
         campoCadastroClienteNome.toFront();
         firstBackground.setVisible(true);
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1.5), firstBackground);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+
         botaoInicialCliente.setVisible(true);
         botaoInicialEmpresa.setVisible(true);
+
+        double larguraTela = 1000;
+
+        TranslateTransition transicaoCliente = new TranslateTransition(Duration.seconds(1), botaoInicialCliente);
+        transicaoCliente.setFromX(larguraTela); // Começa da extrema direita da tela
+        transicaoCliente.setToX(150); // Posição desejada para botaoInicialCliente
+
+        // Configuração para botaoInicialEmpresa
+        TranslateTransition transicaoEmpresa = new TranslateTransition(Duration.seconds(1), botaoInicialEmpresa);
+        transicaoEmpresa.setFromX(larguraTela); // Começa da extrema direita da tela
+        transicaoEmpresa.setToX(395); // Posição desejada para botaoInicialEmpresa
+
+        // Iniciar as transições
+        transicaoCliente.play();
+        transicaoEmpresa.play();
+
         botaoLoginPelaPrimeiraVezCliente.setVisible(false);
         botaoLoginPelaPrimeiraVezEmpresa.setVisible(false);
         botaoLoginCliente.setVisible(false);
@@ -1068,26 +1130,42 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private void irParaLoginCliente() {
+
         jumpingBackLoginCliente.setVisible(true);
         jumpingBackLoginCliente.toFront();
         jumpingBackLoginCliente.setLayoutX(20);
         clienteLoginBackground.setVisible(true);
-        esconderElementosDentroDoLogin();
+        fadeInBackground(clienteLoginBackground);
         campoLoginClienteEmail.setVisible(true);
         campoLoginClienteSenha.setVisible(true);
         botaoLoginCliente.setVisible(true);
+        esconderElementosDentroDoLogin();
     }
 
     @FXML
     private void irParaLoginEmpresa() {
+
         campoLoginEmpresaEmail.setVisible(true);
         campoLoginEmpresaSenha.setVisible(true);
         jumpingBackLoginEmpresa.setVisible(true);
         jumpingBackLoginEmpresa.toFront();
-        jumpingBackLoginEmpresa.setLayoutX(20);
         botaoLoginEmpresa.setVisible(true);
         empresaLoginBackground.setVisible(true);
+        fadeInBackground(empresaLoginBackground);
         esconderElementosDentroDoLogin();
+    }
+
+    private void fadeInBackground(Node background) {
+
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), background);
+        fadeTransition.setFromValue(0.0);
+        fadeTransition.setToValue(1.0);
+        fadeTransition.play();
+
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(1), background);
+        translateTransition.setFromX(background.getTranslateX() + 50);
+        translateTransition.setToX(0);
+        translateTransition.play();
     }
 
 }

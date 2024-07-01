@@ -59,12 +59,12 @@
 
      <!-- Cliente -->
     <Button fx:id="botaoInicialCliente" text="Sou cliente"
-            layoutX="150" layoutY="525" 
+            layoutX="0" layoutY="525" 
             prefWidth="200" prefHeight="50" styleClass="button1" onAction="#botaoClienteEscolhido"/> 
 
 	 <!-- Empresa -->
 	<Button fx:id="botaoInicialEmpresa" text="Sou empresa"
-            layoutX="395" layoutY="525" 
+            layoutX="0" layoutY="525" 
             prefWidth="200" prefHeight="50" styleClass="button1"  onAction="#botaoEmpresaEscolhido"/> 
 
     <!-- Cliente Cadastro -->
@@ -106,7 +106,7 @@
 
     <!-- Cliente Login -->
     <TextField fx:id="campoLoginClienteEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoLoginClienteSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoLoginClienteSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
 
     <Button fx:id="botaoLoginCliente" text="Entrar"
             layoutX="380" layoutY="465" 
@@ -114,7 +114,7 @@
 
     <!-- Empresa Login -->
     <TextField fx:id="campoLoginEmpresaEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoLoginEmpresaSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoLoginEmpresaSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
 
     <Button fx:id="botaoLoginEmpresa" text="Entrar"
             layoutX="380" layoutY="465" 
@@ -197,6 +197,17 @@
         </image>
     </ImageView>
 
+     <ImageView fx:id="sucessoEnvioReclamacao" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/successful-sending-complaint.png" />
+        </image>
+    </ImageView>
+
+     <Button fx:id="botaoReclamacaoEnviada" text="Certo!"
+            layoutX="367" layoutY="500" 
+            prefWidth="280" prefHeight="70" styleClass="button2" visible="false"/> 
+
+
     <VBox alignment="CENTER" spacing="10" layoutX="234" layoutY="161">
 		<children>
 			<ChoiceBox fx:id="empresasCadastradas" prefHeight="70" prefWidth="515" styleClass="choicebox"/>
@@ -227,6 +238,8 @@
 			<Image url="@/util/log-out-symbol.png" />
 		</image>
 	</ImageView>
+
+
 
     <!-- Formulario Devolucao -->
      <ImageView fx:id="returnForm" fitHeight="700.0" fitWidth="1000.0" visible="false">

@@ -6,6 +6,14 @@
 	-fx-cursor: hand;
 }
 
+.button2 {
+    -fx-background-color: #ffffff; 
+	-fx-text-fill: #24BE73;
+	-fx-font-weight: bold;
+	-fx-background-radius: 16px;
+	-fx-cursor: hand;
+}
+
 .button1:hover {
     -fx-background-color: linear-gradient(to bottom,#2E74FA,#93b9ff);
 }
