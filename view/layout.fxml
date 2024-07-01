@@ -20,6 +20,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -73,8 +74,7 @@
 
     <TextField fx:id="campoCadastroClienteNome" promptText="Nome" layoutX="600" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
     <TextField fx:id="campoCadastroClienteEmail" promptText="E-mail" layoutX="600" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoCadastroClienteSenha" promptText="Senha" layoutX="600" layoutY="480" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
-
+    <PasswordField fx:id="campoCadastroClienteSenha" promptText="Senha" layoutX="600" layoutY="480" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
     <ImageView fx:id="jumpingBackLoginCliente" fitHeight="30.0" fitWidth="43.0" layoutX="480.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarLoginCliente" styleClass="mouse-hover">
 		<image>
 			<Image url="@/util/jumping-back-symbol.png" />
@@ -86,9 +86,9 @@
     <!-- Empresa Cadastro -->
     <TextField fx:id="campoCadastroEmpresaNome" promptText="Nome" layoutX="140" layoutY="250" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
     <TextField fx:id="campoCadastroEmpresaEmail" promptText="E-mail" layoutX="140" layoutY="330" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoCadastroEmpresaDescricao" promptText="Descricao" layoutX="140" layoutY="410" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoCadastroEmpresaData" promptText="Data" layoutX="140" layoutY="490" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="campoCadastroEmpresaSenha" promptText="Senha" layoutX="140" layoutY="570" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaDescricao" promptText="Descricao" layoutX="140" layoutY="410" prefWidth="310" prefHeight="40"/>
+    <DatePicker fx:id="campoCadastroEmpresaData" promptText="Data" layoutX="140" layoutY="490" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoCadastroEmpresaSenha" promptText="Senha" layoutX="140" layoutY="570" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
 
      <Button fx:id="botaoLoginPelaPrimeiraVezEmpresa" text="Criar"
             layoutX="200" layoutY="630" 

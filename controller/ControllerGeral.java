@@ -3,11 +3,13 @@ package controller;
 import model.*;
 import javafx.fxml.FXML;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
-
+import javafx.scene.control.DatePicker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -19,15 +21,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
-
 import java.util.HashSet;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 
 public class ControllerGeral implements Initializable {
 
@@ -107,7 +105,7 @@ public class ControllerGeral implements Initializable {
     private TextField campoCadastroClienteEmail;
 
     @FXML
-    private TextField campoCadastroClienteSenha;
+    private PasswordField campoCadastroClienteSenha;
 
     @FXML
     private TextField campoLoginClienteEmail;
@@ -137,10 +135,10 @@ public class ControllerGeral implements Initializable {
     private TextField campoCadastroEmpresaDescricao;
 
     @FXML
-    private TextField campoCadastroEmpresaData;
+    private DatePicker campoCadastroEmpresaData;
 
     @FXML
-    private TextField campoCadastroEmpresaSenha;
+    private PasswordField campoCadastroEmpresaSenha;
 
     @FXML
     private TextField campoLoginEmpresaEmail;
@@ -336,10 +334,10 @@ public class ControllerGeral implements Initializable {
             String nome = campoCadastroEmpresaNome.getText();
             String email = campoCadastroEmpresaEmail.getText();
             String descricao = campoCadastroEmpresaDescricao.getText();
-            String data = campoCadastroEmpresaData.getText();
+            LocalDate data = campoCadastroEmpresaData.getValue();
             String senha = campoCadastroEmpresaSenha.getText();
 
-            if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data.isEmpty() || senha.isEmpty()) {
+            if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data == null || senha.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
 
@@ -347,7 +345,7 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Insira um e-mail valido.");
             }
 
-            Empresa novaEmpresa = new Empresa(nome, email, descricao, data, senha);
+            Empresa novaEmpresa = new Empresa(nome, email, descricao, data.toString(), senha);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
             atualizarChoiceBoxEmpresas();
@@ -356,7 +354,7 @@ public class ControllerGeral implements Initializable {
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
             campoCadastroEmpresaDescricao.clear();
-            campoCadastroEmpresaData.clear();
+            campoCadastroEmpresaData.setValue(null);
             campoCadastroEmpresaSenha.clear();
 
         } catch (IllegalArgumentException e) {
@@ -433,7 +431,7 @@ public class ControllerGeral implements Initializable {
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
             campoCadastroEmpresaDescricao.clear();
-            campoCadastroEmpresaData.clear();
+            campoCadastroEmpresaData.setValue(null);
             campoCadastroEmpresaSenha.clear();
 
         } catch (IllegalArgumentException e) {
@@ -497,10 +495,6 @@ public class ControllerGeral implements Initializable {
 
             EmpresaController empresaController = new EmpresaController();
             Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
-
-            if (empresa == null) {
-                throw new IllegalArgumentException("Empresa nao encontrada.");
-            }
 
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, justificativa);
 
@@ -575,10 +569,6 @@ public class ControllerGeral implements Initializable {
 
             EmpresaController empresaController = new EmpresaController();
             Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
-
-            if (empresa == null) {
-                throw new IllegalArgumentException("Empresa nao encontrada.");
-            }
 
             Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
                     motivoSelecionado, quantidadeItensInt, idSubstituicaoInt);
@@ -712,13 +702,10 @@ public class ControllerGeral implements Initializable {
         VBox labelsVBox = new VBox(3);
         labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
 
-        Label idLabel = new Label("ID Cliente: " + reclamacao.getClienteId());
-        idLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-        Label nomeLabel = new Label("Nome do Cliente: " + reclamacao.getClienteId());
+        Label nomeLabel = new Label("Nome do Cliente: " + cliente.getNome());
         nomeLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label emailLabel = new Label("Email do Cliente: " + cliente.getNome());
+        Label emailLabel = new Label("Email do Cliente: " + cliente.getEmail());
         emailLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
         Label empresaLabel = new Label("Empresa: " + empresa.getNome());
@@ -733,7 +720,7 @@ public class ControllerGeral implements Initializable {
         Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
         statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        labelsVBox.getChildren().addAll(idLabel, nomeLabel, emailLabel, empresaLabel, produtoLabel, justificativaLabel,
+        labelsVBox.getChildren().addAll(nomeLabel, emailLabel, empresaLabel, produtoLabel, justificativaLabel,
                 statusLabel);
 
         pane.setCenter(labelsVBox);
@@ -749,9 +736,6 @@ public class ControllerGeral implements Initializable {
         VBox labelsVBox = new VBox(3);
         labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
 
-        Label idLabel = new Label("ID Cliente: " + devolucao.getClienteId());
-        idLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
         Label empresaLabel = new Label("Empresa: " + empresa.getNome());
         empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
@@ -764,7 +748,7 @@ public class ControllerGeral implements Initializable {
         Label statusLabel = new Label("Status: " + devolucao.getStatus().toString());
         statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        labelsVBox.getChildren().addAll(idLabel, empresaLabel, produtoLabel, justificativaLabel, statusLabel);
+        labelsVBox.getChildren().addAll(empresaLabel, produtoLabel, justificativaLabel, statusLabel);
 
         pane.setCenter(labelsVBox);
         devolucoesVBox.getChildren().add(pane);
@@ -776,11 +760,19 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private void voltarLoginCliente() {
+        campoCadastroClienteNome.clear();
+        campoCadastroClienteEmail.clear();
+        campoCadastroClienteSenha.clear();
         telaInicial();
     }
 
     @FXML
     private void voltarLoginEmpresa() {
+        campoCadastroEmpresaNome.clear();
+        campoCadastroEmpresaEmail.clear();
+        campoCadastroEmpresaDescricao.clear();
+        campoCadastroEmpresaData.setValue(null);
+        campoCadastroEmpresaSenha.clear();
         telaInicial();
     }
 
@@ -977,6 +969,7 @@ public class ControllerGeral implements Initializable {
     }
 
     public void telaInicial() {
+        campoCadastroClienteNome.toFront();
         firstBackground.setVisible(true);
         botaoInicialCliente.setVisible(true);
         botaoInicialEmpresa.setVisible(true);

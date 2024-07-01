@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import controller.*;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,8 @@ public class Main extends Application {
         Scene scene = new Scene(root, 1000, 700);
 
         primaryStage.setTitle("Fale Feedback");
+        Image icon = new Image("/util/icon.png");
+        primaryStage.getIcons().add(icon);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
