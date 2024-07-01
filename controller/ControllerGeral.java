@@ -1046,6 +1046,7 @@ public class ControllerGeral implements Initializable {
         botaoLoginPelaPrimeiraVezCliente.setVisible(true);
         firstBackground.setVisible(false);
         labelLoginCliente.setVisible(true);
+        labelLoginCliente.toFront();
         botaoInicialCliente.setVisible(false);
         botaoInicialEmpresa.setVisible(false);
         campoCadastroClienteSenha.setVisible(true);
@@ -1069,6 +1070,7 @@ public class ControllerGeral implements Initializable {
         botaoLoginPelaPrimeiraVezEmpresa.setVisible(true);
         jumpingBackLoginEmpresa.setVisible(true);
         labelLoginEmpresa.setVisible(true);
+        labelLoginEmpresa.toFront();
     }
 
     @FXML
