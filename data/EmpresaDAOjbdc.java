@@ -11,184 +11,174 @@ import model.Empresa;
 public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   
-  @Override
-  public ArrayList<Empresa> getAllEmpresas() {
-    // Linkar valores com a interface
-    String sqlQuery = "select * from app.Empresa";
+  private void carregarReclamacoes(Empresa empresa) {
+    String sqlQuery = "SELECT * FROM app.Reclamacao WHERE empresaId=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
-    ArrayList<Empresa> Empresas = null;
     try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        Empresas = new ArrayList<Empresa>();
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        pst.setInt(1, empresa.getId());
+        resultSet = pst.executeQuery();
         while (resultSet.next()) {
-          Empresa Empresa = new Empresa();
-          Empresa.setDescricao(resultSet.getString("descricao"));
-          Empresa.setCnpj(resultSet.getLong("cnpj"));
-          Empresa.setData(resultSet.getString("data"));
-          //Empresa.setId(resultSet.getId());
-          Empresa.setEmail(resultSet.getString("email"));
-          Empresa.setNome(resultSet.getString("nome"));
-          Empresa.setSenha(resultSet.getString("senha"));
-          Empresas.add(Empresa);
+            Reclamacao reclamacao = new Reclamacao(
+                resultSet.getInt("clienteId"),
+                resultSet.getInt("empresaId"),
+                resultSet.getInt("produtoId"),
+                resultSet.getString("descricao"),
+                resultSet.getString("motivo")
+            );
+            reclamacao.setId(resultSet.getInt("id"));
+            reclamacao.setResposta(resultSet.getString("resposta"));
+            reclamacao.setStatus(StatusReclamacao.valueOf(resultSet.getString("status")));
+            empresa.adicionarReclamacao(reclamacao);
         }
         resultSet.close();
         pst.close();
         connection.close();
-      }
     } catch (SQLException ex) {
-      ex.printStackTrace();
+        ex.printStackTrace();
     }
-    return Empresas;
-  }
+}
 
-  @Override
-  public void createEmpresa(Empresa Empresa){
-    String sqlQuery = "insert into app.Empresa (senha,email,dtNasc,telefone,nome,endereco,cnpj) values (?,?,?,?,?,?,?,?);";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(1, Empresa.getSenha());
-      pst.setString(2, Empresa.getEmail());
-      pst.setString(3, Empresa.getData());
-      pst.setString(4, Empresa.getDescricao());
-      pst.setString(5, Empresa.getNome());
-      //pst.setString(6, Empresa.getEndereco());
-      pst.setLong(7, Empresa.getCnpj());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @Override
-  public Empresa readEmpresa(Long cnpj) {
-    String sqlQuery = "select * from app.Empresa where cnpj=?";
+@Override
+public ArrayList<Empresa> getAllEmpresas() {
+    String sqlQuery = "SELECT * FROM app.Empresa";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
-    Empresa Empresa = null;
+    ArrayList<Empresa> empresas = null;
     try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Empresa = new Empresa();
-          Empresa.setNome(resultSet.getString("nome"));
-          Empresa.setCnpj(resultSet.getLong("cnpj"));
-          Empresa.setEmail(resultSet.getString("email"));
-          Empresa.setSenha(resultSet.getString("senha"));
-          Empresa.setDescricao(resultSet.getString("telefone"));
-          //Empresa.setId(resultSet.getString("endereco"));
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        resultSet = pst.executeQuery();
+        if (resultSet != null) {
+            empresas = new ArrayList<Empresa>();
+            while (resultSet.next()) {
+                Empresa empresa = new Empresa(
+                    resultSet.getString("nome"),
+                    resultSet.getString("email"),
+                    resultSet.getString("descricao"),
+                    resultSet.getString("data"),
+                    resultSet.getString("senha"),
+                    resultSet.getLong("cnpj")
+                );
+                empresa.setId(resultSet.getInt("id"));
+                carregarReclamacoes(empresa);
+                empresas.add(empresa);
+            }
+            resultSet.close();
+            pst.close();
+            connection.close();
         }
-        resultSet.close();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return empresas;
+}
+
+@Override
+public void createEmpresa(Empresa empresa) {
+    String sqlQuery = "INSERT INTO app.Empresa (nome, email, descricao, data, senha, cnpj) VALUES (?, ?, ?, ?, ?, ?)";
+    PreparedStatement pst;
+    Connection connection;
+    try {
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        pst.setString(1, empresa.getNome());
+        pst.setString(2, empresa.getEmail());
+        pst.setString(3, empresa.getDescricao());
+        pst.setString(4, empresa.getData());
+        pst.setString(5, empresa.getSenha());
+        pst.setLong(6, empresa.getCnpj());
+        pst.execute();
         pst.close();
         connection.close();
-      }
     } catch (SQLException ex) {
-      ex.printStackTrace();
+        ex.printStackTrace();
     }
-    return Empresa;
-  }
-  @Override
-  public Empresa queryAccount(Long cnpj) {
-    String sqlQuery = "select * from app.Empresa where cnpj=?";
+}
+
+@Override
+public Empresa readEmpresa(Long cnpj) {
+    String sqlQuery = "SELECT * FROM app.Empresa WHERE cnpj=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
-    Empresa Empresa = null;
+    Empresa empresa = null;
     try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Empresa = new Empresa();
-          Empresa.setEmail(resultSet.getString("email"));
-          Empresa.setSenha(resultSet.getString("senha"));
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        pst.setLong(1, cnpj);
+        resultSet = pst.executeQuery();
+        if (resultSet != null && resultSet.next()) {
+            empresa = new Empresa(
+                resultSet.getString("nome"),
+                resultSet.getString("email"),
+                resultSet.getString("descricao"),
+                resultSet.getString("data"),
+                resultSet.getString("senha"),
+                resultSet.getLong("cnpj")
+            );
+            empresa.setId(resultSet.getInt("id"));
+            carregarReclamacoes(empresa);
+            resultSet.close();
+            pst.close();
+            connection.close();
         }
-        resultSet.close();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return empresa;
+}
+
+@Override
+public Empresa queryAccount(Long cnpj) {
+    return readEmpresa(cnpj);
+}
+
+@Override
+public Empresa queryName(Long cnpj) {
+    return readEmpresa(cnpj);
+}
+
+@Override
+public void updateEmpresa(Empresa empresa) {
+    String sqlQuery = "UPDATE app.Empresa SET nome=?, email=?, descricao=?, data=?, senha=? WHERE cnpj=?";
+    PreparedStatement pst;
+    Connection connection;
+    try {
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        pst.setString(1, empresa.getNome());
+        pst.setString(2, empresa.getEmail());
+        pst.setString(3, empresa.getDescricao());
+        pst.setString(4, empresa.getData());
+        pst.setString(5, empresa.getSenha());
+        pst.setLong(6, empresa.getCnpj());
+        pst.execute();
         pst.close();
         connection.close();
-      }
     } catch (SQLException ex) {
-      ex.printStackTrace();
+        ex.printStackTrace();
     }
-    return Empresa;
-  }
-  @Override
-  public Empresa queryName(Long cnpj){
-    String sqlQuery = "select * from app.Empresa where cnpj=?";
+}
+
+@Override
+public void deleteEmpresa(Empresa empresa) {
+    String sqlQuery = "DELETE FROM app.Empresa WHERE cnpj=?";
     PreparedStatement pst;
     Connection connection;
-    ResultSet resultSet;
-    Empresa Empresa = null;
     try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Empresa = new Empresa();
-          Empresa.setNome(resultSet.getString("nome"));
-        }
-        resultSet.close();
+        connection = new ConnectionFactory().getConnection();
+        pst = connection.prepareStatement(sqlQuery);
+        pst.setLong(1, empresa.getCnpj());
+        pst.execute();
         pst.close();
         connection.close();
-      }
     } catch (SQLException ex) {
-      ex.printStackTrace();
+        ex.printStackTrace();
     }
-    return Empresa;
-  }
-
-  @Override
-  public void updateEmpresa(Empresa Empresa) {
-    String sqlQuery = "update app.Empresa set senha=?, email=?, telefone=?, nome=?, endereco=? where cnpj=?";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(2, Empresa.getSenha());
-      pst.setString(3, Empresa.getEmail());
-      //pst.setString(5, Empresa.getCnpj());
-      pst.setString(6, Empresa.getNome());
-      pst.setString(8, Empresa.getDescricao());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @Override
-  public void deleteEmpresa(Empresa Empresa) {
-    String sqlQuery = "delete from app.Empresa where cnpj=?";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      //pst.setString(1, Empresa.getCnpj());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }  
+}
 }

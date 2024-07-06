@@ -7,207 +7,154 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Devolucao;
+import model.Reclamacao;
+import model.StatusDevolucao;
 
 public class DevolucaoDAOjbdc implements IDevolucaoDAO {
-
-  @Override
-  public ArrayList<Devolucao> getAllDevolucaos() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getAllDevolucaos'");
-  }
-
-  @Override
-  public void createDevolucao(Devolucao Devolucao) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createDevolucao'");
-  }
-
-  @Override
-  public Devolucao readDevolucao(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'readDevolucao'");
-  }
-
-  @Override
-  public void updateDevolucao(Devolucao Devolucao) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateDevolucao'");
-  }
-
-  @Override
-  public void deleteDevolucao(Devolucao Devolucao) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteDevolucao'");
-  }
-
-  @Override
-  public Devolucao queryAccount(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'queryAccount'");
-  }
-
-  @Override
-  public Devolucao queryName(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'queryName'");
-  }
-    
- /* 
-  @Override
-  public ArrayList<Devolucao> getAllDevolucaos() {
-    // Linkar valores com a interface
-    String sqlQuery = "select * from app.Devolucao";
-    PreparedStatement pst;
-    Connection connection;
-    ResultSet resultSet;
-    ArrayList<Devolucao> Devolucaos = null;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        Devolucaos = new ArrayList<Devolucao>();
-        while (resultSet.next()) {
-          Devolucao Devolucao = new Devolucao();
-          Devolucao.setDescricao(resultSet.getString("descricao"));
-          //Devolucao.setCnpj(resultSet.getString("cnpj"));
+@Override
+    public ArrayList<Devolucao> getAllDevolucaos() {
+        String sqlQuery = "select * from app.Devolucao";
+        PreparedStatement pst;
+        Connection connection;
+        ResultSet resultSet;
+        ArrayList<Devolucao> devolucaos = null;
+        try {
+            connection = new ConnectionFactory().getConnection();
+            pst = connection.prepareStatement(sqlQuery);
+            resultSet = pst.executeQuery();
+            if (resultSet != null) {
+                devolucaos = new ArrayList<Devolucao>();
+                while (resultSet.next()) {
+                    Devolucao devolucao = new Devolucao(
+                        resultSet.getInt("clienteId"),
+                        resultSet.getInt("empresaId"),
+                        resultSet.getInt("produtoId"),
+                        resultSet.getString("descricao"),
+                        resultSet.getString("motivo"),
+                        resultSet.getInt("quantidade"),
+                        resultSet.getInt("idSubstituicao")
+                    );
+                    devolucao.setId(resultSet.getInt("id"));
+                    devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
+                    devolucaos.add(devolucao);
+                }
+                resultSet.close();
+                pst.close();
+                connection.close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        resultSet.close();
-        pst.close();
-        connection.close();
-      }
-    } catch (SQLException ex) {
-      ex.printStackTrace();
+        return devolucaos;
     }
-    return Devolucaos;
-  }
 
-  @Override
-  public void createDevolucao(Devolucao Devolucao){
-    String sqlQuery = "insert into app.Devolucao (senha,email,dtNasc,telefone,nome,endereco,cpf,tipoPasse) values (?,?,?,?,?,?,?,?);";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(4, Devolucao.getDescricao());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @Override
-  public Devolucao readDevolucao(String descricao) {
-    String sqlQuery = "select * from app.Devolucao where cpf=?";
-    PreparedStatement pst;
-    Connection connection;
-    ResultSet resultSet;
-    Devolucao Devolucao = null;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(1, cpf);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Devolucao = new Devolucao();
+    @Override
+    public void createDevolucao(Devolucao devolucao) {
+        String sqlQuery = "insert into app.Devolucao (clienteId, empresaId, produtoId, descricao, motivo, quantidade, idSubstituicao, status) values (?, ?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement pst;
+        Connection connection;
+        try {
+            connection = new ConnectionFactory().getConnection();
+            pst = connection.prepareStatement(sqlQuery);
+            pst.setInt(1, devolucao.getClienteId());
+            pst.setInt(2, devolucao.getEmpresaId());
+            pst.setInt(3, devolucao.getProdutoId());
+            pst.setString(4, devolucao.getDescricao());
+            pst.setString(5, devolucao.getMotivo());
+            //pst.setInt(6, devolucao.getQuantidade());
+           // pst.setInt(7, devolucao.getIdSubstituicao());
+            pst.setString(8, devolucao.getStatus().toString());
+            pst.execute();
+            pst.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        resultSet.close();
-        pst.close();
-        connection.close();
-      }
-    } catch (SQLException ex) {
-      ex.printStackTrace();
     }
-    return Devolucao;
-  }
-  @Override
-  public Devolucao queryAccount(int devolucao) {
-    String sqlQuery = "select * from app.Devolucao where cpf=?";
-    PreparedStatement pst;
-    Connection connection;
-    ResultSet resultSet;
-    Devolucao Devolucao = null;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(1, cpf);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Devolucao = new Devolucao();
-          Devolucao.setEmail(resultSet.getString("email"));
-          Devolucao.setSenha(resultSet.getString("senha"));
+
+    @Override
+    public Devolucao readDevolucao(int id) {
+        String sqlQuery = "select * from app.Devolucao where id=?";
+        PreparedStatement pst;
+        Connection connection;
+        ResultSet resultSet;
+        Devolucao devolucao = null;
+        try {
+            connection = new ConnectionFactory().getConnection();
+            pst = connection.prepareStatement(sqlQuery);
+            pst.setInt(1, id);
+            resultSet = pst.executeQuery();
+            if (resultSet != null && resultSet.next()) {
+                devolucao = new Devolucao(
+                    resultSet.getInt("clienteId"),
+                    resultSet.getInt("empresaId"),
+                    resultSet.getInt("produtoId"),
+                    resultSet.getString("descricao"),
+                    resultSet.getString("motivo"),
+                    resultSet.getInt("quantidade"),
+                    resultSet.getInt("idSubstituicao")
+                );
+                devolucao.setId(resultSet.getInt("id"));
+                devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
+                resultSet.close();
+                pst.close();
+                connection.close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        resultSet.close();
-        pst.close();
-        connection.close();
-      }
-    } catch (SQLException ex) {
-      ex.printStackTrace();
+        return devolucao;
     }
-    return Devolucao;
-  }
-  @Override
-  public Devolucao queryName(int id){
-    String sqlQuery = "select * from app.Devolucao where cpf=?";
-    PreparedStatement pst;
-    Connection connection;
-    ResultSet resultSet;
-    Devolucao Devolucao = null;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(1, cpf);
-      resultSet = pst.executeQuery();
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Devolucao = new Devolucao();
+
+    @Override
+    public void updateDevolucao(Devolucao devolucao) {
+        String sqlQuery = "update app.Devolucao set clienteId=?, empresaId=?, produtoId=?, descricao=?, motivo=?, quantidade=?, idSubstituicao=?, status=? where id=?";
+        PreparedStatement pst;
+        Connection connection;
+        try {
+            connection = new ConnectionFactory().getConnection();
+            pst = connection.prepareStatement(sqlQuery);
+            pst.setInt(1, devolucao.getClienteId());
+            pst.setInt(2, devolucao.getEmpresaId());
+            pst.setInt(3, devolucao.getProdutoId());
+            pst.setString(4, devolucao.getDescricao());
+            pst.setString(5, devolucao.getMotivo());
+            //pst.setInt(6, devolucao.getQuantidade());
+            //pst.setInt(7, devolucao.getIdSubstituicao());
+            pst.setString(8, devolucao.getStatus().toString());
+            pst.setInt(9, devolucao.getId());
+            pst.execute();
+            pst.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        resultSet.close();
-        pst.close();
-        connection.close();
-      }
-    } catch (SQLException ex) {
-      ex.printStackTrace();
     }
-    return Devolucao;
+
+    @Override
+    public void deleteDevolucao(Devolucao Devolucao) {
+        String sqlQuery = "delete from app.Devolucao where id=?";
+        PreparedStatement pst;
+        Connection connection;
+        try {
+            connection = new ConnectionFactory().getConnection();
+            pst = connection.prepareStatement(sqlQuery);
+            pst.setInt(1, id);
+            pst.execute();
+            pst.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+        @Override
+    public Devolucao queryAccount(int id) {
+        return readDevolucao(id);
+    }
+
+    @Override
+    public Devolucao queryName(int id) {
+        return readDevolucao(id);
+    }
   }
 
-  @Override
-  public void updateDevolucao(Devolucao Devolucao) {
-    String sqlQuery = "update app.Devolucao set senha=?, email=?, telefone=?, nome=?, endereco=? where cpf=?";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(8, Devolucao.getDescricao());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @Override
-  public void deleteDevolucao(Devolucao Devolucao) {
-    String sqlQuery = "delete from app.Devolucao where cpf=?";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      //pst.setString(1, Devolucao.getCnpj());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }*/
-}
