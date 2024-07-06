@@ -1,0 +1,59 @@
+.button1 {
+    -fx-background-color: #0057FF; 
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: bold;
+	-fx-background-radius: 10px;
+	-fx-cursor: hand;
+}
+
+.button2 {
+    -fx-background-color: #ffffff; 
+	-fx-text-fill: #24BE73;
+	-fx-font-weight: bold;
+	-fx-background-radius: 16px;
+	-fx-cursor: hand;
+}
+
+.button1:hover {
+    -fx-background-color: linear-gradient(to bottom,#2E74FA,#93b9ff);
+}
+
+.text-field-custom {
+	-fx-border-radius: 5px;  
+    -fx-border-color: #ECECEC;
+    -fx-background-radius: 10px; 
+	-fx-focus-color: #ECECEC;
+	-fx-border-color: white;
+}
+
+.label-Login {
+	-fx-text-fill: red;        
+    -fx-font-weight: bold;   
+    -fx-font-size: 14px;
+	-fx-underline: true; 
+	-fx-cursor: hand;
+}
+
+.mouse-hover {
+	-fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out; 
+}
+
+.choicebox {
+    -fx-border-radius: 5; 
+	-fx-background-color: white; 
+	-fx-border-color: white;
+}
+
+.mouse-hover:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1; 
+}
+
+.reclamacao-box {
+    -fx-border-color: rgb(255, 255, 255); 
+    -fx-border-radius: 10px; 
+    -fx-background-radius: 10px; 
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 0);
+}
+

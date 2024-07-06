@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@/view/style.css" xmlns="http://javafx.com/javafx/8.0.371" xmlns:fx="http://javafx.com/fxml">
+
+    <ImageView fx:id="firstBackground" fitHeight="700.0" fitWidth="1000.0">
+        <image>
+            <Image url="@/util/first-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="clienteCadastroBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/cliente-cadastro-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="empresaCadastroBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/empresa-cadastro-background.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="clienteLoginBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/cliente-login-background.png" />
+        </image>
+    </ImageView>
+
+      <ImageView fx:id="empresaLoginBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/empresa-login-background.png" />
+        </image>
+    </ImageView>
+
+     <!-- Cliente -->
+    <Button fx:id="botaoInicialCliente" text="Sou cliente"
+            layoutX="0" layoutY="525" 
+            prefWidth="200" prefHeight="50" styleClass="button1" onAction="#botaoClienteEscolhido"/> 
+
+	 <!-- Empresa -->
+	<Button fx:id="botaoInicialEmpresa" text="Sou empresa"
+            layoutX="0" layoutY="525" 
+            prefWidth="200" prefHeight="50" styleClass="button1"  onAction="#botaoEmpresaEscolhido"/> 
+
+    <!-- Cliente Cadastro -->
+    <Button fx:id="botaoLoginPelaPrimeiraVezCliente" text="Criar"
+            layoutX="640" layoutY="640" 
+            prefWidth="210" prefHeight="40" styleClass="button1" onAction="#cadastroCliente"/> 
+
+    <TextField fx:id="campoCadastroClienteNome" promptText="Nome" layoutX="500" layoutY="260" prefWidth="205" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroClienteEmail" promptText="E-mail" layoutX="500" layoutY="340" prefWidth="450" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoCadastroClienteSenha" promptText="Senha" layoutX="500" layoutY="590" prefWidth="450" prefHeight="40" styleClass="text-field-custom"/>
+
+    <TextField fx:id="campoCadastroClienteCPF" promptText="CPF" layoutX="740" layoutY="260" prefWidth="205" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroClienteTelefone" promptText="Telefone" layoutX="500" layoutY="425" prefWidth="205" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroClienteEndereco" promptText="Endereco" layoutX="500" layoutY="510" prefWidth="450" prefHeight="40" styleClass="text-field-custom"/>
+    <DatePicker fx:id="campoCadastroClienteDataNascimento" promptText="Data de nascimento" layoutX="740" layoutY="425" prefWidth="205" prefHeight="40" styleClass="text-field-custom"/>
+    
+    <ImageView fx:id="jumpingBackLoginCliente" fitHeight="30.0" fitWidth="43.0" layoutX="480.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarLoginCliente" styleClass="mouse-hover">
+		<image>
+			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    <Label fx:id="labelLoginCliente" text="Faça Login!" layoutX="695" layoutY="200" styleClass="label-Login" onMouseClicked="#irParaLoginCliente"/>
+
+    <!-- Empresa Cadastro -->
+    <TextField fx:id="campoCadastroEmpresaNome" promptText="Nome" layoutX="140" layoutY="250" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+     <TextField fx:id="campoCadastroEmpresaCNPJ" promptText="CNPJ" layoutX="340" layoutY="250" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaEmail" promptText="E-mail" layoutX="140" layoutY="330" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="campoCadastroEmpresaDescricao" promptText="Descricao" layoutX="140" layoutY="410" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <DatePicker fx:id="campoCadastroEmpresaData" promptText="Data" layoutX="140" layoutY="490" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoCadastroEmpresaSenha" promptText="Senha" layoutX="140" layoutY="570" prefWidth="310" prefHeight="40" styleClass="text-field-custom"/>
+
+     <Button fx:id="botaoLoginPelaPrimeiraVezEmpresa" text="Criar"
+            layoutX="200" layoutY="630" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#cadastroEmpresa"/> 
+
+    <ImageView fx:id="jumpingBackLoginEmpresa" fitHeight="30.0" fitWidth="43.0" layoutX="20.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarLoginEmpresa" styleClass="mouse-hover">
+		<image>
+			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    
+    <Label fx:id="labelLoginEmpresa" text="Faça Login!" layoutX="240" layoutY="180" styleClass="label-Login" onMouseClicked="#irParaLoginEmpresa"/>
+
+
+    <!-- Cliente Login -->
+    <TextField fx:id="campoLoginClienteEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoLoginClienteSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+
+    <Button fx:id="botaoLoginCliente" text="Entrar"
+            layoutX="380" layoutY="465" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#loginCliente"/> 
+
+    <!-- Empresa Login -->
+    <TextField fx:id="campoLoginEmpresaEmail" promptText="E-mail" layoutX="350" layoutY="320" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+    <PasswordField fx:id="campoLoginEmpresaSenha" promptText="Senha" layoutX="350" layoutY="400" prefWidth="300" prefHeight="40" styleClass="text-field-custom"/>
+
+    <Button fx:id="botaoLoginEmpresa" text="Entrar"
+            layoutX="380" layoutY="465" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#loginEmpresa"/> 
+
+    <!--Pagina de confirmacao de cadastro -->
+     <ImageView fx:id="thankYouBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/thank-you-page.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="LoginBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/login-background.png" />
+        </image>
+    </ImageView>
+
+    <Label fx:id="counter" text="5" layoutX="500" layoutY="600" visible="false" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    <!--Home Cliente -->
+     <ImageView fx:id="homeBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/home-background.png" />
+        </image>
+    </ImageView>
+
+    <Button fx:id="botaoFazerReclamacao" text="Iniciar"
+            layoutX="293" layoutY="410" 
+            prefWidth="210" prefHeight="50" styleClass="button1" visible="false" onAction="#fazerReclamacao"/> 
+
+    <Button fx:id="botaoPedirDevolucao" text="Iniciar"
+            layoutX="590" layoutY="410" 
+            prefWidth="210" prefHeight="50" styleClass="button1" visible="false" onAction="#fazerDevolucao"/> 
+
+     <ImageView fx:id="botaoVerReclamacao" fitHeight="80.0" fitWidth="80.0" layoutX="457.0" layoutY="554.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#consultarReclamacoes">
+		<image>
+			<Image url="@/util/view-complaint-button.png" />
+		</image>
+	</ImageView>
+
+     <ImageView fx:id="botaoVerDevolucao" fitHeight="80.0" fitWidth="80.0" layoutX="842.0" layoutY="554.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#consultarDevolucoes">
+		<image>
+			<Image url="@/util/view-return-button.png" />
+		</image>
+	</ImageView>
+
+    <ImageView fx:id="homeSymbol" fitHeight="80.0" fitWidth="80.0" visible="false" layoutX="38.3" layoutY="132.0" styleClass="mouse-hover" >
+        <image>
+            <Image url="@/util/home-symbol.png" />
+        </image>
+    </ImageView>
+
+    <!--Home Empresa -->
+
+    <ImageView fx:id="homeCompanyBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/company-home-background.png" />
+        </image>
+    </ImageView>
+
+    <VBox fx:id="mainVBoxReclamacaoesEmpresa" spacing="10" layoutX="180" layoutY="250" prefHeight="450" prefWidth="330" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
+            <VBox fx:id="reclamacoesVBoxEmpresa" spacing="10" visible="false" style="-fx-border-color: white; -fx-background-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+    <VBox fx:id="mainVBoxDevolucoesEmpresa" spacing="10" layoutX="550" layoutY="250" prefHeight="450" prefWidth="330" visible="false" style="-fx-background-color: white;" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true"  style="-fx-background-color: white;">
+           <VBox fx:id="devolucoesVBoxEmpresa" spacing="10" visible="false" style="-fx-border-color: white; -fx-background-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+     <!--Responder Reclamacao -->
+
+    <Label fx:id="motivoReclamacaoLabel" text="motivo" layoutX="345" layoutY="164" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: red;"/>
+    <Label fx:id="nomeClienteReclamacaoLabel" text="nome" layoutX="238" layoutY="234" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="cpfClienteReclamacaoLabel" text="cpf" layoutX="219" layoutY="252" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="emailClienteReclamacaoLabel" text="email" layoutX="236" layoutY="267" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <TextArea fx:id="detalhamentoClienteReclamacaoLabel"  layoutX="180" layoutY="350" prefWidth="610" prefHeight="90" styleClass="text-area-custom" editable="false"/>
+
+    <TextArea fx:id="respostaReclamacaoTextArea" layoutX="180" layoutY="476" prefWidth="610" prefHeight="95" styleClass="text-area-custom"/>
+
+    <ImageView fx:id="responderReclamacaoBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/complaint-response-background.png" />
+        </image>
+    </ImageView>
+
+      <Button fx:id="botaoResponderReclamacao" text="Responder"
+            layoutX="389" layoutY="598" 
+            prefWidth="140" prefHeight="50" styleClass="button1" visible="false"/> 
+
+    <ImageView fx:id="sucessoResponderReclamacao" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/successful-response.png" />
+        </image>
+    </ImageView>
+
+    <Button fx:id="botaoRespostaReclamacaoEnviada" text="Certo!"
+            layoutX="367" layoutY="500" 
+            prefWidth="280" prefHeight="70" styleClass="button2" visible="false"/> 
+
+    <!--Conceder Pedido de Devolucao -->
+
+    <Label fx:id="motivoDevolucaoLabel" text="motivo" layoutX="277" layoutY="155" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: red;"/>
+    <Label fx:id="nomeClienteDevolucaoLabel" text="nome" layoutX="222" layoutY="225" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="cpfClienteDevolucaoLabel" text="cpf" layoutX="200" layoutY="245" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="emailClienteDevolucaoLabel" text="cpf" layoutX="218" layoutY="267" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="dataCompraDevolucaoLabel" text="data" layoutX="647" layoutY="225" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="idProdutoDevolucaoLabel" text="id" layoutX="705" layoutY="243" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+    <Label fx:id="quantidadeProdutoDevolucaoLabel" text="id" layoutX="620" layoutY="263" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
+
+    <TextArea fx:id="substituicaoReembolsoDevolucaoTextArea" layoutX="136" layoutY="366" prefWidth="360" prefHeight="80" styleClass="text-area-custom" editable="false"/>
+    <TextArea fx:id="IDSubstituicaoDevolucaoTextArea" layoutX="508" layoutY="366" prefWidth="360" prefHeight="80" styleClass="text-area-custom" editable="false"/>
+
+   
+    <RadioButton text="Conceder devolução por reembolso." fx:id="opcaoDevolucaoReembolso" layoutX="188" layoutY="500"/>
+    <RadioButton text="Conceder devolução por substituição do produto." fx:id="opcaoDevolucaoSubsituicao" layoutX="500" layoutY="500"/>
+  
+    <Button fx:id="botaoDevolucaoConcedidaEnviada" text="Enviar"
+            layoutX="420" layoutY="582" 
+            prefWidth="140" prefHeight="50" styleClass="button1" visible="false"/> 
+
+
+
+
+    <ImageView fx:id="concederDevolucaoBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/granting-return-request-background.png" />
+        </image>
+    </ImageView>
+
+    
+
+
+      
+    
+
+
+    
+
+
+    <Label fx:id="nomeCliente" text="nome" layoutX="275" layoutY="155" visible="false" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    <!-- Formulario Reclamacao -->
+    <ImageView fx:id="complaintForm" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/complaint-form.png" />
+        </image>
+    </ImageView>
+
+     <ImageView fx:id="sucessoEnvioReclamacao" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/successful-sending-complaint.png" />
+        </image>
+    </ImageView>
+
+     <Button fx:id="botaoReclamacaoEnviada" text="Certo!"
+            layoutX="367" layoutY="500" 
+            prefWidth="280" prefHeight="70" styleClass="button2" visible="false"/> 
+
+
+    <VBox alignment="CENTER" spacing="10" layoutX="234" layoutY="161">
+		<children>
+			<ChoiceBox fx:id="empresasCadastradas" prefHeight="70" prefWidth="515" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+     <VBox alignment="CENTER" spacing="10" layoutX="234" layoutY="280">
+		<children>
+			<ChoiceBox fx:id="motivoReclamacao" prefHeight="70" prefWidth="515" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+    <TextField fx:id="idProduto" promptText="ID do produto" layoutX="234" layoutY="390" prefWidth="515" prefHeight="70" styleClass="text-field-custom"/>
+    <TextField fx:id="justificativaReclamacao" promptText="Escreva a sua justificativa" layoutX="234" layoutY="505" prefWidth="515" prefHeight="80" styleClass="text-field-custom"/>
+
+     <Button fx:id="botaoEnviarReclamacao" text="Enviar"
+            layoutX="376" layoutY="620" 
+            prefWidth="210" prefHeight="50" styleClass="button1" visible="false" onAction="#enviarReclamacao"/> 
+
+    <ImageView fx:id="jumpingBackLoginReclamacao" fitHeight="30.0" fitWidth="43.0" layoutX="20.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#voltarFormReclamacao" styleClass="mouse-hover">
+		<image>
+			<Image url="@/util/jumping-back-symbol.png" />
+		</image>
+	</ImageView>
+
+    <ImageView fx:id="logOutSymbol" fitHeight="70.0" fitWidth="70.0" layoutX="47.0" layoutY="565.0" pickOnBounds="true" preserveRatio="true" visible="false" styleClass="mouse-hover" onMouseClicked="#voltarParaOInicio">
+		<image>
+			<Image url="@/util/log-out-symbol.png" />
+		</image>
+	</ImageView>
+
+
+
+    <!-- Formulario Devolucao -->
+     <ImageView fx:id="returnForm" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/return-form.png" />
+        </image>
+    </ImageView>
+
+     <VBox alignment="CENTER" spacing="10" layoutX="218" layoutY="180">
+		<children>
+			<ChoiceBox fx:id="empresasCadastradasDevolucao" prefHeight="40" prefWidth="255" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+    <VBox alignment="CENTER" spacing="10" layoutX="550" layoutY="180">
+		<children>
+			<ChoiceBox fx:id="motivoDevolucao" prefHeight="40" prefWidth="255" styleClass="choicebox"/>
+		</children>
+	</VBox>
+
+    <TextField fx:id="idProdutoDevolucao" promptText="ID do produto" layoutX="218" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="dataCompraDevolucao" promptText="dia/mes/anos" layoutX="218" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="justificativaDevolucao" promptText="Justificativa" layoutX="218" layoutY="500" prefWidth="280" prefHeight="100" styleClass="text-field-custom"/>
+    <TextField fx:id="quantidadesItensDevolucao" promptText="Quantidade de itens" layoutX="550" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <TextField fx:id="idSubstituicaoDevolucao" promptText="ID da troca" layoutX="550" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+     <TextField fx:id="descricaoItemDevolucao" promptText="Descricao do item" layoutX="550" layoutY="500" prefWidth="280" prefHeight="100" styleClass="text-field-custom"/>
+
+    
+     <Button fx:id="botaoEnviarDevolucao" text="Enviar"
+            layoutX="410" layoutY="627" 
+            prefWidth="210" prefHeight="50" styleClass="button1" onAction="#enviarDevolucao"/> 
+
+   
+
+
+     <!-- Ver Reclamacoes -->
+    <ImageView fx:id="complaintViewer" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/complaint-viewer.png" />
+        </image>
+    </ImageView>
+
+    <TextArea fx:id="textAreaConsultaReclamacoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+    <VBox fx:id="mainVBox" spacing="10" layoutX="96" layoutY="190" prefHeight="450" prefWidth="830" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="reclamacoesVBox" spacing="10" visible="false"  style="-fx-border-color: white; -fx-background-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+     <ImageView fx:id="complaintDiv" layoutX="96" layoutY="190" fitHeight="270" fitWidth="530" visible="false">
+        <image>
+            <Image url="@/util/complaint-div.png" />
+        </image>
+    </ImageView>
+
+    <!-- Ver Devolucoes -->
+     <ImageView fx:id="returnViewer" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/return-viewer.png" />
+        </image>
+    </ImageView>
+
+    <TextArea fx:id="textAreaConsultaDevolucoes" layoutX="96" layoutY="190" prefHeight="370" prefWidth="830" editable="false" visible="false" styleClass="text-field-custom" />
+    <VBox fx:id="mainVBoxDevolucoes" spacing="10" layoutX="96" layoutY="190" prefHeight="450" prefWidth="830" visible="false" styleClass="reclamacao-box">
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="devolucoesVBox" spacing="10" visible="false"  style="-fx-border-color: white; -fx-background-color: white;"/>
+        </ScrollPane>
+    </VBox>
+
+
+
+
+</AnchorPane>
