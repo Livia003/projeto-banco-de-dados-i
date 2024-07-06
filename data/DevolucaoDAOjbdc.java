@@ -25,15 +25,14 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             if (resultSet != null) {
                 devolucaos = new ArrayList<Devolucao>();
                 while (resultSet.next()) {
-                    Devolucao devolucao = new Devolucao(
-                        resultSet.getInt("clienteId"),
-                        resultSet.getInt("empresaId"),
-                        resultSet.getInt("produtoId"),
-                        resultSet.getString("descricao"),
-                        resultSet.getString("motivo"),
-                        resultSet.getInt("quantidade"),
-                        resultSet.getInt("idSubstituicao")
-                    );
+                    Devolucao devolucao = new Devolucao();
+                        resultSet.getInt("clienteId");
+                        resultSet.getInt("empresaId");
+                        resultSet.getInt("produtoId");
+                        resultSet.getString("descricao");
+                        resultSet.getString("motivo");
+                        resultSet.getInt("quantidade");
+                        resultSet.getInt("idSubstituicao");
                     devolucao.setId(resultSet.getInt("id"));
                     devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
                     devolucaos.add(devolucao);
@@ -85,15 +84,14 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             pst.setInt(1, id);
             resultSet = pst.executeQuery();
             if (resultSet != null && resultSet.next()) {
-                devolucao = new Devolucao(
-                    resultSet.getInt("clienteId"),
-                    resultSet.getInt("empresaId"),
-                    resultSet.getInt("produtoId"),
-                    resultSet.getString("descricao"),
-                    resultSet.getString("motivo"),
-                    resultSet.getInt("quantidade"),
-                    resultSet.getInt("idSubstituicao")
-                );
+                devolucao = new Devolucao();
+                    resultSet.getInt("clienteId");
+                    resultSet.getInt("empresaId");
+                    resultSet.getInt("produtoId");
+                    resultSet.getString("descricao");
+                    resultSet.getString("motivo");
+                    resultSet.getInt("quantidade");
+                    resultSet.getInt("idSubstituicao");
                 devolucao.setId(resultSet.getInt("id"));
                 devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
                 resultSet.close();
