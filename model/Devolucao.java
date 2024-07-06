@@ -34,6 +34,10 @@ public class Devolucao {
 
     }
 
+    public Devolucao() {
+        //TODO Auto-generated constructor stub
+    }
+
     // Getters
     public int getId() {
         return id;

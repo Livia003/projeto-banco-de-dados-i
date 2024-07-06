@@ -32,6 +32,10 @@ public class Empresa {
         empresas.add(this);
     }
 
+    public Empresa() {
+        //TODO Auto-generated constructor stub
+    }
+
     public int getId() {
         return id;
     }
@@ -142,6 +146,16 @@ public class Empresa {
                 break;
             }
         }
+    }
+
+    public void setCnpj(long long1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setCnpj'");
+    }
+
+    public long getCnpj() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCnpj'");
     }
 
 }
