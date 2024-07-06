@@ -336,7 +336,19 @@ public class ControllerGeral implements Initializable {
     private RadioButton opcaoDevolucaoSubsituicao;
 
     @FXML
+    private RadioButton opcaoDevolucaoNegar;
+
+    @FXML
     private Button botaoDevolucaoConcedidaEnviada;
+
+    @FXML
+    private TextArea detalhamentoDevolucaoTextArea;
+
+    @FXML
+    private ImageView sucessoConcederDevolucao;
+
+    @FXML
+    private ImageView negacaoConcederDevolucao;
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
@@ -1052,11 +1064,16 @@ public class ControllerGeral implements Initializable {
 
         opcaoDevolucaoReembolso.setVisible(true);
         opcaoDevolucaoSubsituicao.setVisible(true);
+        opcaoDevolucaoNegar.setVisible(true);
+        opcaoDevolucaoNegar.toFront();
         opcaoDevolucaoReembolso.toFront();
         opcaoDevolucaoSubsituicao.toFront();
 
         botaoDevolucaoConcedidaEnviada.setVisible(true);
         botaoDevolucaoConcedidaEnviada.toFront();
+
+        detalhamentoDevolucaoTextArea.setVisible(true);
+        detalhamentoDevolucaoTextArea.toFront();
 
         esconderElementosDentroDoLogin();
 
@@ -1072,17 +1089,19 @@ public class ControllerGeral implements Initializable {
         idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
         quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());
 
-        substituicaoReembolsoDevolucaoTextArea.setText(devolucao.getJusticativa());
+        substituicaoReembolsoDevolucaoTextArea.setText(devolucao.getJustificativa());
         IDSubstituicaoDevolucaoTextArea.setText(String.valueOf(devolucao.getIdSubstituicao()));
+        detalhamentoDevolucaoTextArea.setText("" + devolucao.getDescricao());
 
         logOutSymbol.setVisible(false);
 
         botaoDevolucaoConcedidaEnviada.setOnAction(event -> {
-            if (opcaoDevolucaoReembolso.isSelected() && opcaoDevolucaoSubsituicao.isSelected()) {
+            if (opcaoDevolucaoReembolso.isSelected() && opcaoDevolucaoSubsituicao.isSelected()
+                    && opcaoDevolucaoNegar.isSelected()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erro");
                 alert.setHeaderText(null);
-                alert.setContentText("Por favor, selecione apenas uma opção: Reembolso ou Substituição.");
+                alert.setContentText("Por favor, selecione apenas uma opção: Negacao, Reembolso ou Substituicao.");
                 alert.showAndWait();
             } else if (opcaoDevolucaoReembolso.isSelected()) {
                 devolucao.setStatus(StatusDevolucao.APROVADO);
@@ -1091,7 +1110,7 @@ public class ControllerGeral implements Initializable {
                 if (empresa != null) {
                     empresa.atualizarDevolucao(devolucao);
                     limparECamposDevolucao();
-                    fadeOutTransition(sucessoEnvioReclamacao);
+                    fadeOutTransition(sucessoConcederDevolucao);
                     concederDevolucaoBackground.setVisible(false);
                     mostrarHomeEmpresa();
                 }
@@ -1102,7 +1121,18 @@ public class ControllerGeral implements Initializable {
                 if (empresa != null) {
                     empresa.atualizarDevolucao(devolucao);
                     limparECamposDevolucao();
-                    fadeOutTransition(sucessoEnvioReclamacao);
+                    fadeOutTransition(sucessoConcederDevolucao);
+                    concederDevolucaoBackground.setVisible(false);
+                    mostrarHomeEmpresa();
+                }
+            } else if (opcaoDevolucaoNegar.isSelected()) {
+                devolucao.setStatus(StatusDevolucao.NEGADO);
+                System.out.println("Opção Negação selecionada.");
+                Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
+                if (empresa != null) {
+                    empresa.atualizarDevolucao(devolucao);
+                    limparECamposDevolucao();
+                    fadeOutTransition(negacaoConcederDevolucao);
                     concederDevolucaoBackground.setVisible(false);
                     mostrarHomeEmpresa();
                 }
@@ -1341,6 +1371,9 @@ public class ControllerGeral implements Initializable {
     }
 
     private void limparECamposDevolucao() {
+        detalhamentoDevolucaoTextArea.setVisible(false);
+        detalhamentoDevolucaoTextArea.setText("");
+        opcaoDevolucaoNegar.setVisible(false);
         motivoDevolucaoLabel.setText("");
         nomeClienteDevolucaoLabel.setText("");
         cpfClienteDevolucaoLabel.setText("");
@@ -1363,6 +1396,9 @@ public class ControllerGeral implements Initializable {
         opcaoDevolucaoReembolso.setVisible(false);
         opcaoDevolucaoSubsituicao.setVisible(false);
         botaoDevolucaoConcedidaEnviada.setVisible(false);
+        opcaoDevolucaoNegar.setSelected(false);
+        opcaoDevolucaoReembolso.setSelected(false);
+        opcaoDevolucaoSubsituicao.setSelected(false);
     }
 
     @FXML
@@ -1539,8 +1575,10 @@ public class ControllerGeral implements Initializable {
         emailClienteDevolucaoLabel.setVisible(false);
         dataCompraDevolucaoLabel.setVisible(false);
         idProdutoDevolucaoLabel.setVisible(false);
+        opcaoDevolucaoNegar.setVisible(false);
         quantidadeProdutoDevolucaoLabel.setVisible(false);
         substituicaoReembolsoDevolucaoTextArea.setVisible(false);
+        detalhamentoDevolucaoTextArea.setVisible(false);
         IDSubstituicaoDevolucaoTextArea.setVisible(false);
         opcaoDevolucaoReembolso.setVisible(false);
         opcaoDevolucaoSubsituicao.setVisible(false);
@@ -1678,6 +1716,8 @@ public class ControllerGeral implements Initializable {
         fadeInBackground(clienteLoginBackground);
         campoLoginClienteEmail.setVisible(true);
         campoLoginClienteSenha.setVisible(true);
+        campoLoginClienteEmail.setText("");
+        campoLoginClienteSenha.setText("");
         botaoLoginCliente.setVisible(true);
         esconderElementosDentroDoLogin();
     }
@@ -1687,6 +1727,8 @@ public class ControllerGeral implements Initializable {
 
         campoLoginEmpresaEmail.setVisible(true);
         campoLoginEmpresaSenha.setVisible(true);
+        campoLoginEmpresaEmail.setText("");
+        campoLoginEmpresaSenha.setText("");
         jumpingBackLoginEmpresa.setVisible(true);
         jumpingBackLoginEmpresa.toFront();
         botaoLoginEmpresa.setVisible(true);

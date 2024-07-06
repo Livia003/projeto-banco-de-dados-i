@@ -235,19 +235,30 @@
     <Label fx:id="idProdutoDevolucaoLabel" text="id" layoutX="705" layoutY="243" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
     <Label fx:id="quantidadeProdutoDevolucaoLabel" text="id" layoutX="620" layoutY="263" style="-fx-font-size: 15px; -fx-text-fill: #8F8E8E;"/>
 
-    <TextArea fx:id="substituicaoReembolsoDevolucaoTextArea" layoutX="136" layoutY="366" prefWidth="360" prefHeight="80" styleClass="text-area-custom" editable="false"/>
-    <TextArea fx:id="IDSubstituicaoDevolucaoTextArea" layoutX="508" layoutY="366" prefWidth="360" prefHeight="80" styleClass="text-area-custom" editable="false"/>
+    <TextArea fx:id="substituicaoReembolsoDevolucaoTextArea" layoutX="143" layoutY="356" prefWidth="335" prefHeight="50" styleClass="text-area-custom" editable="false"/>
+    <TextArea fx:id="IDSubstituicaoDevolucaoTextArea" layoutX="519" layoutY="358" prefWidth="335" prefHeight="50" styleClass="text-area-custom" editable="false"/>
+    <TextArea fx:id="detalhamentoDevolucaoTextArea" layoutX="151" layoutY="451" prefWidth="720" prefHeight="50" styleClass="text-area-custom" editable="false"/>
 
-   
-    <RadioButton text="Conceder devolução por reembolso." fx:id="opcaoDevolucaoReembolso" layoutX="188" layoutY="500"/>
-    <RadioButton text="Conceder devolução por substituição do produto." fx:id="opcaoDevolucaoSubsituicao" layoutX="500" layoutY="500"/>
+    <RadioButton text="Negar." fx:id="opcaoDevolucaoNegar" layoutX="149" layoutY="546"/>
+    <RadioButton text="Conceder devolução por reembolso." fx:id="opcaoDevolucaoReembolso" layoutX="251" layoutY="546"/>
+    <RadioButton text="Conceder devolução por substituição." fx:id="opcaoDevolucaoSubsituicao" layoutX="532" layoutY="534"/>
+    
   
     <Button fx:id="botaoDevolucaoConcedidaEnviada" text="Enviar"
-            layoutX="420" layoutY="582" 
+            layoutX="420" layoutY="595" 
             prefWidth="140" prefHeight="50" styleClass="button1" visible="false"/> 
 
+    <ImageView fx:id="sucessoConcederDevolucao" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/successful-in-granting.png" />
+        </image>
+    </ImageView>
 
-
+      <ImageView fx:id="negacaoConcederDevolucao" fitHeight="700.0" fitWidth="1000.0" visible="false">
+        <image>
+            <Image url="@/util/successful-response.png" />
+        </image>
+    </ImageView>
 
     <ImageView fx:id="concederDevolucaoBackground" fitHeight="700.0" fitWidth="1000.0" visible="false">
         <image>

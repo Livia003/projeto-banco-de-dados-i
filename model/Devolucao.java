@@ -43,11 +43,11 @@ public class Devolucao {
         return clienteId;
     }
 
-    public String getJusticativa() {
+    public String getJustificativa() {
         return justicativa;
     }
 
-    public void setJusticativa(String justicativa) {
+    public void setJustificativa(String justicativa) {
         this.justicativa = justicativa;
     }
 
