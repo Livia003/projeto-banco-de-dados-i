@@ -60,7 +60,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst.setString(4, Empresa.getDescricao());
       pst.setString(5, Empresa.getNome());
       //pst.setString(6, Empresa.getEndereco());
-      pst.setLong(7, Empresa.getCnpj());
+      pst.setLong(1, Empresa.getCnpj());
       pst.execute();
       pst.close();
       connection.close();
@@ -110,7 +110,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
+      pst.setLong(7, cnpj);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -137,7 +137,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
+      pst.setLong(7, cnpj);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -164,7 +164,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst = connection.prepareStatement(sqlQuery);
       pst.setString(2, Empresa.getSenha());
       pst.setString(3, Empresa.getEmail());
-      //pst.setString(5, Empresa.getCnpj());
+      pst.setLong(7, Empresa.getCnpj());
       pst.setString(6, Empresa.getNome());
       pst.setString(8, Empresa.getDescricao());
       pst.execute();
@@ -183,7 +183,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      //pst.setString(1, Empresa.getCnpj());
+      pst.setLong(1, Empresa.getCnpj());
       pst.execute();
       pst.close();
       connection.close();
