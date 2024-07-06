@@ -26,6 +26,7 @@ public class Devolucao {
         this.produtoId = produtoId;
         this.descricao = descricao;
         this.motivo = motivo;
+        this.dataCompra = dataCompra;
         this.justicativa = justificativa;
         this.quantidade = quantidade;
         this.idSubstituicao = idSubstituicao;

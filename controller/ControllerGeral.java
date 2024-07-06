@@ -1067,7 +1067,7 @@ public class ControllerGeral implements Initializable {
         cpfClienteDevolucaoLabel.setText(String.valueOf(cliente.getCpf()));
 
         emailClienteDevolucaoLabel.setText(cliente.getEmail());
-        dataCompraDevolucaoLabel.setText(devolucao.getDataCompra().toString());
+        dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
 
         idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
         quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());

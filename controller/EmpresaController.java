@@ -7,8 +7,20 @@ import model.Empresa;
 
 public class EmpresaController {
 
+    private List<Empresa> empresas;
+
+    // public void cadastrarNovaEmpresa(Empresa empresa) {
+    // Empresa.getEmpresas().add(empresa);
+    // }
+
+    public EmpresaController() {
+        empresas = new ArrayList<>();
+    }
+
     public void cadastrarNovaEmpresa(Empresa empresa) {
-        Empresa.getEmpresas().add(empresa);
+        if (!empresas.contains(empresa)) {
+            empresas.add(empresa);
+        }
     }
 
     public List<Empresa> getEmpresas() {

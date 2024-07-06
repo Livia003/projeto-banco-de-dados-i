@@ -27,6 +27,13 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
+        scene.setOnMouseClicked(event -> {
+            double x = event.getX();
+            double y = event.getY();
+
+            System.out.println("X: " + x + ", Y: " + y);
+        });
+
     }
 
     public static void main(String[] args) {
