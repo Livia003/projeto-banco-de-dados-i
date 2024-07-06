@@ -13,7 +13,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
   @Override
   public ArrayList<Cliente> getAllClientes() {
     // Linkar valores com a interface
-    String sqlQuery = "select * from app.cliente";
+    String sqlQuery = "select * from FaleFeedback.cliente";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -47,7 +47,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void createCliente(Cliente cliente){
-    String sqlQuery = "insert into app.cliente (senha,email,dtNasc,telefone,nome,endereco,cpf) values (?,?,?,?,?,?,?,?);";
+    String sqlQuery = "insert into FaleFeedback.cliente (senha,email,dtNasc,telefone,nome,endereco,cpf) values (?,?,?,?,?,?,?,?);";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -70,7 +70,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public Cliente readCliente(Long cpf) {
-    String sqlQuery = "select * from app.cliente where cpf=?";
+    String sqlQuery = "select * from FaleFeedback.cliente where cpf=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -102,7 +102,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
   }
   @Override
   public Cliente queryAccount(Long cpf) {
-    String sqlQuery = "select * from app.cliente where cpf=?";
+    String sqlQuery = "select * from FaleFeedback.cliente where cpf=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -129,7 +129,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
   }
   @Override
   public Cliente queryName(Long cpf){
-    String sqlQuery = "select * from app.cliente where cpf=?";
+    String sqlQuery = "select * from FaleFeedback.cliente where cpf=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -156,7 +156,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void updateCliente(Cliente cliente) {
-    String sqlQuery = "update app.cliente set senha=?, email=?, telefone=?, nome=?, endereco=? where cpf=?";
+    String sqlQuery = "update FaleFeedback.cliente set senha=?, email=?, telefone=?, nome=?, endereco=? where cpf=?";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -179,7 +179,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void deleteCliente(Cliente cliente) {
-    String sqlQuery = "delete from app.cliente where cpf=?";
+    String sqlQuery = "delete from FaleFeedback.cliente where cpf=?";
     PreparedStatement pst;
     Connection connection;
     try {

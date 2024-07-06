@@ -12,7 +12,7 @@ public class ConnectionFactory {
     private static final String PASSWORD = "1608";
 
      //Usuario do Banco de dados
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/app";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/FaleFeedback";
 
 
     public Connection getConnection() throws SQLException{

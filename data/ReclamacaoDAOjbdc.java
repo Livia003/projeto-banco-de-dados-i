@@ -135,7 +135,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
         try {
             connection = new ConnectionFactory().getConnection();
             pst = connection.prepareStatement(sqlQuery);
-            pst.setInt(1, id);
+            //pst.setInt(1, id);
             pst.execute();
             pst.close();
             connection.close();

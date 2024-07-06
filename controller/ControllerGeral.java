@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import data.ClienteDAOjbdc;
 import javafx.scene.control.DatePicker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -352,6 +353,7 @@ public class ControllerGeral implements Initializable {
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
+    ClienteDAOjbdc cDao = new ClienteDAOjbdc();
 
     int idCliente, idEmpresa;
 
@@ -437,8 +439,9 @@ public class ControllerGeral implements Initializable {
             Date dataNascimentoDate = java.sql.Date.valueOf(dataNascimento);
 
             Cliente novoCliente = new Cliente(nome, email, senha, cpf, dataNascimentoDate, telefone, endereco);
-
             clienteController.cadastrarNovoCliente(novoCliente);
+            cDao.createCliente(novoCliente);
+            
             idCliente = novoCliente.getId();
             mostrarPaginaConfirmacao(1);
 
