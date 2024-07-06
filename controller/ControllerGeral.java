@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import data.ClienteDAOjbdc;
@@ -428,8 +430,12 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail valido.");
+            if (!verificarFormatoEmail(email)) {
+                throw new IllegalArgumentException("Email invalido. Verifique o formato.");
+            }
+
+            if (!verificarFormatoCpf(cpfStr)) {
+                throw new IllegalArgumentException("CPF inválido");
             }
 
             atualizarNomeCliente(nome);
@@ -476,8 +482,8 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail válido.");
+            if (!verificarFormatoEmail(email)) {
+                throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
 
             Empresa novaEmpresa = new Empresa(nome, email, descricao, data.toString(), senha, cnpj);
@@ -515,8 +521,8 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Ambos os campos de e-mail e senha devem ser preenchidos.");
             }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail valido.");
+            if (!verificarFormatoEmail(email)) {
+                throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
 
             ClienteController clienteController = new ClienteController();
@@ -558,8 +564,8 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Ambos os campos de e-mail e senha devem ser preenchidos.");
             }
 
-            if (!email.contains("@")) {
-                throw new IllegalArgumentException("Insira um e-mail valido.");
+            if (!verificarFormatoEmail(email)) {
+                throw new IllegalArgumentException("Email inválido. Verifique o formato.");
             }
 
             EmpresaController empresaController = new EmpresaController();
@@ -737,6 +743,41 @@ public class ControllerGeral implements Initializable {
         fadeTransition.play();
     }
 
+    public static boolean verificarFormatoCnpj(String cnpj) {
+        boolean valido = false;
+        if (cnpj != null && cnpj.length() > 0) {
+            String expression = "^\\d{2}\\.\\d{3}\\.\\d{3}/000\\d-\\d{2}$";
+            Pattern pattern = Pattern.compile(expression);
+            Matcher matcher = pattern.matcher(cnpj);
+            valido = matcher.matches();
+        }
+        return valido;
+    }
+
+    public static boolean verificarFormatoCpf(String cpf) {
+        cpf = cpf.replaceAll("[.-]", "");
+        boolean valido = true;
+        if (cpf.length() != 11) {
+            valido = false;
+        }
+        if (!cpf.matches("[0-9]*")) {
+            valido = false;
+        }
+        return valido;
+    }
+
+    public static boolean verificarFormatoEmail(String email) {
+        boolean valido = false;
+        if (email != null && email.length() > 0) {
+            String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(email);
+            valido = matcher.matches();
+        }
+
+        return valido;
+    }
+
     @FXML
     private void enviarDevolucao() {
         try {
@@ -804,6 +845,7 @@ public class ControllerGeral implements Initializable {
                     mostrarHomeCliente();
                 }
             });
+
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
