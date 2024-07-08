@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import data.ClienteDAOjbdc;
+import data.DevolucaoDAOjbdc;
+import data.EmpresaDAOjbdc;
+import data.ReclamacaoDAOjbdc;
 import javafx.scene.control.DatePicker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -356,6 +359,9 @@ public class ControllerGeral implements Initializable {
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
     ClienteDAOjbdc cDao = new ClienteDAOjbdc();
+    EmpresaDAOjbdc eDao = new EmpresaDAOjbdc();
+    DevolucaoDAOjbdc dDao = new DevolucaoDAOjbdc();
+    ReclamacaoDAOjbdc rDAO = new ReclamacaoDAOjbdc();
 
     int idCliente, idEmpresa;
 
@@ -489,6 +495,7 @@ public class ControllerGeral implements Initializable {
             Empresa novaEmpresa = new Empresa(nome, email, descricao, data.toString(), senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
+            eDao.createEmpresa(novaEmpresa);
             atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao(0);
 

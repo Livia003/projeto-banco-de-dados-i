@@ -31,9 +31,9 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setCnpj(resultSet.getLong("cnpj"));
           Empresa.setData(resultSet.getString("data"));
           //Empresa.setId(resultSet.getId());
-          Empresa.setEmail(resultSet.getString("email"));
+          Empresa.setEmail(resultSet.getString("e_email"));
           Empresa.setNome(resultSet.getString("nome"));
-          Empresa.setSenha(resultSet.getString("senha"));
+          Empresa.setSenha(resultSet.getString("e_senha"));
           Empresas.add(Empresa);
         }
         resultSet.close();
@@ -48,7 +48,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   @Override
   public void createEmpresa(Empresa Empresa){
-    String sqlQuery = "insert into app.Empresa (senha,email,dtNasc,telefone,nome,endereco,cnpj) values (?,?,?,?,?,?,?,?);";
+    String sqlQuery = "insert into app.Empresa (e_senha,e_email,data,telefone,nome,endereco,cnpj) values (?,?,?,?,?,?);";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -60,7 +60,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst.setString(4, Empresa.getDescricao());
       pst.setString(5, Empresa.getNome());
       //pst.setString(6, Empresa.getEndereco());
-      pst.setLong(1, Empresa.getCnpj());
+      pst.setLong(6, Empresa.getCnpj());
       pst.execute();
       pst.close();
       connection.close();
@@ -86,8 +86,8 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa = new Empresa();
           Empresa.setNome(resultSet.getString("nome"));
           Empresa.setCnpj(resultSet.getLong("cnpj"));
-          Empresa.setEmail(resultSet.getString("email"));
-          Empresa.setSenha(resultSet.getString("senha"));
+          Empresa.setEmail(resultSet.getString("e_email"));
+          Empresa.setSenha(resultSet.getString("e_senha"));
           Empresa.setDescricao(resultSet.getString("telefone"));
           //Empresa.setId(resultSet.getString("endereco"));
         }
@@ -110,7 +110,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(7, cnpj);
+      pst.setLong(1, cnpj);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -137,7 +137,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(7, cnpj);
+      pst.setLong(1, cnpj);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -156,17 +156,19 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   @Override
   public void updateEmpresa(Empresa Empresa) {
-    String sqlQuery = "update app.Empresa set senha=?, email=?, telefone=?, nome=?, endereco=? where cnpj=?";
+    String sqlQuery = "update app.Empresa set senha=?, email=?, telefone=?, nome=?, data =? where cnpj=?";
     PreparedStatement pst;
     Connection connection;
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setString(2, Empresa.getSenha());
-      pst.setString(3, Empresa.getEmail());
-      pst.setLong(7, Empresa.getCnpj());
-      pst.setString(6, Empresa.getNome());
-      pst.setString(8, Empresa.getDescricao());
+      pst.setString(1, Empresa.getSenha());
+      pst.setString(2, Empresa.getEmail());
+      pst.setString(3, Empresa.getData());
+      pst.setString(4, Empresa.getDescricao());
+      pst.setString(5, Empresa.getNome());
+      //pst.setString(6, Empresa.getEndereco());
+      pst.setLong(6, Empresa.getCnpj());
       pst.execute();
       pst.close();
       connection.close();

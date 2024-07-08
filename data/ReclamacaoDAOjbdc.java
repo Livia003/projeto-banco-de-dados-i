@@ -13,7 +13,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
     
     @Override
     public ArrayList<Reclamacao> getAllReclamacaos() {
-        String sqlQuery = "SELECT * FROM app.Reclamacao";
+        String sqlQuery = "SELECT * FROM FaleFeedback.Reclamacao";
         PreparedStatement pst;
         Connection connection;
         ResultSet resultSet;
@@ -49,7 +49,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public void createReclamacao(Reclamacao reclamacao) {
-        String sqlQuery = "INSERT INTO app.Reclamacao (clienteId, empresaId, produtoId, descricao, motivo, resposta, status) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String sqlQuery = "INSERT INTO FaleFeedback.Reclamacao (clienteId, empresaId, produtoId, descricao, motivo, resposta, status) VALUES (?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement pst;
         Connection connection;
         try {
@@ -72,7 +72,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public Reclamacao readReclamacao(int id) {
-        String sqlQuery = "SELECT * FROM app.Reclamacao WHERE id=?";
+        String sqlQuery = "SELECT * FROM FaleFeedback.Reclamacao WHERE id=?";
         PreparedStatement pst;
         Connection connection;
         ResultSet resultSet;
@@ -105,7 +105,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public void updateReclamacao(Reclamacao reclamacao) {
-        String sqlQuery = "UPDATE app.Reclamacao SET clienteId=?, empresaId=?, produtoId=?, descricao=?, motivo=?, resposta=?, status=? WHERE id=?";
+        String sqlQuery = "UPDATE FaleFeedback.Reclamacao SET clienteId=?, empresaId=?, produtoId=?, descricao=?, motivo=?, resposta=?, status=? WHERE id=?";
         PreparedStatement pst;
         Connection connection;
         try {
@@ -129,7 +129,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public void deleteReclamacao(Reclamacao reclamacao) {
-        String sqlQuery = "DELETE FROM app.Reclamacao WHERE id=?";
+        String sqlQuery = "DELETE FROM FaleFeedback.Reclamacao WHERE id=?";
         PreparedStatement pst;
         Connection connection;
         try {
