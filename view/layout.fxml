@@ -349,7 +349,7 @@
 	</VBox>
 
     <TextField fx:id="idProdutoDevolucao" promptText="ID do produto" layoutX="218" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
-    <TextField fx:id="dataCompraDevolucao" promptText="dia/mes/anos" layoutX="218" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
+    <DatePicker fx:id="dataCompraDevolucao" promptText="dia/mes/anos" layoutX="218" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
     <TextField fx:id="justificativaDevolucao" promptText="Justificativa" layoutX="218" layoutY="500" prefWidth="280" prefHeight="100" styleClass="text-field-custom"/>
     <TextField fx:id="quantidadesItensDevolucao" promptText="Quantidade de itens" layoutX="550" layoutY="283" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>
     <TextField fx:id="idSubstituicaoDevolucao" promptText="ID da troca" layoutX="550" layoutY="383" prefWidth="255" prefHeight="40" styleClass="text-field-custom"/>

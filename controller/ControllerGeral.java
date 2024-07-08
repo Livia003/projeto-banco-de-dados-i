@@ -236,7 +236,7 @@ public class ControllerGeral implements Initializable {
     private TextField justificativaDevolucao;
 
     @FXML
-    private TextField dataCompraDevolucao;
+    private DatePicker dataCompraDevolucao;
 
     @FXML
     private Button botaoEnviarReclamacao;
@@ -362,21 +362,6 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
-        Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
-                "Especializada em soluções tecnológicas", "2023-05-01", "senha123", 99766);
-
-        Empresa empresa2 = new Empresa("Express Logistica e Transporte", "expresslogistica@example.com",
-                "Entregas rápidas e seguras em todo o país", "2023-05-02", "senha456", 37443443);
-
-        Empresa empresa3 = new Empresa("Comida Facil Delivery", "comidafacil@example.com",
-                "Serviço de delivery de refeições práticas", "2023-05-03", "senha789", 7484884);
-
-        Empresa empresa4 = new Empresa("Construcoes Urbanas S.A.", "construcoesurbanas@example.com",
-                "Projetos e obras para o desenvolvimento urbano", "2023-05-04", "senhaabc", 9499494);
-
-        Empresa empresa5 = new Empresa("Clinica Bem-Estar", "clinicabemestar@example.com",
-                "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);
-
         empresasCadastradas.getItems().addAll(
                 "Tech Solutions Ltda.",
                 "Express Logistica e Transporte",
@@ -470,10 +455,13 @@ public class ControllerGeral implements Initializable {
             String nome = campoCadastroEmpresaNome.getText();
             String email = campoCadastroEmpresaEmail.getText();
             String descricao = campoCadastroEmpresaDescricao.getText();
-            LocalDate data = campoCadastroEmpresaData.getValue();
+            // LocalDate data = campoCadastroEmpresaData.getValue();
             String senha = campoCadastroEmpresaSenha.getText();
             String cnpjStr = campoCadastroEmpresaCNPJ.getText();
             long cnpj = Long.parseLong(cnpjStr);
+
+            LocalDate data = campoCadastroEmpresaData.getValue();
+            Date dataDate = java.sql.Date.valueOf(data);
 
             if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data == null || senha.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
@@ -483,7 +471,7 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
 
-            Empresa novaEmpresa = new Empresa(nome, email, descricao, data.toString(), senha, cnpj);
+            Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
             atualizarChoiceBoxEmpresas();
@@ -786,7 +774,9 @@ public class ControllerGeral implements Initializable {
             String quantidadesItens = quantidadesItensDevolucao.getText();
             String idSubstituicao = idSubstituicaoDevolucao.getText();
             String descricaoItem = descricaoItemDevolucao.getText();
-            String dataCompra = dataCompraDevolucao.getText();
+            // String dataCompra = dataCompraDevolucao.getText();
+            LocalDate dataCompra = dataCompraDevolucao.getValue();
+            Date dataCompraDate = java.sql.Date.valueOf(dataCompra);
 
             if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
                     || justificativa.isEmpty() || quantidadesItens.isEmpty() || idSubstituicao.isEmpty()
@@ -820,7 +810,7 @@ public class ControllerGeral implements Initializable {
             Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
             Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
-                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
+                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompraDate);
 
             empresa.adicionarDevolucao(devolucao);
 
@@ -831,7 +821,7 @@ public class ControllerGeral implements Initializable {
             quantidadesItensDevolucao.clear();
             idSubstituicaoDevolucao.clear();
             descricaoItemDevolucao.clear();
-            dataCompraDevolucao.clear();
+            dataCompraDevolucao.setValue(null);
 
             Alert alert = new Alert(AlertType.CONFIRMATION,
                     "Pedido de devolucao enviado. Acompanhe o status em nosso menu na Home.", ButtonType.OK);
@@ -842,7 +832,6 @@ public class ControllerGeral implements Initializable {
                     mostrarHomeCliente();
                 }
             });
-
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
@@ -1126,7 +1115,7 @@ public class ControllerGeral implements Initializable {
         cpfClienteDevolucaoLabel.setText(String.valueOf(cliente.getCpf()));
 
         emailClienteDevolucaoLabel.setText(cliente.getEmail());
-        dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
+        // dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
 
         idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
         quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());
