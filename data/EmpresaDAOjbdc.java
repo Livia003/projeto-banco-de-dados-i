@@ -2,6 +2,7 @@ package data;
 
 import java.security.spec.ECFieldFp;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa Empresa = new Empresa();
           Empresa.setDescricao(resultSet.getString("descricao"));
           Empresa.setCnpj(resultSet.getLong("cnpj"));
-          Empresa.setdt_nascimento(resultSet.getString("dt_nascimento"));
+          Empresa.setdt_nascimento(resultSet.getDate("dt_nascimento"));
           //Empresa.setId(resultSet.getId());
           Empresa.setEmail(resultSet.getString("e_email"));
           Empresa.setNome(resultSet.getString("nome"));
@@ -64,7 +65,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst = connection.prepareStatement(sqlQuery);
       pst.setString(1, Empresa.getSenha());
       pst.setString(2, Empresa.getEmail());
-      pst.setString(3, Empresa.getdt_nascimento());
+      pst.setDate(3, (Date) Empresa.getdt_nascimento());
       pst.setString(4, Empresa.getDescricao());
       pst.setString(5, Empresa.getNome());
       //pst.setString(6, Empresa.getEndereco());
@@ -78,8 +79,8 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
   }
 
   @Override
-  public Empresa readEmpresa(Long cnpj) {
-    String sqlQuery = "select * from app.Empresa where cnpj=?";
+  public Empresa readEmpresa(String e_email) {
+    String sqlQuery = "select * from app.Empresa where e_email=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -87,7 +88,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
+      pst.setString(1, e_email);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -172,7 +173,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst = connection.prepareStatement(sqlQuery);
       pst.setString(1, Empresa.getSenha());
       pst.setString(2, Empresa.getEmail());
-      pst.setString(3, Empresa.getdt_nascimento());
+      pst.setDate(3, (Date) Empresa.getdt_nascimento());
       pst.setString(4, Empresa.getDescricao());
       pst.setString(5, Empresa.getNome());
       //pst.setString(6, Empresa.getEndereco());

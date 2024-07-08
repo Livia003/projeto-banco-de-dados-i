@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Empresa {
     private String nome;
     private String email;
     private String descricao;
-    private String dt_nascimento;
+    private Date dt_nascimento;
     private String senha;
     private long cnpj;
 
@@ -18,7 +19,8 @@ public class Empresa {
     private List<Devolucao> pedidosDevolucaoRecebidos;
     private static List<Empresa> empresas = new ArrayList<>();
 
-    public Empresa(String nome, String email, String descricao, String dt_nascimento, String senha, long cnpj) {
+    public Empresa(String nome, String email, String descricao, Date dt_nascimento, String senha, long cnpj) {
+
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
@@ -62,11 +64,11 @@ public class Empresa {
         this.descricao = descricao;
     }
 
-    public String getdt_nascimento() {
+    public Date getdt_nascimento() {
         return dt_nascimento;
     }
 
-    public void setdt_nascimento(String dt_nascimento) {
+    public void setdt_nascimento(Date dt_nascimento) {
         this.dt_nascimento = dt_nascimento;
     }
 

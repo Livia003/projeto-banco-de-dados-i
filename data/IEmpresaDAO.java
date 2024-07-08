@@ -5,7 +5,7 @@ import model.Empresa;
 public interface IEmpresaDAO {
     ArrayList<Empresa> getAllEmpresas();
     void createEmpresa (Empresa empresa);
-    Empresa readEmpresa (Long cnpj);
+    Empresa readEmpresa (String e_mail);
     void updateEmpresa (Empresa empresa);
     void deleteEmpresa (Empresa empresa);
     Empresa queryAccount (Long cnpj);

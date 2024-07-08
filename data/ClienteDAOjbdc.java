@@ -71,8 +71,8 @@ public class ClienteDAOjbdc implements IClienteDAO{
   }
 
   @Override
-  public Cliente readCliente(Long cpf) {
-    String sqlQuery = "select * from app.cliente where cpf=?";
+  public Cliente readCliente(String c_email) {
+    String sqlQuery = "select * from app.cliente where c_email=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -80,7 +80,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cpf);
+      pst.setString(1, c_email);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {

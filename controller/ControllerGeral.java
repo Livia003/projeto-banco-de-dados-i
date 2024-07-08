@@ -370,7 +370,7 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
-        Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
+       /*  Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
                 "Especializada em soluções tecnológicas", "2023-05-01", "senha123", 99766);
 
         Empresa empresa2 = new Empresa("Express Logistica e Transporte", "expresslogistica@example.com",
@@ -383,7 +383,7 @@ public class ControllerGeral implements Initializable {
                 "Projetos e obras para o desenvolvimento urbano", "2023-05-04", "senhaabc", 9499494);
 
         Empresa empresa5 = new Empresa("Clinica Bem-Estar", "clinicabemestar@example.com",
-                "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);
+                "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);*/
 
         empresasCadastradas.getItems().addAll(
                 "Tech Solutions Ltda.",
@@ -479,10 +479,13 @@ public class ControllerGeral implements Initializable {
             String nome = campoCadastroEmpresaNome.getText();
             String email = campoCadastroEmpresaEmail.getText();
             String descricao = campoCadastroEmpresaDescricao.getText();
-            LocalDate data = campoCadastroEmpresaData.getValue();
             String senha = campoCadastroEmpresaSenha.getText();
             String cnpjStr = campoCadastroEmpresaCNPJ.getText();
             long cnpj = Long.parseLong(cnpjStr);
+
+            LocalDate data = campoCadastroEmpresaData.getValue();
+            Date dataDate = java.sql.Date.valueOf(data);
+
 
             if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data == null || senha.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
@@ -492,7 +495,7 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
 
-            Empresa novaEmpresa = new Empresa(nome, email, descricao, data.toString(), senha, cnpj);
+            Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
             eDao.createEmpresa(novaEmpresa);
@@ -518,8 +521,8 @@ public class ControllerGeral implements Initializable {
     private void loginCliente() {
         try {
 
-            campoLoginEmpresaEmail.toFront();
-            campoLoginEmpresaSenha.toFront();
+            campoLoginClienteEmail.toFront();
+            campoLoginClienteSenha.toFront();
 
             String email = campoLoginClienteEmail.getText();
             String senha = campoLoginClienteSenha.getText();
@@ -531,13 +534,16 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
-
-            ClienteController clienteController = new ClienteController();
-            Cliente cliente = clienteController.buscarClientePorEmailESenha(email, senha);
-
-            if (cliente == null) {
+            Cliente cliente = cDao.readCliente(email);
+            if (cliente == null || !cliente.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
+            //ClienteController clienteController = new ClienteController();
+            //Cliente cliente1 = clienteController.buscarClientePorEmailESenha(email, senha);
+
+           if (cliente == null) {
+               throw new IllegalArgumentException("Email ou senha incorretos.");
+           }
 
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
@@ -545,6 +551,8 @@ public class ControllerGeral implements Initializable {
 
             campoLoginClienteEmail.clear();
             campoLoginClienteSenha.clear();
+            campoLoginClienteEmail.setVisible(false);
+            campoLoginClienteSenha.setVisible(false);
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
@@ -574,9 +582,12 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email inválido. Verifique o formato.");
             }
-
-            EmpresaController empresaController = new EmpresaController();
-            Empresa empresa = empresaController.buscarEmpresaPorEmailESenha(email, senha);
+            Empresa empresa = eDao.readEmpresa(email);
+            if (empresa == null || !empresa.getSenha().equals(senha)) {
+                throw new IllegalArgumentException("Email ou senha incorretos.");
+            }
+            //EmpresaController empresaController = new EmpresaController();
+            //Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email, senha);
 
             if (empresa == null) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
@@ -696,14 +707,14 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-
-            EmpresaController empresaController = new EmpresaController();
-            Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+            Empresa empresa = eDao.readEmpresa(justificativa);
+            //EmpresaController empresaController = new EmpresaController();
+            //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, justificativa,
                     motivoSelecionado);
-
-            empresa.adicionarReclamacao(reclamacao);
+            rDAO.createReclamacao(reclamacao);
+            //empresa.updateEmpresa(reclamacao);
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
