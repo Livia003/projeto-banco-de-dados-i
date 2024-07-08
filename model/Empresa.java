@@ -10,7 +10,7 @@ public class Empresa {
     private String nome;
     private String email;
     private String descricao;
-    private String data;
+    private String dt_nascimento;
     private String senha;
     private long cnpj;
 
@@ -18,12 +18,12 @@ public class Empresa {
     private List<Devolucao> pedidosDevolucaoRecebidos;
     private static List<Empresa> empresas = new ArrayList<>();
 
-    public Empresa(String nome, String email, String descricao, String data, String senha, long cnpj) {
+    public Empresa(String nome, String email, String descricao, String dt_nascimento, String senha, long cnpj) {
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
         this.descricao = descricao;
-        this.data = data;
+        this.dt_nascimento = dt_nascimento;
         this.senha = senha;
         this.cnpj = cnpj;
         this.reclamacoesRecebidas = new ArrayList<>();
@@ -62,12 +62,12 @@ public class Empresa {
         this.descricao = descricao;
     }
 
-    public String getData() {
-        return data;
+    public String getdt_nascimento() {
+        return dt_nascimento;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setdt_nascimento(String dt_nascimento) {
+        this.dt_nascimento = dt_nascimento;
     }
 
     public String getSenha() {
@@ -146,14 +146,12 @@ public class Empresa {
         }
     }
 
-    public void setCnpj(long long1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCnpj'");
+    public void setCnpj(long cnpj) {
+        this.cnpj = cnpj;
     }
 
     public long getCnpj() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCnpj'");
+        return cnpj;
     }
 
 }
