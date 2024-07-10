@@ -549,10 +549,6 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
 
-            // ClienteController clienteController = new ClienteController();
-            // Cliente cliente1 = clienteController.buscarClientePorEmailESenha(email,
-            // senha);
-
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
             mostrarPaginaConfirmacao(1);
@@ -594,13 +590,9 @@ public class ControllerGeral implements Initializable {
             if (empresa == null || !empresa.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
-            // EmpresaController empresaController = new EmpresaController();
-            // Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email,
-            // senha);
 
             idEmpresa = empresa.getId();
             mostrarPaginaConfirmacao(0);
-            //atualizarChoiceBoxEmpresas();
 
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
@@ -699,7 +691,9 @@ public class ControllerGeral implements Initializable {
             String produtoId = idProduto.getText();
             String empresaSelecionada = empresasCadastradas.getText();
             String desc = descricao.getText();
+
             Empresa empresa = eDao.queryName(empresaSelecionada);
+
             if (empresa == null || !empresa.getNome().equals(empresaSelecionada)) {
                 throw new IllegalArgumentException("Empresa nao cadastrada");
             }
@@ -715,22 +709,18 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-            //Empresa empresa = empresa.buscarEmpresaPorNome(empresaSelecionada);
-            //EmpresaController empresaController = new EmpresaController();
-            // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
             
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, desc, motivoSelecionado);
 
             rDAO.createReclamacao(reclamacao);
-            //empresa.adicionarReclamacao(reclamacao);
-            //eDao.updateEmpresa(empresa);
 
-            //empresa.getId(reclamacao.getId());
-            //empresa.updateEmpresa(empresa);
-            Cliente cliente = Cliente.buscarClientePorId(idCliente);
-            if (cliente != null) {
-                cliente.adicionarReclamacao(reclamacao);
-            }
+            int r_id = reclamacao.getId();
+            empresa.setRec_id(r_id);
+            eDao.updateEmpresa(empresa);
+
+            Cliente cliente = cDao.queryAccount(idCliente);
+            cliente.setRec_id(r_id);
+            cDao.updateCliente(cliente);
 
             empresasCadastradas.clear();
             motivoReclamacao.setValue(null);
@@ -1359,26 +1349,36 @@ public class ControllerGeral implements Initializable {
 
     private void buscarTodasAsReclamacoesDaEmpresa() {
         try {
-
+            // Verificação de inicialização dos objetos FXML
+            if (reclamacoesVBoxEmpresa == null || mainVBoxReclamacaoesEmpresa == null) {
+                throw new IllegalArgumentException("Os objetos FXML devem ser inicializados.");
+            }
+    
             reclamacoesVBoxEmpresa.getChildren().clear();
-
+    
+            // Busca pela empresa e verificação se a empresa é nula
             Empresa empresa = Empresa.buscarEmpresaPorId(idEmpresa);
-
+            if (empresa == null) {
+                throw new IllegalArgumentException("Empresa não encontrada.");
+            }
+    
+            // Obtenção das reclamações
             List<Reclamacao> reclamacoes = empresa.getReclamacoesRecebidas();
-
+    
             for (Reclamacao reclamacao : reclamacoes) {
                 adicionarReclamacaoEmpresa(reclamacao, empresa);
             }
-
+    
             mainVBoxReclamacaoesEmpresa.setVisible(true);
             reclamacoesVBoxEmpresa.setVisible(true);
-
+    
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
 
     public void adicionarReclamacaoEmpresa(Reclamacao reclamacao, Empresa empresa) {
 

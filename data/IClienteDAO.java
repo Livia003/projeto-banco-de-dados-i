@@ -8,6 +8,6 @@ public interface IClienteDAO {
     Cliente readCliente (String email);
     void updateCliente (Cliente cliente);
     void deleteCliente (Cliente cliente);
-    Cliente queryAccount (Long cpf);
+    Cliente queryAccount (int id);
     Cliente queryName(Long cpf);
 }

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Cliente;
+import model.Empresa;
 
 public class ClienteDAOjbdc implements IClienteDAO{
 
@@ -33,7 +34,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente.setEmail(resultSet.getString("c_email"));
           cliente.setNome(resultSet.getString("nome"));
           cliente.setSenha(resultSet.getString("c_senha"));
-          //cliente.adicionarDevolucao(resultSet.getArray("devolucao"));
+          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
           //cliente.setReclamacoes(resultSet.getInt("reclamacoes"));
           clientes.add(cliente);
         }
@@ -94,6 +95,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente.setEndereco(resultSet.getString("endereco"));
           cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
           cliente.setId(resultSet.getInt("cliente_id"));
+          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
         }
         resultSet.close();
         pst.close();
@@ -104,9 +106,10 @@ public class ClienteDAOjbdc implements IClienteDAO{
     }
     return cliente;
   }
+ 
   @Override
-  public Cliente queryAccount(Long cpf) {
-    String sqlQuery = "select * from app.cliente where cpf=?";
+  public Cliente queryAccount(int cliente_id) {
+    String sqlQuery = "select * from app.cliente where cliente_id=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -114,13 +117,20 @@ public class ClienteDAOjbdc implements IClienteDAO{
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cpf);
+      pst.setInt(1, cliente_id);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
           cliente = new Cliente();
+          cliente.setNome(resultSet.getString("nome"));
+          cliente.setCpf(resultSet.getLong("cpf"));
           cliente.setEmail(resultSet.getString("c_email"));
           cliente.setSenha(resultSet.getString("c_senha"));
+          cliente.setTelefone(resultSet.getLong("telefone"));
+          cliente.setEndereco(resultSet.getString("endereco"));
+          cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
+          cliente.setId(resultSet.getInt("cliente_id"));
+          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
         }
         resultSet.close();
         pst.close();
@@ -160,7 +170,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void updateCliente(Cliente cliente) {
-    String sqlQuery = "update app.cliente set c_senha=?, c_email=?, telefone=?, nome=?, cliente_id=?, endereco=?,dt_nascimento=? where cpf=?";
+    String sqlQuery = "update app.cliente set c_senha=?, c_email=?, telefone=?, nome=?, cpf=?, reclamacoesrecebidas =?, endereco=?,dt_nascimento=? where cliente_id=?";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -168,13 +178,13 @@ public class ClienteDAOjbdc implements IClienteDAO{
       pst = connection.prepareStatement(sqlQuery);
       pst.setString(1, cliente.getSenha());
       pst.setString(2, cliente.getEmail());
-      pst.setDate(3, (Date) cliente.getDataNascimento());
-      pst.setLong(4, cliente.getTelefone());
-      pst.setString(5, cliente.getNome());
-      pst.setString(6, cliente.getEndereco());
-      pst.setLong(7, cliente.getCpf());
-      pst.setInt(8, cliente.getId());
-  
+      pst.setLong(3, cliente.getTelefone());
+      pst.setString(4, cliente.getNome());
+      pst.setLong(5, cliente.getCpf());
+      pst.setInt(6,cliente.getRec_id());
+      pst.setString(7, cliente.getEndereco());
+      pst.setDate(8, (Date) cliente.getDataNascimento());
+      pst.setInt(9, cliente.getId());
       pst.execute();
       pst.close();
       connection.close();

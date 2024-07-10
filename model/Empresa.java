@@ -9,6 +9,8 @@ public class Empresa {
 
     private static int proximoId;
     private int id;
+    private int rec_id;
+    private int dev_id;
     private String nome;
     private String email;
     private String descricao;
@@ -35,10 +37,28 @@ public class Empresa {
         this.cnpj = cnpj;
         this.reclamacoesRecebidas = new ArrayList<>();
         this.pedidosDevolucaoRecebidos = new ArrayList<>();
+        this.rec_id = rec_id;
+        this.dev_id =dev_id;
         empresas.add(this);
     }
 
     public Empresa() {
+    }
+
+    public int getRec_id(){
+        return rec_id;
+    }
+
+    public int getDev_id(){
+        return dev_id;
+    }
+
+    public void setDev_id(int dev_id){
+        this.dev_id = dev_id;
+    }
+
+    public void setRec_id(int rec_id){
+        this.rec_id = rec_id;
     }
 
     public int getId() {
@@ -95,6 +115,10 @@ public class Empresa {
     }
 
     public void adicionarReclamacao(Reclamacao reclamacao) {
+        this.reclamacoesRecebidas.add(reclamacao);
+    }
+
+    public void adicionarReclamacaoId(Reclamacao reclamacao) {
         this.reclamacoesRecebidas.add(reclamacao);
     }
 

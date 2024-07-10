@@ -16,6 +16,9 @@ public class Cliente extends Usuario {
     private Date dataNascimento;
     private long telefone;
     private String endereco;
+    private int rec_id;
+    private int dev_id;
+    
 
     public Cliente(String nome, String email, String senha, long cpf, Date dataNascimento, long telefone,
             String endereco) {
@@ -35,6 +38,21 @@ public class Cliente extends Usuario {
     public Cliente() {
     }
 
+    public int getRec_id(){
+        return rec_id;
+    }
+
+    public int getDev_id(){
+        return dev_id;
+    }
+
+    public void setDev_id(int dev_id){
+        this.dev_id = dev_id;
+    }
+
+    public void setRec_id(int rec_id){
+        this.rec_id = rec_id;
+    }
     // Getters e Setters para os novos atributos
     public long getCpf() {
         return cpf;
