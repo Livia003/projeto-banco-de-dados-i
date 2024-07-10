@@ -165,6 +165,9 @@ public class ControllerGeral implements Initializable {
     private Label nomeCliente;
 
     @FXML
+    private Label nomeEmpresa;
+
+    @FXML
     private Label counter;
 
     @FXML
@@ -478,6 +481,8 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
+
+            atualizarNomeEmpresa(nome);
 
             Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
@@ -1084,6 +1089,8 @@ public class ControllerGeral implements Initializable {
 
     private void concederDevolucao(Devolucao devolucao, Cliente cliente) {
 
+        nomeEmpresa.setVisible(false);
+
         dataCompraDevolucaoLabel.setVisible(true);
         dataCompraDevolucaoLabel.toFront();
 
@@ -1251,6 +1258,7 @@ public class ControllerGeral implements Initializable {
 
     private void responderReclamacao(Reclamacao reclamacao, Cliente cliente) {
 
+        nomeEmpresa.setVisible(false);
         esconderElementosDentroDoLogin();
         responderReclamacaoBackground.setVisible(true);
 
@@ -1393,6 +1401,10 @@ public class ControllerGeral implements Initializable {
         nomeCliente.setText(nome);
     }
 
+    private void atualizarNomeEmpresa(String nome) {
+        nomeEmpresa.setText(nome);
+    }
+
     @FXML
     private void voltarLoginCliente() {
         campoCadastroClienteNome.clear();
@@ -1493,6 +1505,7 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginCliente.setVisible(false);
         jumpingBackLoginEmpresa.setVisible(false);
         esconderElementosDentroDoLogin();
+        nomeEmpresa.setVisible(true);
         sucessoResponderReclamacao.setVisible(false);
         responderReclamacaoBackground.setVisible(false);
         homeCompanyBackground.setVisible(true);
@@ -1634,7 +1647,7 @@ public class ControllerGeral implements Initializable {
         opcaoDevolucaoSubsituicao.setVisible(false);
         botaoDevolucaoConcedidaEnviada.setVisible(false);
         double larguraTela = 1000;
-
+        nomeEmpresa.setVisible(false);
         TranslateTransition transicaoCliente = new TranslateTransition(Duration.seconds(1), botaoInicialCliente);
         transicaoCliente.setFromX(larguraTela);
         transicaoCliente.setToX(150);
