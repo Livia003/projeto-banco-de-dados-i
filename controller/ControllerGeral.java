@@ -165,6 +165,9 @@ public class ControllerGeral implements Initializable {
     private Label nomeCliente;
 
     @FXML
+    private Label nomeEmpresa;
+
+    @FXML
     private Label counter;
 
     @FXML
@@ -242,7 +245,7 @@ public class ControllerGeral implements Initializable {
     private TextField justificativaDevolucao;
 
     @FXML
-    private TextField dataCompraDevolucao;
+    private DatePicker dataCompraDevolucao;
 
     @FXML
     private Button botaoEnviarReclamacao;
@@ -372,6 +375,7 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
+<<<<<<< HEAD
        /*  Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
                 "Especializada em soluções tecnológicas", "2023-05-01", "senha123", 99766);
 
@@ -388,6 +392,9 @@ public class ControllerGeral implements Initializable {
                 "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);*/
 
        /*  empresasCadastradas.getItems().addAll(
+=======
+        empresasCadastradas.getItems().addAll(
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
                 "Tech Solutions Ltda.",
                 "Express Logistica e Transporte",
                 "Comida Facil Delivery",
@@ -455,7 +462,7 @@ public class ControllerGeral implements Initializable {
             Cliente novoCliente = new Cliente(nome, email, senha, cpf, dataNascimentoDate, telefone, endereco);
             clienteController.cadastrarNovoCliente(novoCliente);
             cDao.createCliente(novoCliente);
-            
+
             idCliente = novoCliente.getId();
             mostrarPaginaConfirmacao(1);
 
@@ -488,7 +495,6 @@ public class ControllerGeral implements Initializable {
             LocalDate data = campoCadastroEmpresaData.getValue();
             Date dataDate = java.sql.Date.valueOf(data);
 
-
             if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data == null || senha.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
@@ -496,6 +502,8 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
+
+            atualizarNomeEmpresa(nome);
 
             Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
@@ -540,6 +548,16 @@ public class ControllerGeral implements Initializable {
             if (cliente == null || !cliente.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
+<<<<<<< HEAD
+=======
+            // ClienteController clienteController = new ClienteController();
+            // Cliente cliente1 = clienteController.buscarClientePorEmailESenha(email,
+            // senha);
+
+            if (cliente == null) {
+                throw new IllegalArgumentException("Email ou senha incorretos.");
+            }
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
@@ -582,6 +600,16 @@ public class ControllerGeral implements Initializable {
             if (empresa == null || !empresa.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
+<<<<<<< HEAD
+=======
+            // EmpresaController empresaController = new EmpresaController();
+            // Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email,
+            // senha);
+
+            if (empresa == null) {
+                throw new IllegalArgumentException("Email ou senha incorretos.");
+            }
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             idEmpresa = empresa.getId();
             mostrarPaginaConfirmacao(0);
@@ -700,15 +728,25 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
+<<<<<<< HEAD
             //Empresa empresa = empresa.buscarEmpresaPorNome(empresaSelecionada);
             //EmpresaController empresaController = new EmpresaController();
             // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
             
             Reclamacao reclamacao = new Reclamacao(idCliente, empresaSelecionada.getId(), produtoIdInt, desc, motivoSelecionado);
+=======
+            Empresa empresa = eDao.readEmpresa(justificativa);
+            // EmpresaController empresaController = new EmpresaController();
+            // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             rDAO.createReclamacao(reclamacao);
+<<<<<<< HEAD
             //empresa.getId(reclamacao.getId());
             //empresa.updateEmpresa(empresa);
+=======
+            // empresa.updateEmpresa(reclamacao);
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
@@ -801,7 +839,9 @@ public class ControllerGeral implements Initializable {
             String quantidadesItens = quantidadesItensDevolucao.getText();
             String idSubstituicao = idSubstituicaoDevolucao.getText();
             String descricaoItem = descricaoItemDevolucao.getText();
-            String dataCompra = dataCompraDevolucao.getText();
+            // String dataCompra = dataCompraDevolucao.getText();
+            LocalDate dataCompra = dataCompraDevolucao.getValue();
+            Date dataCompraDate = java.sql.Date.valueOf(dataCompra);
 
             Empresa empresa = eDao.queryName(empresaSelecionada);
             if (empresa == null || !empresa.getNome().equals(empresaSelecionada)) {
@@ -834,8 +874,12 @@ public class ControllerGeral implements Initializable {
             //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
             Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
+<<<<<<< HEAD
                     motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
             dDao.createDevolucao(devolucao);
+=======
+                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompraDate);
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             empresa.adicionarDevolucao(devolucao);
 
@@ -846,7 +890,7 @@ public class ControllerGeral implements Initializable {
             quantidadesItensDevolucao.clear();
             idSubstituicaoDevolucao.clear();
             descricaoItemDevolucao.clear();
-            dataCompraDevolucao.clear();
+            dataCompraDevolucao.setValue(null);
 
             Alert alert = new Alert(AlertType.CONFIRMATION,
                     "Pedido de devolucao enviado. Acompanhe o status em nosso menu na Home.", ButtonType.OK);
@@ -857,7 +901,6 @@ public class ControllerGeral implements Initializable {
                     mostrarHomeCliente();
                 }
             });
-
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
@@ -1094,6 +1137,8 @@ public class ControllerGeral implements Initializable {
 
     private void concederDevolucao(Devolucao devolucao, Cliente cliente) {
 
+        nomeEmpresa.setVisible(false);
+
         dataCompraDevolucaoLabel.setVisible(true);
         dataCompraDevolucaoLabel.toFront();
 
@@ -1144,7 +1189,7 @@ public class ControllerGeral implements Initializable {
         cpfClienteDevolucaoLabel.setText(String.valueOf(cliente.getCpf()));
 
         emailClienteDevolucaoLabel.setText(cliente.getEmail());
-        dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
+        // dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
 
         idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
         quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());
@@ -1261,6 +1306,7 @@ public class ControllerGeral implements Initializable {
 
     private void responderReclamacao(Reclamacao reclamacao, Cliente cliente) {
 
+        nomeEmpresa.setVisible(false);
         esconderElementosDentroDoLogin();
         responderReclamacaoBackground.setVisible(true);
 
@@ -1403,6 +1449,10 @@ public class ControllerGeral implements Initializable {
         nomeCliente.setText(nome);
     }
 
+    private void atualizarNomeEmpresa(String nome) {
+        nomeEmpresa.setText(nome);
+    }
+
     @FXML
     private void voltarLoginCliente() {
         campoCadastroClienteNome.clear();
@@ -1503,6 +1553,7 @@ public class ControllerGeral implements Initializable {
         jumpingBackLoginCliente.setVisible(false);
         jumpingBackLoginEmpresa.setVisible(false);
         esconderElementosDentroDoLogin();
+        nomeEmpresa.setVisible(true);
         sucessoResponderReclamacao.setVisible(false);
         responderReclamacaoBackground.setVisible(false);
         homeCompanyBackground.setVisible(true);
@@ -1644,7 +1695,7 @@ public class ControllerGeral implements Initializable {
         opcaoDevolucaoSubsituicao.setVisible(false);
         botaoDevolucaoConcedidaEnviada.setVisible(false);
         double larguraTela = 1000;
-
+        nomeEmpresa.setVisible(false);
         TranslateTransition transicaoCliente = new TranslateTransition(Duration.seconds(1), botaoInicialCliente);
         transicaoCliente.setFromX(larguraTela);
         transicaoCliente.setToX(150);

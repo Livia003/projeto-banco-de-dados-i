@@ -12,7 +12,9 @@ public class Empresa {
     private String nome;
     private String email;
     private String descricao;
+
     private Date dt_nascimento;
+
     private String senha;
     private long cnpj;
 
@@ -21,14 +23,16 @@ public class Empresa {
     private static List<Empresa> empresas = new ArrayList<>();
 
     public Empresa(String nome, String email, String descricao, Date dt_nascimento, String senha, long cnpj) {
+<<<<<<< HEAD
         
         Random random = new Random();
         int proximoId = random.nextInt(50);
+=======
+>>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
         this.descricao = descricao;
-        this.dt_nascimento = dt_nascimento;
         this.senha = senha;
         this.cnpj = cnpj;
         this.reclamacoesRecebidas = new ArrayList<>();
