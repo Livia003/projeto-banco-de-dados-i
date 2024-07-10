@@ -20,6 +20,7 @@ public class Empresa {
     private static List<Empresa> empresas = new ArrayList<>();
 
     public Empresa(String nome, String email, String descricao, Date data, String senha, long cnpj) {
+
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
@@ -33,7 +34,6 @@ public class Empresa {
     }
 
     public Empresa() {
-        // TODO Auto-generated constructor stub
     }
 
     public int getId() {
@@ -148,14 +148,12 @@ public class Empresa {
         }
     }
 
-    public void setCnpj(long long1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCnpj'");
+    public void setCnpj(long cnpj) {
+        this.cnpj = cnpj;
     }
 
     public long getCnpj() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCnpj'");
+        return cnpj;
     }
 
 }

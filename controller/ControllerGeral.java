@@ -11,6 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import data.ClienteDAOjbdc;
+import data.DevolucaoDAOjbdc;
+import data.EmpresaDAOjbdc;
+import data.ReclamacaoDAOjbdc;
 import javafx.scene.control.DatePicker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -354,6 +358,10 @@ public class ControllerGeral implements Initializable {
 
     ClienteController clienteController = new ClienteController();
     EmpresaController empresaController = new EmpresaController();
+    ClienteDAOjbdc cDao = new ClienteDAOjbdc();
+    EmpresaDAOjbdc eDao = new EmpresaDAOjbdc();
+    DevolucaoDAOjbdc dDao = new DevolucaoDAOjbdc();
+    ReclamacaoDAOjbdc rDAO = new ReclamacaoDAOjbdc();
 
     int idCliente, idEmpresa;
 
@@ -428,8 +436,9 @@ public class ControllerGeral implements Initializable {
             Date dataNascimentoDate = java.sql.Date.valueOf(dataNascimento);
 
             Cliente novoCliente = new Cliente(nome, email, senha, cpf, dataNascimentoDate, telefone, endereco);
-
             clienteController.cadastrarNovoCliente(novoCliente);
+            cDao.createCliente(novoCliente);
+            
             idCliente = novoCliente.getId();
             mostrarPaginaConfirmacao(1);
 
@@ -474,6 +483,7 @@ public class ControllerGeral implements Initializable {
             Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
+            eDao.createEmpresa(novaEmpresa);
             atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao(0);
 

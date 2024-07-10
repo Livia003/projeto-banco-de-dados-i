@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Devolucao;
-import model.Reclamacao;
 import model.StatusDevolucao;
 
 public class DevolucaoDAOjbdc implements IDevolucaoDAO {
@@ -60,8 +59,8 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             pst.setInt(3, devolucao.getProdutoId());
             pst.setString(4, devolucao.getDescricao());
             pst.setString(5, devolucao.getMotivo());
-            //pst.setInt(6, devolucao.getQuantidade());
-           // pst.setInt(7, devolucao.getIdSubstituicao());
+            pst.setInt(6, devolucao.getQuantidade());
+            pst.setInt(7, devolucao.getIdSubstituicao());
             pst.setString(8, devolucao.getStatus().toString());
             pst.execute();
             pst.close();
@@ -117,8 +116,8 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             pst.setInt(3, devolucao.getProdutoId());
             pst.setString(4, devolucao.getDescricao());
             pst.setString(5, devolucao.getMotivo());
-            //pst.setInt(6, devolucao.getQuantidade());
-            //pst.setInt(7, devolucao.getIdSubstituicao());
+            pst.setInt(6, devolucao.getQuantidade());
+            pst.setInt(7, devolucao.getIdSubstituicao());
             pst.setString(8, devolucao.getStatus().toString());
             pst.setInt(9, devolucao.getId());
             pst.execute();
@@ -137,7 +136,7 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
         try {
             connection = new ConnectionFactory().getConnection();
             pst = connection.prepareStatement(sqlQuery);
-            pst.setInt(1, id);
+            //pst.setInt(1, id);
             pst.execute();
             pst.close();
             connection.close();

@@ -28,11 +28,13 @@ public class ClienteDAOjbdc implements IClienteDAO{
           Cliente cliente = new Cliente();
           cliente.setTelefone(resultSet.getLong("telefone"));
           cliente.setCpf(resultSet.getLong("cpf"));
-          cliente.setDataNascimento(resultSet.getDate("dtNasc"));
+          cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
           cliente.setEndereco(resultSet.getString("endereco"));
-          cliente.setEmail(resultSet.getString("email"));
+          cliente.setEmail(resultSet.getString("c_email"));
           cliente.setNome(resultSet.getString("nome"));
-          cliente.setSenha(resultSet.getString("senha"));
+          cliente.setSenha(resultSet.getString("c_senha"));
+          //cliente.adicionarDevolucao(resultSet.getArray("devolucao"));
+          //cliente.setReclamacoes(resultSet.getInt("reclamacoes"));
           clientes.add(cliente);
         }
         resultSet.close();
@@ -47,7 +49,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void createCliente(Cliente cliente){
-    String sqlQuery = "insert into app.cliente (senha,email,dtNasc,telefone,nome,endereco,cpf) values (?,?,?,?,?,?,?,?);";
+    String sqlQuery = "insert into app.cliente (c_senha,c_email,dt_nascimento,telefone,nome,endereco,cpf) values (?,?,?,?,?,?,?);";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -85,11 +87,18 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente = new Cliente();
           cliente.setNome(resultSet.getString("nome"));
           cliente.setCpf(resultSet.getLong("cpf"));
-          cliente.setEmail(resultSet.getString("email"));
-          cliente.setSenha(resultSet.getString("senha"));
+          cliente.setEmail(resultSet.getString("c_email"));
+          cliente.setSenha(resultSet.getString("c_senha"));
           cliente.setTelefone(resultSet.getLong("telefone"));
           cliente.setEndereco(resultSet.getString("endereco"));
-          cliente.setDataNascimento(resultSet.getDate("dtNasc"));
+          cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
+          //cliente.adicionarDevolucao(resultSet.getArray("devolucao"));
+          //cliente.setReclamacoes(resultSet.getInt("reclamacoes"));
+          // Array reclamacoesArray = resultSet.getArray("reclamacoes");
+          //if (reclamacoesArray != null) {
+          // String[] reclamacoes = (String[]) reclamacoesArray.getArray();
+          //cliente.setReclamacoes(reclamacoes); // Supondo que o método setReclamacoes aceite um array de Strings
+  //}
         }
         resultSet.close();
         pst.close();
@@ -115,8 +124,8 @@ public class ClienteDAOjbdc implements IClienteDAO{
       if (resultSet != null) {
         while (resultSet.next()) {
           cliente = new Cliente();
-          cliente.setEmail(resultSet.getString("email"));
-          cliente.setSenha(resultSet.getString("senha"));
+          cliente.setEmail(resultSet.getString("c_email"));
+          cliente.setSenha(resultSet.getString("c_senha"));
         }
         resultSet.close();
         pst.close();
@@ -156,7 +165,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void updateCliente(Cliente cliente) {
-    String sqlQuery = "update app.cliente set senha=?, email=?, telefone=?, nome=?, endereco=? where cpf=?";
+    String sqlQuery = "update app.cliente set c_senha=?, c_email=?, telefone=?, nome=?, endereco=?,dt_nascimento=? where cpf=?";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -169,6 +178,13 @@ public class ClienteDAOjbdc implements IClienteDAO{
       pst.setString(5, cliente.getNome());
       pst.setString(6, cliente.getEndereco());
       pst.setLong(7, cliente.getCpf());
+       //cliente.adicionarDevolucao(resultSet.getArray("devolucao"));
+          //cliente.setReclamacoes(resultSet.getInt("reclamacoes"));
+          // Array reclamacoesArray = resultSet.getArray("reclamacoes");
+          //if (reclamacoesArray != null) {
+          // String[] reclamacoes = (String[]) reclamacoesArray.getArray();
+          //cliente.setReclamacoes(reclamacoes); // Supondo que o método setReclamacoes aceite um array de Strings
+  //}
       pst.execute();
       pst.close();
       connection.close();
