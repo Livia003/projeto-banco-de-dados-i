@@ -11,7 +11,9 @@ public class Empresa {
     private String nome;
     private String email;
     private String descricao;
-    private Date data;
+
+    private Date dt_nascimento;
+
     private String senha;
     private long cnpj;
 
@@ -19,13 +21,11 @@ public class Empresa {
     private List<Devolucao> pedidosDevolucaoRecebidos;
     private static List<Empresa> empresas = new ArrayList<>();
 
-    public Empresa(String nome, String email, String descricao, Date data, String senha, long cnpj) {
-
+    public Empresa(String nome, String email, String descricao, Date dt_nascimento, String senha, long cnpj) {
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
         this.descricao = descricao;
-        this.data = data;
         this.senha = senha;
         this.cnpj = cnpj;
         this.reclamacoesRecebidas = new ArrayList<>();
@@ -64,12 +64,12 @@ public class Empresa {
         this.descricao = descricao;
     }
 
-    public Date getData() {
-        return data;
+    public Date getdt_nascimento() {
+        return dt_nascimento;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setdt_nascimento(Date dt_nascimento) {
+        this.dt_nascimento = dt_nascimento;
     }
 
     public String getSenha() {
