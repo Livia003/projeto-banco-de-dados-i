@@ -24,7 +24,7 @@ public class Devolucao {
 
     // Construtor
     public Devolucao(int clienteId, int empresaId, int produtoId, String descricao,
-            String motivo, int quantidade, int idSubstituicao, String justificativa, LocalDate dataCompra2) {
+            String motivo, int quantidade, int idSubstituicao, String justificativa, Date dataCompra2) {
         this.id = produtoId++;
         this.clienteId = clienteId;
         this.empresaId = empresaId;

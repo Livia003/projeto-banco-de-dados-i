@@ -597,10 +597,6 @@ public class ControllerGeral implements Initializable {
             // EmpresaController empresaController = new EmpresaController();
             // Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email,
             // senha);
-            if (empresa == null) {
-                throw new IllegalArgumentException("Email ou senha incorretos.");
-            }
-
 
             idEmpresa = empresa.getId();
             mostrarPaginaConfirmacao(0);
@@ -719,23 +715,18 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-
             //Empresa empresa = empresa.buscarEmpresaPorNome(empresaSelecionada);
             //EmpresaController empresaController = new EmpresaController();
             // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
             
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, desc, motivoSelecionado);
 
-            //Empresa empresa = eDao.readEmpresa(empresa);
-            // EmpresaController empresaController = new EmpresaController();
-            // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
-
             rDAO.createReclamacao(reclamacao);
+            //empresa.adicionarReclamacao(reclamacao);
+            //eDao.updateEmpresa(empresa);
 
             //empresa.getId(reclamacao.getId());
             //empresa.updateEmpresa(empresa);
-
-            // empresa.updateEmpresa(reclamacao);
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
                 cliente.adicionarReclamacao(reclamacao);
@@ -861,7 +852,7 @@ public class ControllerGeral implements Initializable {
             //EmpresaController empresaController = new EmpresaController();
             //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
-            Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem, motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
+            Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem, motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompraDate);
             dDao.createDevolucao(devolucao);
 
 

@@ -23,12 +23,10 @@ public class Empresa {
     private static List<Empresa> empresas = new ArrayList<>();
 
     public Empresa(String nome, String email, String descricao, Date dt_nascimento, String senha, long cnpj) {
-<<<<<<< HEAD
-        
+   
         Random random = new Random();
         int proximoId = random.nextInt(50);
-=======
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
+
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
