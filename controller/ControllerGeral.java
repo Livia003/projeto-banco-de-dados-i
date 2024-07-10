@@ -375,7 +375,7 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
-<<<<<<< HEAD
+
        /*  Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
                 "Especializada em soluções tecnológicas", "2023-05-01", "senha123", 99766);
 
@@ -392,9 +392,9 @@ public class ControllerGeral implements Initializable {
                 "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);*/
 
        /*  empresasCadastradas.getItems().addAll(
-=======
+
         empresasCadastradas.getItems().addAll(
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
+
                 "Tech Solutions Ltda.",
                 "Express Logistica e Transporte",
                 "Comida Facil Delivery",
@@ -548,16 +548,10 @@ public class ControllerGeral implements Initializable {
             if (cliente == null || !cliente.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
-<<<<<<< HEAD
-=======
+
             // ClienteController clienteController = new ClienteController();
             // Cliente cliente1 = clienteController.buscarClientePorEmailESenha(email,
             // senha);
-
-            if (cliente == null) {
-                throw new IllegalArgumentException("Email ou senha incorretos.");
-            }
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
@@ -600,16 +594,13 @@ public class ControllerGeral implements Initializable {
             if (empresa == null || !empresa.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
-<<<<<<< HEAD
-=======
             // EmpresaController empresaController = new EmpresaController();
             // Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email,
             // senha);
-
             if (empresa == null) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
+
 
             idEmpresa = empresa.getId();
             mostrarPaginaConfirmacao(0);
@@ -728,26 +719,23 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-<<<<<<< HEAD
+
             //Empresa empresa = empresa.buscarEmpresaPorNome(empresaSelecionada);
             //EmpresaController empresaController = new EmpresaController();
             // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
             
-            Reclamacao reclamacao = new Reclamacao(idCliente, empresaSelecionada.getId(), produtoIdInt, desc, motivoSelecionado);
-=======
-            Empresa empresa = eDao.readEmpresa(justificativa);
+            Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, desc, motivoSelecionado);
+
+            //Empresa empresa = eDao.readEmpresa(empresa);
             // EmpresaController empresaController = new EmpresaController();
             // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
             rDAO.createReclamacao(reclamacao);
-<<<<<<< HEAD
+
             //empresa.getId(reclamacao.getId());
             //empresa.updateEmpresa(empresa);
-=======
-            // empresa.updateEmpresa(reclamacao);
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
 
+            // empresa.updateEmpresa(reclamacao);
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
                 cliente.adicionarReclamacao(reclamacao);
@@ -873,13 +861,9 @@ public class ControllerGeral implements Initializable {
             //EmpresaController empresaController = new EmpresaController();
             //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
-            Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
-<<<<<<< HEAD
-                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
+            Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem, motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
             dDao.createDevolucao(devolucao);
-=======
-                    motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompraDate);
->>>>>>> 11212013e3f4f48f0c700e5ce181db9ce6876ab9
+
 
             empresa.adicionarDevolucao(devolucao);
 
