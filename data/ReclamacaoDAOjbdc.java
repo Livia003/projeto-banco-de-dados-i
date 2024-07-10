@@ -26,9 +26,9 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
                 reclamacoes = new ArrayList<Reclamacao>();
                 while (resultSet.next()) {
                     Reclamacao reclamacao = new Reclamacao(
-                        resultSet.getInt("clienteId"),
-                        resultSet.getInt("empresaId"),
-                        resultSet.getInt("produtoId"),
+                        resultSet.getInt("c_id"),
+                        resultSet.getInt("e_id"),
+                        resultSet.getInt("produto_id"),
                         resultSet.getString("descricao"),
                         resultSet.getString("motivo")
                     );
@@ -49,7 +49,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public void createReclamacao(Reclamacao reclamacao) {
-        String sqlQuery = "INSERT INTO app.Reclamacao (clienteId, empresaId, produtoId, descricao, motivo, resposta, status) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String sqlQuery = "INSERT INTO app.Reclamacao (c_id, e_id, produto_id, descricao, motivo, status,id) VALUES (?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement pst;
         Connection connection;
         try {
@@ -60,8 +60,8 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
             pst.setInt(3, reclamacao.getProdutoId());
             pst.setString(4, reclamacao.getDescricao());
             pst.setString(5, reclamacao.getMotivo());
-            pst.setString(6, reclamacao.getResposta());
-            pst.setString(7, reclamacao.getStatus().toString());
+            pst.setString(6, reclamacao.getStatus().toString());
+            pst.setInt(7, reclamacao.getId());
             pst.execute();
             pst.close();
             connection.close();
@@ -84,9 +84,9 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
             resultSet = pst.executeQuery();
             if (resultSet != null && resultSet.next()) {
                 reclamacao = new Reclamacao(
-                    resultSet.getInt("clienteId"),
-                    resultSet.getInt("empresaId"),
-                    resultSet.getInt("produtoId"),
+                    resultSet.getInt("c_id"),
+                    resultSet.getInt("e_d"),
+                    resultSet.getInt("produto_id"),
                     resultSet.getString("descricao"),
                     resultSet.getString("motivo")
                 );

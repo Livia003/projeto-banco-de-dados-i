@@ -298,7 +298,7 @@
 
     <VBox alignment="CENTER" spacing="10" layoutX="234" layoutY="161">
 		<children>
-			<ChoiceBox fx:id="empresasCadastradas" prefHeight="70" prefWidth="515" styleClass="choicebox"/>
+			<TextField fx:id="empresasCadastradas" prefHeight="70" prefWidth="515" styleClass="TextField"/>
 		</children>
 	</VBox>
 
@@ -309,7 +309,7 @@
 	</VBox>
 
     <TextField fx:id="idProduto" promptText="ID do produto" layoutX="234" layoutY="390" prefWidth="515" prefHeight="70" styleClass="text-field-custom"/>
-    <TextField fx:id="justificativaReclamacao" promptText="Escreva a sua justificativa" layoutX="234" layoutY="505" prefWidth="515" prefHeight="80" styleClass="text-field-custom"/>
+    <TextField fx:id="descricao" promptText="Escreva a sua justificativa" layoutX="234" layoutY="505" prefWidth="515" prefHeight="80" styleClass="text-field-custom"/>
 
      <Button fx:id="botaoEnviarReclamacao" text="Enviar"
             layoutX="376" layoutY="620" 
@@ -338,7 +338,7 @@
 
      <VBox alignment="CENTER" spacing="10" layoutX="218" layoutY="180">
 		<children>
-			<ChoiceBox fx:id="empresasCadastradasDevolucao" prefHeight="40" prefWidth="255" styleClass="choicebox"/>
+			<TextField fx:id="empresasCadastradasDevolucao" prefHeight="40" prefWidth="255" styleClass="TextField"/>
 		</children>
 	</VBox>
 

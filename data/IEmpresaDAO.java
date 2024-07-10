@@ -9,5 +9,5 @@ public interface IEmpresaDAO {
     void updateEmpresa (Empresa empresa);
     void deleteEmpresa (Empresa empresa);
     Empresa queryAccount (Long cnpj);
-    Empresa queryName(Long cnpj);
+    Empresa queryName(String nome);
 }

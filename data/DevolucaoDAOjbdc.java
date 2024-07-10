@@ -25,13 +25,13 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
                 devolucaos = new ArrayList<Devolucao>();
                 while (resultSet.next()) {
                     Devolucao devolucao = new Devolucao();
-                        resultSet.getInt("clienteId");
-                        resultSet.getInt("empresaId");
-                        resultSet.getInt("produtoId");
+                        resultSet.getInt("c_id");
+                        resultSet.getInt("e_id");
+                        resultSet.getInt("produto_id");
                         resultSet.getString("descricao");
                         resultSet.getString("motivo");
                         resultSet.getInt("quantidade");
-                        resultSet.getInt("idSubstituicao");
+                        resultSet.getInt("id_substituicao");
                     devolucao.setId(resultSet.getInt("id"));
                     devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
                     devolucaos.add(devolucao);
@@ -48,7 +48,7 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
 
     @Override
     public void createDevolucao(Devolucao devolucao) {
-        String sqlQuery = "insert into app.Devolucao (clienteId, empresaId, produtoId, descricao, motivo, quantidade, idSubstituicao, status) values (?, ?, ?, ?, ?, ?, ?, ?);";
+        String sqlQuery = "insert into app.Devolucao (c_id, e_id, produto_id, descricao, motivo, quantidade, id_substituicao, status) values (?, ?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement pst;
         Connection connection;
         try {
@@ -84,13 +84,13 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             resultSet = pst.executeQuery();
             if (resultSet != null && resultSet.next()) {
                 devolucao = new Devolucao();
-                    resultSet.getInt("clienteId");
-                    resultSet.getInt("empresaId");
-                    resultSet.getInt("produtoId");
+                    resultSet.getInt("c_id");
+                    resultSet.getInt("e_id");
+                    resultSet.getInt("produto_id");
                     resultSet.getString("descricao");
                     resultSet.getString("motivo");
                     resultSet.getInt("quantidade");
-                    resultSet.getInt("idSubstituicao");
+                    resultSet.getInt("id_substituicao");
                 devolucao.setId(resultSet.getInt("id"));
                 devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
                 resultSet.close();

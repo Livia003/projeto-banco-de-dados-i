@@ -3,10 +3,11 @@ package model;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Empresa {
 
-    private static int proximoId = 1;
+    private static int proximoId;
     private int id;
     private String nome;
     private String email;
@@ -20,7 +21,9 @@ public class Empresa {
     private static List<Empresa> empresas = new ArrayList<>();
 
     public Empresa(String nome, String email, String descricao, Date dt_nascimento, String senha, long cnpj) {
-
+        
+        Random random = new Random();
+        int proximoId = random.nextInt(50);
         this.id = proximoId++;
         this.nome = nome;
         this.email = email;
@@ -74,6 +77,11 @@ public class Empresa {
 
     public String getSenha() {
         return senha;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setSenha(String senha) {
@@ -155,5 +163,7 @@ public class Empresa {
     public long getCnpj() {
         return cnpj;
     }
+
+
 
 }

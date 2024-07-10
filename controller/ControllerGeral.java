@@ -216,10 +216,12 @@ public class ControllerGeral implements Initializable {
     private Button botaoLoginEmpresa;
 
     @FXML
-    private ChoiceBox<String> empresasCadastradas;
+    private TextField empresasCadastradas;
+    //private ChoiceBox<String> empresasCadastradas;
 
     @FXML
-    private ChoiceBox<String> empresasCadastradasDevolucao;
+    private TextField empresasCadastradasDevolucao;
+    //private ChoiceBox<String> empresasCadastradasDevolucao;
 
     @FXML
     private ChoiceBox<String> motivoReclamacao;
@@ -234,7 +236,7 @@ public class ControllerGeral implements Initializable {
     private TextField idProdutoDevolucao;
 
     @FXML
-    private TextField justificativaReclamacao;
+    private TextField descricao;
 
     @FXML
     private TextField justificativaDevolucao;
@@ -385,12 +387,12 @@ public class ControllerGeral implements Initializable {
         Empresa empresa5 = new Empresa("Clinica Bem-Estar", "clinicabemestar@example.com",
                 "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);*/
 
-        empresasCadastradas.getItems().addAll(
+       /*  empresasCadastradas.getItems().addAll(
                 "Tech Solutions Ltda.",
                 "Express Logistica e Transporte",
                 "Comida Facil Delivery",
                 "Construcoes Urbanas S.A.",
-                "Clinica Bem-Estar");
+                "Clinica Bem-Estar");*/
 
         motivoReclamacao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
@@ -402,12 +404,12 @@ public class ControllerGeral implements Initializable {
                 "Problemas com uma assinatura",
                 "Nenhum dos motivos acima");
 
-        empresasCadastradasDevolucao.getItems().addAll(
+        /*empresasCadastradasDevolucao.getItems().addAll(
                 "Tech Solutions Ltda.",
                 "Express Logistica e Transporte",
                 "Comida Facil Delivery",
                 "Construcoes Urbanas S.A.",
-                "Clinica Bem-Estar");
+                "Clinica Bem-Estar");*/
 
         motivoDevolucao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
@@ -499,7 +501,7 @@ public class ControllerGeral implements Initializable {
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
             eDao.createEmpresa(novaEmpresa);
-            atualizarChoiceBoxEmpresas();
+            //atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao(0);
 
             campoCadastroEmpresaNome.clear();
@@ -538,12 +540,6 @@ public class ControllerGeral implements Initializable {
             if (cliente == null || !cliente.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
-            //ClienteController clienteController = new ClienteController();
-            //Cliente cliente1 = clienteController.buscarClientePorEmailESenha(email, senha);
-
-           if (cliente == null) {
-               throw new IllegalArgumentException("Email ou senha incorretos.");
-           }
 
             idCliente = cliente.getId();
             atualizarNomeCliente(cliente.getNome());
@@ -586,16 +582,10 @@ public class ControllerGeral implements Initializable {
             if (empresa == null || !empresa.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
-            //EmpresaController empresaController = new EmpresaController();
-            //Empresa empresa1 = empresaController.buscarEmpresaPorEmailESenha(email, senha);
-
-            if (empresa == null) {
-                throw new IllegalArgumentException("Email ou senha incorretos.");
-            }
 
             idEmpresa = empresa.getId();
             mostrarPaginaConfirmacao(0);
-            atualizarChoiceBoxEmpresas();
+            //atualizarChoiceBoxEmpresas();
 
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
@@ -692,11 +682,14 @@ public class ControllerGeral implements Initializable {
             empresasCadastradas.toFront();
             String motivoSelecionado = motivoReclamacao.getValue();
             String produtoId = idProduto.getText();
-            String empresaSelecionada = empresasCadastradas.getValue();
-            String justificativa = justificativaReclamacao.getText();
-
+            String empresaSelecionada = empresasCadastradas.getText();
+            String desc = descricao.getText();
+            Empresa empresa = eDao.queryName(empresaSelecionada);
+            if (empresa == null || !empresa.getNome().equals(empresaSelecionada)) {
+                throw new IllegalArgumentException("Empresa nao cadastrada");
+            }
             if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
-                    || justificativa.isEmpty()) {
+                    || desc.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
 
@@ -707,24 +700,25 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-            Empresa empresa = eDao.readEmpresa(justificativa);
+            //Empresa empresa = empresa.buscarEmpresaPorNome(empresaSelecionada);
             //EmpresaController empresaController = new EmpresaController();
-            //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+            // Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+            
+            Reclamacao reclamacao = new Reclamacao(idCliente, empresaSelecionada.getId(), produtoIdInt, desc, motivoSelecionado);
 
-            Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, justificativa,
-                    motivoSelecionado);
             rDAO.createReclamacao(reclamacao);
-            //empresa.updateEmpresa(reclamacao);
+            //empresa.getId(reclamacao.getId());
+            //empresa.updateEmpresa(empresa);
 
             Cliente cliente = Cliente.buscarClientePorId(idCliente);
             if (cliente != null) {
                 cliente.adicionarReclamacao(reclamacao);
             }
 
-            empresasCadastradas.setValue(null);
+            empresasCadastradas.clear();
             motivoReclamacao.setValue(null);
             idProduto.clear();
-            justificativaReclamacao.clear();
+            descricao.clear();
 
             sucessoEnvioReclamacao.setVisible(true);
             sucessoEnvioReclamacao.toFront();
@@ -803,16 +797,15 @@ public class ControllerGeral implements Initializable {
             String motivoSelecionado = motivoDevolucao.getValue();
             String produtoId = idProdutoDevolucao.getText();
             String justificativa = justificativaDevolucao.getText();
-            String empresaSelecionada = empresasCadastradasDevolucao.getValue();
+            String empresaSelecionada = empresasCadastradasDevolucao.getText();
             String quantidadesItens = quantidadesItensDevolucao.getText();
             String idSubstituicao = idSubstituicaoDevolucao.getText();
             String descricaoItem = descricaoItemDevolucao.getText();
             String dataCompra = dataCompraDevolucao.getText();
 
-            if (empresaSelecionada == null || motivoSelecionado == null || produtoId.isEmpty()
-                    || justificativa.isEmpty() || quantidadesItens.isEmpty() || idSubstituicao.isEmpty()
-                    || descricaoItem.isEmpty()) {
-                throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
+            Empresa empresa = eDao.queryName(empresaSelecionada);
+            if (empresa == null || !empresa.getNome().equals(empresaSelecionada)) {
+                throw new IllegalArgumentException("Empresa nao cadastrada");
             }
 
             int produtoIdInt;
@@ -837,15 +830,16 @@ public class ControllerGeral implements Initializable {
                 throw new IllegalArgumentException("ID de substituicao deve ser um numero inteiro.");
             }
 
-            EmpresaController empresaController = new EmpresaController();
-            Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
+            //EmpresaController empresaController = new EmpresaController();
+            //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
 
             Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem,
                     motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompra);
+            dDao.createDevolucao(devolucao);
 
             empresa.adicionarDevolucao(devolucao);
 
-            empresasCadastradasDevolucao.setValue(null);
+            empresasCadastradasDevolucao.clear();
             motivoDevolucao.setValue(null);
             idProdutoDevolucao.clear();
             justificativaDevolucao.clear();
@@ -951,17 +945,20 @@ public class ControllerGeral implements Initializable {
         alert.showAndWait();
     }
 
-    private void atualizarChoiceBoxEmpresas() {
-
-        empresasCadastradas.getItems().clear();
-        empresasCadastradasDevolucao.getItems().clear();
-
-        List<Empresa> todasEmpresas = empresaController.getEmpresas();
-        for (Empresa empresa : todasEmpresas) {
-            empresasCadastradas.getItems().add(empresa.getNome());
-            empresasCadastradasDevolucao.getItems().add(empresa.getNome());
+    /*private void atualizarChoiceBoxEmpresas() {
+        try {
+            empresasCadastradas.getItems().clear();
+            empresasCadastradasDevolucao.getItems().clear();
+    
+            List<Empresa> todasEmpresas = eDao.getAllEmpresas(); // Supondo que listarEmpresas() é um método que retorna todas as empresas do banco de dados
+            for (Empresa empresa : todasEmpresas) {
+                empresasCadastradas.getItems().add(empresa.getNome());
+                empresasCadastradasDevolucao.getItems().add(empresa.getNome());
+            }
+        } catch (Exception e) {
+            exibirMensagemErro("Erro ao atualizar lista de empresas: " + e.getMessage());
         }
-    }
+    }*/
 
     public void adicionarReclamacao(Reclamacao reclamacao, Cliente cliente, Empresa empresa) {
 
@@ -1527,7 +1524,7 @@ public class ControllerGeral implements Initializable {
         empresasCadastradas.setVisible(true);
         motivoReclamacao.setVisible(true);
         idProduto.setVisible(true);
-        justificativaReclamacao.setVisible(true);
+        descricao.setVisible(true);
         botaoEnviarReclamacao.setVisible(true);
         jumpingBackLoginReclamacao.setVisible(true);
         logOutSymbol.setVisible(false);
@@ -1590,7 +1587,7 @@ public class ControllerGeral implements Initializable {
         idProduto.setVisible(false);
         idProdutoDevolucao.setVisible(false);
         dataCompraDevolucao.setVisible(false);
-        justificativaReclamacao.setVisible(false);
+        descricao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
         botaoVerReclamacao.setVisible(false);
@@ -1697,7 +1694,7 @@ public class ControllerGeral implements Initializable {
         motivoReclamacao.setVisible(false);
         motivoDevolucao.setVisible(false);
         idProduto.setVisible(false);
-        justificativaReclamacao.setVisible(false);
+        descricao.setVisible(false);
         botaoEnviarReclamacao.setVisible(false);
         jumpingBackLoginReclamacao.setVisible(false);
         logOutSymbol.setVisible(false);

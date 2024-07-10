@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class Reclamacao {
 
     private static int proximoId = 1;
@@ -14,6 +16,8 @@ public class Reclamacao {
 
     // Construtor
     public Reclamacao(int clienteId, int empresaId, int produtoId, String descricao, String motivo) {
+        Random random = new Random();
+        int proximoId = random.nextInt(100);
         this.id = proximoId++;
         this.clienteId = clienteId;
         this.empresaId = empresaId;

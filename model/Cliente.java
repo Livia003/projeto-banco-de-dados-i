@@ -1,7 +1,7 @@
 package model;
 
 import java.util.Date;
-
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +20,8 @@ public class Cliente extends Usuario {
     public Cliente(String nome, String email, String senha, long cpf, Date dataNascimento, long telefone,
             String endereco) {
         super(nome, email, senha);
+        Random random = new Random();
+        int proximoId = random.nextInt(100);
         this.id = proximoId++;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
@@ -31,7 +33,6 @@ public class Cliente extends Usuario {
     }
 
     public Cliente() {
-        //TODO Auto-generated constructor stub
     }
 
     // Getters e Setters para os novos atributos

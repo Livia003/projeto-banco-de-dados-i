@@ -1,6 +1,7 @@
 package data;
 
 import java.security.spec.ECFieldFp;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -9,13 +10,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Empresa;
+import model.Reclamacao;
+
 
 public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   
   @Override
   public ArrayList<Empresa> getAllEmpresas() {
-    // Linkar valores com a interface
     String sqlQuery = "select * from app.Empresa";
     PreparedStatement pst;
     Connection connection;
@@ -32,18 +34,11 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setDescricao(resultSet.getString("descricao"));
           Empresa.setCnpj(resultSet.getLong("cnpj"));
           Empresa.setdt_nascimento(resultSet.getDate("dt_nascimento"));
-          //Empresa.setId(resultSet.getId());
           Empresa.setEmail(resultSet.getString("e_email"));
           Empresa.setNome(resultSet.getString("nome"));
-          Empresa.setSenha(resultSet.getString("e_senha"));
+          Empresa.setSenha(resultSet.getString("e_senha"));          
+          //Empresa.setId(resultSet.getInt("empresa_id"));
           Empresas.add(Empresa);
-          //Empresa.adicionarDevolucao(resultSet.getArray("pedidosdevolucao"));
-          //Empresa.setReclamacoes(resultSet.getInt("reclamacoesrecebidas"));
-          //Array reclamacoesArray = resultSet.getArray("reclamacoesrecebidas");
-          //if (reclamacoesArray != null) {
-          // String[] reclamacoes = (String[]) reclamacoesArray.getArray();
-          //empresa.setReclamacoes(reclamacoes); // Supondo que o método setReclamacoes aceite um array de Strings
-  //}
         }
         resultSet.close();
         pst.close();
@@ -56,28 +51,28 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
   }
 
   @Override
-  public void createEmpresa(Empresa Empresa){
-    String sqlQuery = "insert into app.Empresa (e_senha,e_email,dt_nascimento,descricao,nome,cnpj) values (?,?,?,?,?,?);";
-    PreparedStatement pst;
-    Connection connection;
-    try {
-      connection = new ConnectionFactory().getConnection();
-      pst = connection.prepareStatement(sqlQuery);
-      pst.setString(1, Empresa.getSenha());
-      pst.setString(2, Empresa.getEmail());
-      pst.setDate(3, (Date) Empresa.getdt_nascimento());
-      pst.setString(4, Empresa.getDescricao());
-      pst.setString(5, Empresa.getNome());
-      //pst.setString(6, Empresa.getEndereco());
-      pst.setLong(6, Empresa.getCnpj());
-      pst.execute();
-      pst.close();
-      connection.close();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-  }
-
+  public void createEmpresa(Empresa empresa) {
+      String sqlQuery = "insert into app.Empresa (e_senha, e_email, dt_nascimento, descricao, nome, cnpj, empresa_id) values (?,?,?,?,?,?,?)";
+      PreparedStatement pst;
+      Connection connection;
+      try {
+          connection = new ConnectionFactory().getConnection();
+          pst = connection.prepareStatement(sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+          pst.setString(1, empresa.getSenha());
+          pst.setString(2, empresa.getEmail());
+          pst.setDate(3, new Date(empresa.getdt_nascimento().getTime()));
+          pst.setString(4, empresa.getDescricao());
+          pst.setString(5, empresa.getNome());
+          pst.setLong(6, empresa.getCnpj());      
+          pst.setInt(7, empresa.getId());
+          pst.execute();
+          pst.close();
+          connection.close();
+        } catch (SQLException ex) {
+          ex.printStackTrace();
+        }
+      }
+  
   @Override
   public Empresa readEmpresa(String e_email) {
     String sqlQuery = "select * from app.Empresa where e_email=?";
@@ -98,7 +93,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setEmail(resultSet.getString("e_email"));
           Empresa.setSenha(resultSet.getString("e_senha"));
           Empresa.setDescricao(resultSet.getString("descricao"));
-          //Empresa.setId(resultSet.getString("endereco"));
+          Empresa.setId(resultSet.getInt("empresa_id"));
         }
         resultSet.close();
         pst.close();
@@ -137,8 +132,8 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     return Empresa;
   }
   @Override
-  public Empresa queryName(Long cnpj){
-    String sqlQuery = "select * from app.Empresa where cnpj=?";
+  public Empresa queryName(String nome){
+    String sqlQuery = "select * from app.Empresa where nome=?";
     PreparedStatement pst;
     Connection connection;
     ResultSet resultSet;
@@ -146,7 +141,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     try {
       connection = new ConnectionFactory().getConnection();
       pst = connection.prepareStatement(sqlQuery);
-      pst.setLong(1, cnpj);
+      pst.setString(1, nome);
       resultSet = pst.executeQuery();
       if (resultSet != null) {
         while (resultSet.next()) {
@@ -165,7 +160,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   @Override
   public void updateEmpresa(Empresa Empresa) {
-    String sqlQuery = "update app.Empresa set senha=?, email=?, descricao=?, nome=?, dt_nascimento =? where cnpj=?";
+    String sqlQuery = "update app.Empresa set e_senha=?, e_email=?, descricao=?, empresa_id =?, nome=?,  dt_nascimento =? where cnpj=?";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -176,8 +171,10 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
       pst.setDate(3, (Date) Empresa.getdt_nascimento());
       pst.setString(4, Empresa.getDescricao());
       pst.setString(5, Empresa.getNome());
-      //pst.setString(6, Empresa.getEndereco());
       pst.setLong(6, Empresa.getCnpj());
+      pst.setInt(7, Empresa.getId());
+      Array reclamacoesArray = connection.createArrayOf("VARCHAR", Empresa.getReclamacoesRecebidas().toArray());
+      pst.setArray(7, reclamacoesArray);
       pst.execute();
       pst.close();
       connection.close();
@@ -186,6 +183,8 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
     }
   }
 
+
+ 
   @Override
   public void deleteEmpresa(Empresa Empresa) {
     String sqlQuery = "delete from app.Empresa where cnpj=?";
