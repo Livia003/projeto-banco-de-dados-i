@@ -561,6 +561,7 @@ public class ControllerGeral implements Initializable {
             System.out.println(idEmpresa);
             mostrarPaginaConfirmacao(0);
             atualizarNomeEmpresa(empresa.getNome());
+            buscarTodasAsReclamacoesAgrupadasPorEmpresa(idEmpresa);
 
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
@@ -687,6 +688,7 @@ public class ControllerGeral implements Initializable {
             idProduto.clear();
             descricao.clear();
 
+            buscarTodasAsReclamacoesAgrupadasPorEmpresa(empresa.getId());
             sucessoEnvioReclamacao.setVisible(true);
             sucessoEnvioReclamacao.toFront();
             fadeInTransition(sucessoEnvioReclamacao);
@@ -1328,7 +1330,7 @@ private void concederDevolucao(int devolucaoId, int clienteId) {
     });
 }
  
-    private void buscarTodasAsReclamacoesAgrupadasPorEmpresa() {
+    private void buscarTodasAsReclamacoesAgrupadasPorEmpresa(int i) {
         try {
             String sqlQuery = "SELECT e_id, COUNT(*) as total_reclamacoes " +
                               "FROM app.reclamacao " +
@@ -1358,7 +1360,9 @@ private void concederDevolucao(int devolucaoId, int clienteId) {
                                     String descricao = rsReclamacoes.getString("descricao");
                                     int id = rsReclamacoes.getInt("id");
                                     String motivo = rsReclamacoes.getString("motivo");
-    
+                                    System.out.println("EMPRESAS AGRUPADAS POR ID SEM RESPOSTA");
+                                    System.out.println("AS EMPRESAS SAO AGRUPADAS QUANDO UMA NOVA RECLAMAO E FEITA");
+                                    System.out.println("ID do Cliente: " + cId);
                                     System.out.println("ID do Cliente: " + cId);
                                     System.out.println("Produto ID: " + produtoId);
                                     System.out.println("Descrição: " + descricao);
