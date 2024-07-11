@@ -6,13 +6,19 @@ Este repositório contém o trabalho desenvolvido para a disciplina de Banco de 
 
 Fale Feedback é uma plataforma integrada de gestão de reclamações e devoluções pós-compra, projetada para melhorar a experiência do cliente e aumentar a eficiência operacional das empresas. Ele oferece uma interface intuitiva que facilita o cadastro e gerencia reclamações e devoluções de maneira eficaz e segura.
 
-![Captura de tela 2024-07-09 230329](https://github.com/Livia003/projeto-banco-de-dados-i/assets/103139290/80db86dc-4d93-454a-a768-5b4f90a4f83d)
+![20240711_190626](https://github.com/user-attachments/assets/62553624-2d21-4c3b-9358-006fe3a6b0db)
 
-## Discentes
+## Tecnologias Utilizadas
 
-1. Ana Carolina Xavier Castro
-2. Lis Loureiro Sousa
-3. Lívia Evily de Araújo Rocha
+O projeto foi desenvolvido utilizando Java 8, JavaFX e MySQL.
+
+## Autoras
+
+Este projeto foi desenvolvido por:
+
+- **[Lívia](https://github.com/Livia003)
+- **[Lis](https://github.com/LisLoureiro)
+- **[Ana Carolina](https://github.com/Karolacxc)
 
 
 
