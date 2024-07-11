@@ -5,54 +5,66 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente extends Usuario {
+public class Cliente  {
 
+    private String nome;
+    private String email;
+    private String senha;
     private static List<Cliente> clientes = new ArrayList<>();
-    private List<Reclamacao> reclamacoes;
-    private List<Devolucao> devolucoes;
     private int id;
-    private static int proximoId = 0;
+    // private static int proximoId;
     private long cpf;
     private Date dataNascimento;
     private long telefone;
     private String endereco;
-    private int rec_id;
-    private int dev_id;
-    
 
     public Cliente(String nome, String email, String senha, long cpf, Date dataNascimento, long telefone,
             String endereco) {
-        super(nome, email, senha);
         Random random = new Random();
         int proximoId = random.nextInt(100);
+        this.nome=nome;
+        this.email=email;
+        this.senha=senha;
         this.id = proximoId++;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
         this.telefone = telefone;
         this.endereco = endereco;
-        this.reclamacoes = new ArrayList<>();
-        this.devolucoes = new ArrayList<>();
         clientes.add(this);
     }
 
     public Cliente() {
     }
 
-    public int getRec_id(){
-        return rec_id;
+    // Getters
+    public int getId() {
+        return id;
     }
-
-    public int getDev_id(){
-        return dev_id;
+    
+    public String getNome() {
+        return nome;
     }
-
-    public void setDev_id(int dev_id){
-        this.dev_id = dev_id;
+    
+    public String getEmail() {
+        return email;
     }
-
-    public void setRec_id(int rec_id){
-        this.rec_id = rec_id;
+    
+    public String getSenha() {
+        return senha;
     }
+    
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    
     // Getters e Setters para os novos atributos
     public long getCpf() {
         return cpf;
@@ -86,32 +98,8 @@ public class Cliente extends Usuario {
         this.endereco = endereco;
     }
 
-    public List<Reclamacao> getReclamacoes() {
-        return reclamacoes;
-    }
-
-    public List<Devolucao> getDevolucoes() {
-        return devolucoes;
-    }
-
-    public void setReclamacoes(List<Reclamacao> reclamacoes) {
-        this.reclamacoes = reclamacoes;
-    }
-
-    public void adicionarReclamacao(Reclamacao reclamacao) {
-        this.reclamacoes.add(reclamacao);
-    }
-
-    public void setDevolucao(List<Devolucao> devolucoes) {
-        this.devolucoes = devolucoes;
-    }
-
-    public void adicionarDevolucao(Devolucao devolucao) {
-        this.devolucoes.add(devolucao);
-    }
-
-    public int getId() {
-        return id;
+    public void setId(int id){
+        this.id =id;
     }
 
     public static List<Cliente> getClientes() {

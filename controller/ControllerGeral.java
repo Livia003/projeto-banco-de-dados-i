@@ -1,46 +1,53 @@
 package controller;
 
-import model.*;
-import javafx.fxml.FXML;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import java.util.regex.Pattern; 
 import data.ClienteDAOjbdc;
+import data.ConnectionFactory;
 import data.DevolucaoDAOjbdc;
 import data.EmpresaDAOjbdc;
 import data.ReclamacaoDAOjbdc;
-import javafx.scene.control.DatePicker;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextField;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import model.Cliente;
+import model.Devolucao;
+import model.Empresa;
+import model.Reclamacao;
+import model.StatusDevolucao;
+import model.StatusReclamacao;
 
 public class ControllerGeral implements Initializable {
 
@@ -375,32 +382,6 @@ public class ControllerGeral implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         telaInicial();
 
-
-       /*  Empresa empresa1 = new Empresa("Tech Solutions Ltda.", "techsolutions@example.com",
-                "Especializada em soluções tecnológicas", "2023-05-01", "senha123", 99766);
-
-        Empresa empresa2 = new Empresa("Express Logistica e Transporte", "expresslogistica@example.com",
-                "Entregas rápidas e seguras em todo o país", "2023-05-02", "senha456", 37443443);
-
-        Empresa empresa3 = new Empresa("Comida Facil Delivery", "comidafacil@example.com",
-                "Serviço de delivery de refeições práticas", "2023-05-03", "senha789", 7484884);
-
-        Empresa empresa4 = new Empresa("Construcoes Urbanas S.A.", "construcoesurbanas@example.com",
-                "Projetos e obras para o desenvolvimento urbano", "2023-05-04", "senhaabc", 9499494);
-
-        Empresa empresa5 = new Empresa("Clinica Bem-Estar", "clinicabemestar@example.com",
-                "Cuidando da saúde e bem-estar de nossos pacientes", "2023-05-05", "senhaxyz", 828283);*/
-
-       /*  empresasCadastradas.getItems().addAll(
-
-        empresasCadastradas.getItems().addAll(
-
-                "Tech Solutions Ltda.",
-                "Express Logistica e Transporte",
-                "Comida Facil Delivery",
-                "Construcoes Urbanas S.A.",
-                "Clinica Bem-Estar");*/
-
         motivoReclamacao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
                 "Atraso na entrega",
@@ -410,13 +391,6 @@ public class ControllerGeral implements Initializable {
                 "Falta de pecas ou acessorios",
                 "Problemas com uma assinatura",
                 "Nenhum dos motivos acima");
-
-        /*empresasCadastradasDevolucao.getItems().addAll(
-                "Tech Solutions Ltda.",
-                "Express Logistica e Transporte",
-                "Comida Facil Delivery",
-                "Construcoes Urbanas S.A.",
-                "Clinica Bem-Estar");*/
 
         motivoDevolucao.getItems().addAll("Produto defeituoso ou danificado",
                 "Produto incorreto",
@@ -452,19 +426,16 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoCpf(cpfStr)) {
                 throw new IllegalArgumentException("CPF inválido");
             }
-
             atualizarNomeCliente(nome);
-
             long cpf = Long.parseLong(cpfStr);
             long telefone = Long.parseLong(telefoneStr);
             Date dataNascimentoDate = java.sql.Date.valueOf(dataNascimento);
 
             Cliente novoCliente = new Cliente(nome, email, senha, cpf, dataNascimentoDate, telefone, endereco);
             clienteController.cadastrarNovoCliente(novoCliente);
-            cDao.createCliente(novoCliente);
-
             idCliente = novoCliente.getId();
             mostrarPaginaConfirmacao(1);
+            cDao.createCliente(novoCliente);
 
             campoCadastroClienteNome.clear();
             campoCadastroClienteEmail.clear();
@@ -491,10 +462,8 @@ public class ControllerGeral implements Initializable {
             String senha = campoCadastroEmpresaSenha.getText();
             String cnpjStr = campoCadastroEmpresaCNPJ.getText();
             long cnpj = Long.parseLong(cnpjStr);
-
             LocalDate data = campoCadastroEmpresaData.getValue();
-            Date dataDate = java.sql.Date.valueOf(data);
-
+            
             if (nome.isEmpty() || email.isEmpty() || descricao.isEmpty() || data == null || senha.isEmpty()) {
                 throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
             }
@@ -502,14 +471,12 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
-
+            Date dataDate = java.sql.Date.valueOf(data);
             atualizarNomeEmpresa(nome);
-
             Empresa novaEmpresa = new Empresa(nome, email, descricao, dataDate, senha, cnpj);
             empresaController.cadastrarNovaEmpresa(novaEmpresa);
             idEmpresa = novaEmpresa.getId();
             eDao.createEmpresa(novaEmpresa);
-            //atualizarChoiceBoxEmpresas();
             mostrarPaginaConfirmacao(0);
 
             campoCadastroEmpresaNome.clear();
@@ -520,11 +487,9 @@ public class ControllerGeral implements Initializable {
 
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -544,12 +509,14 @@ public class ControllerGeral implements Initializable {
             if (!verificarFormatoEmail(email)) {
                 throw new IllegalArgumentException("Email invalido. Verifique o formato.");
             }
+
             Cliente cliente = cDao.readCliente(email);
             if (cliente == null || !cliente.getSenha().equals(senha)) {
                 throw new IllegalArgumentException("Email ou senha incorretos.");
             }
 
             idCliente = cliente.getId();
+            System.out.println(cliente.getId());
             atualizarNomeCliente(cliente.getNome());
             mostrarPaginaConfirmacao(1);
 
@@ -563,7 +530,6 @@ public class ControllerGeral implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -592,7 +558,9 @@ public class ControllerGeral implements Initializable {
             }
 
             idEmpresa = empresa.getId();
+            System.out.println(idEmpresa);
             mostrarPaginaConfirmacao(0);
+            atualizarNomeEmpresa(empresa.getNome());
 
             campoCadastroEmpresaNome.clear();
             campoCadastroEmpresaEmail.clear();
@@ -605,8 +573,6 @@ public class ControllerGeral implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // BANCO DE DADOS
     }
 
     public void mostrarPaginaConfirmacao(int decideHome) {
@@ -647,16 +613,18 @@ public class ControllerGeral implements Initializable {
     public void mostrarPaginaConfirmacaoLogin(int decideHome) {
         jumpingBackLoginCliente.setVisible(false);
         jumpingBackLoginEmpresa.setVisible(false);
+        clienteLoginBackground.setVisible(false);
+        empresaLoginBackground.setVisible(false);
         campoLoginEmpresaEmail.setVisible(false);
         campoLoginEmpresaSenha.setVisible(false);
         counter.setVisible(true);
-
-        clienteLoginBackground.setVisible(false);
-        empresaLoginBackground.setVisible(false);
+        counter.setStyle("-fx-text-fill: #0057FF;");
         esconderElementosDentroDoLogin();
 
         loginBackground.setOpacity(0.0);
         loginBackground.setVisible(true);
+        loginBackground.toFront();
+
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), loginBackground);
         fadeTransition.setToValue(1.0);
         fadeTransition.play();
@@ -680,6 +648,7 @@ public class ControllerGeral implements Initializable {
                 }));
         timeline.setCycleCount(segundos[0]);
         timeline.play();
+
     }
 
     @FXML
@@ -711,16 +680,7 @@ public class ControllerGeral implements Initializable {
             }
             
             Reclamacao reclamacao = new Reclamacao(idCliente, empresa.getId(), produtoIdInt, desc, motivoSelecionado);
-
             rDAO.createReclamacao(reclamacao);
-
-            int r_id = reclamacao.getId();
-            empresa.setRec_id(r_id);
-            eDao.updateEmpresa(empresa);
-
-            Cliente cliente = cDao.queryAccount(idCliente);
-            cliente.setRec_id(r_id);
-            cDao.updateCliente(cliente);
 
             empresasCadastradas.clear();
             motivoReclamacao.setValue(null);
@@ -745,7 +705,6 @@ public class ControllerGeral implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void fadeInTransition(ImageView imageView) {
@@ -793,7 +752,6 @@ public class ControllerGeral implements Initializable {
             Matcher matcher = pattern.matcher(email);
             valido = matcher.matches();
         }
-
         return valido;
     }
 
@@ -808,7 +766,6 @@ public class ControllerGeral implements Initializable {
             String quantidadesItens = quantidadesItensDevolucao.getText();
             String idSubstituicao = idSubstituicaoDevolucao.getText();
             String descricaoItem = descricaoItemDevolucao.getText();
-            // String dataCompra = dataCompraDevolucao.getText();
             LocalDate dataCompra = dataCompraDevolucao.getValue();
             Date dataCompraDate = java.sql.Date.valueOf(dataCompra);
 
@@ -816,7 +773,6 @@ public class ControllerGeral implements Initializable {
             if (empresa == null || !empresa.getNome().equals(empresaSelecionada)) {
                 throw new IllegalArgumentException("Empresa nao cadastrada");
             }
-
             int produtoIdInt;
 
             try {
@@ -824,7 +780,6 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID do produto deve ser um numero inteiro.");
             }
-
             int quantidadeItensInt;
             try {
                 quantidadeItensInt = Integer.parseInt(quantidadesItens);
@@ -838,15 +793,8 @@ public class ControllerGeral implements Initializable {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID de substituicao deve ser um numero inteiro.");
             }
-
-            //EmpresaController empresaController = new EmpresaController();
-            //Empresa empresa = empresaController.buscarEmpresaPorNome(empresaSelecionada);
-
             Devolucao devolucao = new Devolucao(idCliente, empresa.getId(), produtoIdInt, descricaoItem, motivoSelecionado, quantidadeItensInt, idSubstituicaoInt, justificativa, dataCompraDate);
             dDao.createDevolucao(devolucao);
-
-
-            empresa.adicionarDevolucao(devolucao);
 
             empresasCadastradasDevolucao.clear();
             motivoDevolucao.setValue(null);
@@ -867,10 +815,6 @@ public class ControllerGeral implements Initializable {
                 }
             });
 
-            Cliente cliente = Cliente.buscarClientePorId(idCliente);
-            if (cliente != null) {
-                cliente.adicionarDevolucao(devolucao);
-            }
         } catch (IllegalArgumentException e) {
             exibirMensagemErro(e.getMessage());
         } catch (Exception e) {
@@ -880,56 +824,84 @@ public class ControllerGeral implements Initializable {
 
     @FXML
     private void consultarDevolucoes() {
-        Cliente cliente = Cliente.buscarClientePorId(idCliente);
+        try {  
+            reclamacoesVBox.getChildren().clear();
+            String sqlQuery = "SELECT * FROM app.devolucao WHERE c_id = ?";
+                try (Connection connection = new ConnectionFactory().getConnection();
+                    PreparedStatement pst = connection.prepareStatement(sqlQuery)) {
+                    
+                    pst.setInt(1, idCliente);
+                    
+                    try (ResultSet rs = pst.executeQuery()) {
+                        while (rs.next()) {
+                            // Extrair e processar os campos da tabela
+                            int cId = rs.getInt("c_id");
+                            int eId = rs.getInt("e_id");
+                            int produtoId = rs.getInt("produto_id");
+                            String descricao = rs.getString("descricao");
+                            int id = rs.getInt("id");
+                            String status = rs.getString("status");
+                            String motivo = rs.getString("motivo");
+                            adicionarReclamacao(cId, eId, produtoId, descricao,id,status,motivo);
+                            
+                            // Exemplo de processamento: imprimir os valores
+                            System.out.println("c_id: " + cId + ", e_id: " + eId + ", produto_id: " + produtoId +
+                                               ", descricao: " + descricao + ", id: " + id + 
+                                               ", status: " + status + ", motivo: " + motivo);
+                        }
+                    }
+                    
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
 
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não encontrado.");
+            esconderElementosDentroDoLogin();
+            jumpingBackLoginReclamacao.setVisible(true);
+            jumpingBackLoginReclamacao.toFront();
+            complaintViewer.setVisible(true);
+            reclamacoesVBox.setVisible(true);
+            mainVBox.setVisible(true);
+
+        } catch (IllegalArgumentException e) {
+            exibirMensagemErro(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        List<Devolucao> devolucoes = cliente.getDevolucoes();
-
-        devolucoesVBox.getChildren().clear();
-
-        Set<Integer> devolucoesExibidas = new HashSet<>();
-
-        for (Devolucao devolucao : devolucoes) {
-            if (!devolucoesExibidas.contains(devolucao.getId())) {
-                Empresa empresa = EmpresaController.buscarEmpresaPorId(devolucao.getEmpresaId());
-                adicionarDevolucao(devolucao, cliente, empresa);
-                devolucoesExibidas.add(devolucao.getId());
-            }
-        }
-
-        esconderElementosDentroDoLogin();
-        jumpingBackLoginReclamacao.setVisible(true);
-        jumpingBackLoginReclamacao.toFront();
-        returnViewer.setVisible(true);
-        devolucoesVBox.setVisible(true);
-        mainVBoxDevolucoes.setVisible(true);
     }
-
+    
     @FXML
     private void consultarReclamacoes() {
-        try {
-            Cliente cliente = Cliente.buscarClientePorId(idCliente);
-
-            if (cliente == null) {
-                throw new IllegalArgumentException("Cliente não encontrado.");
-            }
-
-            List<Reclamacao> reclamacoes = cliente.getReclamacoes();
-
+      
+        try {  
             reclamacoesVBox.getChildren().clear();
-
-            Set<Integer> reclamacoesExibidas = new HashSet<>();
-
-            for (Reclamacao reclamacao : reclamacoes) {
-                if (!reclamacoesExibidas.contains(reclamacao.getId())) {
-                    Empresa empresa = EmpresaController.buscarEmpresaPorId(reclamacao.getEmpresaId());
-                    adicionarReclamacao(reclamacao, cliente, empresa);
-                    reclamacoesExibidas.add(reclamacao.getId());
+            String sqlQuery = "SELECT * FROM app.reclamacao WHERE c_id = ?";
+                try (Connection connection = new ConnectionFactory().getConnection();
+                    PreparedStatement pst = connection.prepareStatement(sqlQuery)) {
+                    
+                    pst.setInt(1, idCliente);
+                    
+                    try (ResultSet rs = pst.executeQuery()) {
+                        while (rs.next()) {
+                            // Extrair e processar os campos da tabela
+                            int cId = rs.getInt("c_id");
+                            int eId = rs.getInt("e_id");
+                            int produtoId = rs.getInt("produto_id");
+                            String descricao = rs.getString("descricao");
+                            int id = rs.getInt("id");
+                            String status = rs.getString("status");
+                            String motivo = rs.getString("motivo");
+                            adicionarReclamacao(cId, eId, produtoId, descricao,id,status,motivo);
+                            
+                            // Exemplo de processamento: imprimir os valores
+                            System.out.println("c_id: " + cId + ", e_id: " + eId + ", produto_id: " + produtoId +
+                                               ", descricao: " + descricao + ", id: " + id + 
+                                               ", status: " + status + ", motivo: " + motivo);
+                        }
+                    }
+                    
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            }
 
             esconderElementosDentroDoLogin();
             jumpingBackLoginReclamacao.setVisible(true);
@@ -945,39 +917,7 @@ public class ControllerGeral implements Initializable {
         }
     }
 
-    private void exibirMensagemErro(String mensagem) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erro no preenchimento dos dados!");
-        alert.setHeaderText(null);
-        alert.setContentText(mensagem);
-        alert.showAndWait();
-    }
-
-    /*private void atualizarChoiceBoxEmpresas() {
-        try {
-            empresasCadastradas.getItems().clear();
-            empresasCadastradasDevolucao.getItems().clear();
-    
-            List<Empresa> todasEmpresas = eDao.getAllEmpresas(); // Supondo que listarEmpresas() é um método que retorna todas as empresas do banco de dados
-            for (Empresa empresa : todasEmpresas) {
-                empresasCadastradas.getItems().add(empresa.getNome());
-                empresasCadastradasDevolucao.getItems().add(empresa.getNome());
-            }
-        } catch (Exception e) {
-            exibirMensagemErro("Erro ao atualizar lista de empresas: " + e.getMessage());
-        }
-    }*/
-
-    public void adicionarReclamacao(Reclamacao reclamacao, Cliente cliente, Empresa empresa) {
-
-        if (reclamacao == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Tente novamente!");
-            alert.setHeaderText(null);
-            alert.setContentText("Voce nao possui reclamacoes cadastradas.");
-            alert.showAndWait();
-            return;
-        }
+    public void adicionarReclamacao(int cId, int eId,int produtoId, String descricao,int id,String status, String motivo) {
 
         BorderPane pane = new BorderPane();
         pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
@@ -985,31 +925,39 @@ public class ControllerGeral implements Initializable {
         VBox labelsVBox = new VBox(3);
         labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
 
-        Label nomeLabel = new Label("Nome do Cliente: " + cliente.getNome());
-        nomeLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        Label clienteIdLabel = new Label("Id do Cliente: " + cId);
+        clienteIdLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label emailLabel = new Label("Email do Cliente: " + cliente.getEmail());
-        emailLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-        Label empresaLabel = new Label("Empresa: " + empresa.getNome());
-        empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-        Label produtoLabel = new Label("Produto ID: " + reclamacao.getProdutoId());
+        Label produtoLabel = new Label("Produto ID: " + produtoId);
         produtoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label justificativaLabel = new Label("Justificativa: " + reclamacao.getDescricao());
+        Label justificativaLabel = new Label("Justificativa: " + descricao);
         justificativaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
+        Label statusLabel = new Label("Status:" + status);
         statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        labelsVBox.getChildren().addAll(nomeLabel, emailLabel, empresaLabel, produtoLabel, justificativaLabel,
-                statusLabel);
+        labelsVBox.getChildren().addAll(clienteIdLabel, produtoLabel, justificativaLabel,statusLabel);
+        
+        Reclamacao reclamacao = rDAO.queryAccount(id);
+        String status02 = reclamacao.getStatus().toString();
+        String resp = reclamacao.getResposta();
 
+        if (status02 == "RESPONDIDA") {
+            Label respostaLabel = new Label("Resposta da Empresa: " + resp);
+            respostaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+            labelsVBox.getChildren().add(respostaLabel);
+        }
         pane.setCenter(labelsVBox);
         reclamacoesVBox.getChildren().add(pane);
 
+
+
     }
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+    
 
     public void adicionarDevolucao(Devolucao devolucao, Cliente cliente, Empresa empresa) {
 
@@ -1036,375 +984,436 @@ public class ControllerGeral implements Initializable {
         pane.setCenter(labelsVBox);
         devolucoesVBox.getChildren().add(pane);
     }
+ 
+  private void apresentarReclamacoesParaAEmpresa() {
 
-    private void apresentarDevolucoesParaAEmpresa(int idEmpresa) {
+        try (Connection connection = new ConnectionFactory().getConnection()) {
+            reclamacoesVBoxEmpresa.getChildren().clear();
+    
+            String sqlQuery = "SELECT * FROM app.reclamacao WHERE e_id = ? AND status = 'NAO_RESPONDIDA'";
+            try (PreparedStatement pst = connection.prepareStatement(sqlQuery)) {
+                pst.setInt(1, idEmpresa);
+    
+                try (ResultSet rs = pst.executeQuery()) {
+                    if (!rs.isBeforeFirst()) {
+                        Label semReclamacoesLabel = new Label("Nenhuma reclamacao encontrada.");
+                        semReclamacoesLabel
+                                .setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+                        reclamacoesVBoxEmpresa.getChildren().add(semReclamacoesLabel);
+                    } else {
+                        while (rs.next()) {
+                            int cId = rs.getInt("c_id");
+                            int produtoId = rs.getInt("produto_id");
+                            String descricao = rs.getString("descricao");
+                            int id = rs.getInt("id");
+                            String motivo = rs.getString("motivo");
+                            // Exemplo de processamento: imprimir os valores
+                            System.out.println("c_id: " + cId + ", produto_id: " + produtoId +
+                                               ", descricao: " + descricao + ", id: " + id  + ", motivo: " + motivo);
+                            BorderPane pane = new BorderPane();
+                            pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
+    
+                            VBox labelsVBox = new VBox(3);
+                            labelsVBox.setStyle(
+                                    "-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
+    
+                            Label novaReclamacaoLabel = new Label("Você tem uma nova reclamação:");
+                            novaReclamacaoLabel.setStyle(
+                                    "-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+    
+                            Label idLabel = new Label("ID do Cliente: " + cId);
+                            Label motivoLabel = new Label("Motivo: " + motivo);
+    
+                            idLabel.setStyle(
+                                    "-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+                            novaReclamacaoLabel.setStyle(
+                                    "-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: red;");
+                            motivoLabel.setStyle(
+                                    "-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+    
+                            labelsVBox.getChildren().addAll(novaReclamacaoLabel, idLabel, motivoLabel);
+                            pane.setCenter(labelsVBox);
+                            reclamacoesVBoxEmpresa.getChildren().add(pane);
+    
+                            pane.setOnMouseClicked(event -> {
+                                responderReclamacao(id, cId); // Passa o id da reclamação e o id do cliente
+                            });
+    
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Adicione tratamento de erro aqui, se necessário
+        }
+    }
+
+  private void responderReclamacao(int reclamacaoId, int clienteId) {
+
+    Cliente cliente = cDao.queryAccount(clienteId);
+    System.out.println(clienteId);
+    Reclamacao reclamacao = rDAO.queryAccount(reclamacaoId);
+    System.out.println(reclamacaoId);
+
+    if (reclamacao == null || cliente == null) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erro");
+        alert.setHeaderText(null);
+        alert.setContentText("Reclamação ou cliente não encontrados.");
+        alert.showAndWait();
+        return;
+    }
+
+    nomeEmpresa.setVisible(false);
+    esconderElementosDentroDoLogin();
+    responderReclamacaoBackground.setVisible(true);
+
+    motivoReclamacaoLabel.setText(reclamacao.getMotivo());
+    motivoReclamacaoLabel.setVisible(true);
+    motivoReclamacaoLabel.toFront();
+
+    nomeClienteReclamacaoLabel.setText(cliente.getNome());
+    nomeClienteReclamacaoLabel.setVisible(true);
+    nomeClienteReclamacaoLabel.toFront();
+
+    cpfClienteReclamacaoLabel.setText(String.valueOf(cliente.getCpf()));
+    cpfClienteReclamacaoLabel.setVisible(true);
+    cpfClienteReclamacaoLabel.toFront();
+
+    emailClienteReclamacaoLabel.setText(cliente.getEmail());
+    emailClienteReclamacaoLabel.setVisible(true);
+    emailClienteReclamacaoLabel.toFront();
+
+    detalhamentoClienteReclamacaoLabel.setText(reclamacao.getDescricao());
+    detalhamentoClienteReclamacaoLabel.setVisible(true);
+    detalhamentoClienteReclamacaoLabel.toFront();
+
+    respostaReclamacaoTextArea.setVisible(true);
+    respostaReclamacaoTextArea.toFront();
+
+    botaoResponderReclamacao.setVisible(true);
+    botaoResponderReclamacao.toFront();
+
+    logOutSymbol.setVisible(false);
+
+    botaoResponderReclamacao.setOnAction(event -> {
+        String resposta = respostaReclamacaoTextArea.getText();
+        reclamacao.setResposta(resposta);
+        reclamacao.setStatus(StatusReclamacao.RESPONDIDA);
+
+        rDAO.updateReclamacao(reclamacao);
+
+        motivoReclamacaoLabel.setVisible(false);
+        nomeClienteReclamacaoLabel.setVisible(false);
+        cpfClienteReclamacaoLabel.setVisible(false);
+        emailClienteReclamacaoLabel.setVisible(false);
+        detalhamentoClienteReclamacaoLabel.setVisible(false);
+        respostaReclamacaoTextArea.setVisible(false);
+        botaoResponderReclamacao.setVisible(false);
+        responderReclamacaoBackground.setVisible(false);
+        motivoReclamacaoLabel.setText("");
+        nomeClienteReclamacaoLabel.setText("");
+        cpfClienteReclamacaoLabel.setText("");
+        emailClienteReclamacaoLabel.setText("");
+        detalhamentoClienteReclamacaoLabel.setText("");
+        respostaReclamacaoTextArea.clear();
+        fadeOutTransition(sucessoEnvioReclamacao);
+        sucessoResponderReclamacao.setVisible(true);
+        botaoRespostaReclamacaoEnviada.setVisible(true);
+    });
+
+    botaoRespostaReclamacaoEnviada.setOnAction(event -> {
+        sucessoResponderReclamacao.setVisible(false);
+        botaoRespostaReclamacaoEnviada.setVisible(false);
+
+        mostrarHomeEmpresa();
+    });
+}
+
+
+    
+private void apresentarDevolucoesParaAEmpresa() {
+
+    try (Connection connection = new ConnectionFactory().getConnection()) {
         devolucoesVBoxEmpresa.getChildren().clear();
 
-        Empresa empresa = EmpresaController.buscarEmpresaPorId(idEmpresa);
-        if (empresa == null) {
+        String sqlQuery = "SELECT * FROM app.devolucao WHERE e_id = ? AND status = 'EM_ANALISE'";
+        try (PreparedStatement pst = connection.prepareStatement(sqlQuery)) {
+            pst.setInt(1, idEmpresa);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (!rs.isBeforeFirst()) {
+                    Label semDevolucoesLabel = new Label("Nenhuma devolucao encontrada.");
+                    semDevolucoesLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+                    devolucoesVBoxEmpresa.getChildren().add(semDevolucoesLabel);
+                } else {
+                    while (rs.next()) {
+                        int cId = rs.getInt("c_id");
+                        int produtoId = rs.getInt("produto_id");
+                        String descricao = rs.getString("descricao");
+                        int id = rs.getInt("id");
+                        String motivo = rs.getString("motivo");
+                        String justificativa = rs.getString("justificativa");
+                        int quantidade = rs.getInt("quantidade");
+
+                        BorderPane pane = new BorderPane();
+                        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
+
+                        VBox labelsVBox = new VBox(3);
+                        labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
+
+                        Label novaDevolucaoLabel = new Label("Você tem uma nova devolução:");
+                        novaDevolucaoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: red;");
+
+                        Label idLabel = new Label("ID do Cliente: " + cId);
+                        Label motivoLabel = new Label("Motivo: " + motivo);
+                        Label idProdutoLabel = new Label("ID do Produto: " + produtoId);
+                        Label descricaLabel = new Label("Descricao: " + descricao);
+
+                        idLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+                        novaDevolucaoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: red;");
+                        motivoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+
+                        labelsVBox.getChildren().addAll(novaDevolucaoLabel, idLabel, motivoLabel, idProdutoLabel, descricaLabel);
+                        pane.setCenter(labelsVBox);
+                        devolucoesVBoxEmpresa.getChildren().add(pane);
+
+                        pane.setOnMouseClicked(event -> {
+                            concederDevolucao(id, cId); // Passa o id da devolução e o id do cliente
+                        });
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Adicione tratamento de erro aqui, se necessário
+    }
+}
+
+private void concederDevolucao(int devolucaoId, int clienteId) {
+   Cliente cliente = cDao.queryAccount(clienteId);
+    Devolucao devolucao = dDao.queryAccount(clienteId);
+    // Configuração da interface gráfica para exibir os detalhes da devolução e as opções de ação
+    nomeEmpresa.setVisible(false);
+
+    dataCompraDevolucaoLabel.setVisible(true);
+    dataCompraDevolucaoLabel.toFront();
+
+    motivoDevolucaoLabel.setVisible(true);
+    motivoDevolucaoLabel.toFront();
+
+    nomeClienteDevolucaoLabel.setVisible(true);
+    nomeClienteDevolucaoLabel.toFront();
+
+    cpfClienteDevolucaoLabel.setVisible(true);
+    cpfClienteDevolucaoLabel.toFront();
+
+    emailClienteDevolucaoLabel.setVisible(true);
+    emailClienteDevolucaoLabel.toFront();
+
+    idProdutoDevolucaoLabel.setVisible(true);
+    idProdutoDevolucaoLabel.toFront();
+    logOutSymbol.setVisible(false);
+
+    quantidadeProdutoDevolucaoLabel.setVisible(true);
+    quantidadeProdutoDevolucaoLabel.toFront();
+
+    substituicaoReembolsoDevolucaoTextArea.setVisible(true);
+    substituicaoReembolsoDevolucaoTextArea.toFront();
+
+    IDSubstituicaoDevolucaoTextArea.setVisible(true);
+    IDSubstituicaoDevolucaoTextArea.toFront();
+
+    opcaoDevolucaoReembolso.setVisible(true);
+    opcaoDevolucaoSubsituicao.setVisible(true);
+    opcaoDevolucaoNegar.setVisible(true);
+    opcaoDevolucaoNegar.toFront();
+    opcaoDevolucaoReembolso.toFront();
+    opcaoDevolucaoSubsituicao.toFront();
+
+    botaoDevolucaoConcedidaEnviada.setVisible(true);
+    botaoDevolucaoConcedidaEnviada.toFront();
+
+    detalhamentoDevolucaoTextArea.setVisible(true);
+    detalhamentoDevolucaoTextArea.toFront();
+
+    esconderElementosDentroDoLogin();
+
+    concederDevolucaoBackground.setVisible(true);
+    motivoDevolucaoLabel.setText(devolucao.getMotivo());
+
+    nomeClienteDevolucaoLabel.setText(cliente.getNome());
+    cpfClienteDevolucaoLabel.setText(String.valueOf(cliente.getCpf()));
+
+    emailClienteDevolucaoLabel.setText(cliente.getEmail());
+    // dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
+
+    idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
+    quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());
+
+    substituicaoReembolsoDevolucaoTextArea.setText(devolucao.getJustificativa());
+    IDSubstituicaoDevolucaoTextArea.setText(String.valueOf(devolucao.getIdSubstituicao()));
+    detalhamentoDevolucaoTextArea.setText("" + devolucao.getDescricao());
+
+    logOutSymbol.setVisible(false);
+
+    opcaoDevolucaoReembolso.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue) {
+            opcaoDevolucaoSubsituicao.setSelected(false);
+            opcaoDevolucaoNegar.setSelected(false);
+        }
+    });
+
+    opcaoDevolucaoSubsituicao.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue) {
+            opcaoDevolucaoReembolso.setSelected(false);
+            opcaoDevolucaoNegar.setSelected(false);
+        }
+    });
+
+    opcaoDevolucaoNegar.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue) {
+            opcaoDevolucaoReembolso.setSelected(false);
+            opcaoDevolucaoSubsituicao.setSelected(false);
+        }
+    });
+
+    botaoDevolucaoConcedidaEnviada.setOnAction(event -> {
+        if (opcaoDevolucaoReembolso.isSelected() && opcaoDevolucaoSubsituicao.isSelected()
+                && opcaoDevolucaoNegar.isSelected()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erro");
             alert.setHeaderText(null);
-            alert.setContentText("Empresa não encontrada.");
+            alert.setContentText("Por favor, selecione apenas uma opção: Negacao, Reembolso ou Substituicao.");
             alert.showAndWait();
-            return;
-        }
-
-        List<Devolucao> devolucoes = empresa.getPedidosDevolucaoRecebidos();
-
-        if (devolucoes.isEmpty()) {
-            Label semDevolucoesLabel = new Label("Nenhuma devolucao encontrada.");
-            semDevolucoesLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-            devolucoesVBoxEmpresa.getChildren().add(semDevolucoesLabel);
-        } else {
-            boolean encontrouDevolucaoEmAnalise = false;
-            for (Devolucao devolucao : devolucoes) {
-                if (devolucao.getStatus() == StatusDevolucao.EM_ANALISE) {
-                    encontrouDevolucaoEmAnalise = true;
-
-                    BorderPane pane = new BorderPane();
-                    pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
-
-                    VBox labelsVBox = new VBox(3);
-                    labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
-
-                    Label novaDevolucaoLabel = new Label("Você tem uma nova devolução de:");
-                    novaDevolucaoLabel
-                            .setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: red;");
-
-                    Cliente cliente = ClienteController.buscarClientePorId(devolucao.getClienteId());
-                    Label nomeLabel = new Label(
-                            "Nome do Cliente: " + (cliente != null ? cliente.getNome() : "Desconhecido"));
-                    nomeLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-                    Label dataLabel = new Label("Motivo da Devolução: " + devolucao.getMotivo());
-                    dataLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-                    labelsVBox.getChildren().addAll(novaDevolucaoLabel, nomeLabel, dataLabel);
-
-                    pane.setCenter(labelsVBox);
-
-                    pane.setOnMouseClicked(event -> {
-                        concederDevolucao(devolucao, cliente);
-                    });
-
-                    devolucoesVBoxEmpresa.getChildren().add(pane);
-                }
-            }
-            if (!encontrouDevolucaoEmAnalise) {
-                Label semDevolucoesEmAnaliseLabel = new Label("Nenhuma devolucao em analise.");
-                semDevolucoesEmAnaliseLabel
-                        .setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-                devolucoesVBoxEmpresa.getChildren().add(semDevolucoesEmAnaliseLabel);
-            }
-        }
-    }
-
-    private void concederDevolucao(Devolucao devolucao, Cliente cliente) {
-
-        nomeEmpresa.setVisible(false);
-
-        dataCompraDevolucaoLabel.setVisible(true);
-        dataCompraDevolucaoLabel.toFront();
-
-        motivoDevolucaoLabel.setVisible(true);
-        motivoDevolucaoLabel.toFront();
-
-        nomeClienteDevolucaoLabel.setVisible(true);
-        nomeClienteDevolucaoLabel.toFront();
-
-        cpfClienteDevolucaoLabel.setVisible(true);
-        cpfClienteDevolucaoLabel.toFront();
-
-        emailClienteDevolucaoLabel.setVisible(true);
-        emailClienteDevolucaoLabel.toFront();
-
-        idProdutoDevolucaoLabel.setVisible(true);
-        idProdutoDevolucaoLabel.toFront();
-        logOutSymbol.setVisible(false);
-
-        quantidadeProdutoDevolucaoLabel.setVisible(true);
-        quantidadeProdutoDevolucaoLabel.toFront();
-
-        substituicaoReembolsoDevolucaoTextArea.setVisible(true);
-        substituicaoReembolsoDevolucaoTextArea.toFront();
-
-        IDSubstituicaoDevolucaoTextArea.setVisible(true);
-        IDSubstituicaoDevolucaoTextArea.toFront();
-
-        opcaoDevolucaoReembolso.setVisible(true);
-        opcaoDevolucaoSubsituicao.setVisible(true);
-        opcaoDevolucaoNegar.setVisible(true);
-        opcaoDevolucaoNegar.toFront();
-        opcaoDevolucaoReembolso.toFront();
-        opcaoDevolucaoSubsituicao.toFront();
-
-        botaoDevolucaoConcedidaEnviada.setVisible(true);
-        botaoDevolucaoConcedidaEnviada.toFront();
-
-        detalhamentoDevolucaoTextArea.setVisible(true);
-        detalhamentoDevolucaoTextArea.toFront();
-
-        esconderElementosDentroDoLogin();
-
-        concederDevolucaoBackground.setVisible(true);
-        motivoDevolucaoLabel.setText(devolucao.getMotivo());
-
-        nomeClienteDevolucaoLabel.setText(cliente.getNome());
-        cpfClienteDevolucaoLabel.setText(String.valueOf(cliente.getCpf()));
-
-        emailClienteDevolucaoLabel.setText(cliente.getEmail());
-        // dataCompraDevolucaoLabel.setText(devolucao.getDataCompra());
-
-        idProdutoDevolucaoLabel.setText("" + devolucao.getProdutoId());
-        quantidadeProdutoDevolucaoLabel.setText("" + devolucao.getQuantidade());
-
-        substituicaoReembolsoDevolucaoTextArea.setText(devolucao.getJustificativa());
-        IDSubstituicaoDevolucaoTextArea.setText(String.valueOf(devolucao.getIdSubstituicao()));
-        detalhamentoDevolucaoTextArea.setText("" + devolucao.getDescricao());
-
-        logOutSymbol.setVisible(false);
-
-        botaoDevolucaoConcedidaEnviada.setOnAction(event -> {
-            if (opcaoDevolucaoReembolso.isSelected() && opcaoDevolucaoSubsituicao.isSelected()
-                    && opcaoDevolucaoNegar.isSelected()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erro");
-                alert.setHeaderText(null);
-                alert.setContentText("Por favor, selecione apenas uma opção: Negacao, Reembolso ou Substituicao.");
-                alert.showAndWait();
-            } else if (opcaoDevolucaoReembolso.isSelected()) {
-                devolucao.setStatus(StatusDevolucao.APROVADO);
-                System.out.println("Opção Reembolso selecionada.");
-                Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
-                if (empresa != null) {
-                    empresa.atualizarDevolucao(devolucao);
-                    limparECamposDevolucao();
-                    fadeOutTransition(sucessoConcederDevolucao);
-                    concederDevolucaoBackground.setVisible(false);
-                    mostrarHomeEmpresa();
-                }
-            } else if (opcaoDevolucaoSubsituicao.isSelected()) {
-                devolucao.setStatus(StatusDevolucao.APROVADO);
-                System.out.println("Opção Substituição selecionada.");
-                Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
-                if (empresa != null) {
-                    empresa.atualizarDevolucao(devolucao);
-                    limparECamposDevolucao();
-                    fadeOutTransition(sucessoConcederDevolucao);
-                    concederDevolucaoBackground.setVisible(false);
-                    mostrarHomeEmpresa();
-                }
-            } else if (opcaoDevolucaoNegar.isSelected()) {
-                devolucao.setStatus(StatusDevolucao.NEGADO);
-                System.out.println("Opção Negação selecionada.");
-                Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
-                if (empresa != null) {
-                    empresa.atualizarDevolucao(devolucao);
-                    limparECamposDevolucao();
-                    fadeOutTransition(negacaoConcederDevolucao);
-                    concederDevolucaoBackground.setVisible(false);
-                    mostrarHomeEmpresa();
-                }
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erro");
-                alert.setHeaderText(null);
-                alert.setContentText("Por favor, selecione uma opção: Reembolso ou Substituição.");
-                alert.showAndWait();
-            }
-        });
-    }
-
-    private void apresentarReclamacoesParaAEmpresa(int idEmpresa) {
-
-        Empresa empresa = Empresa.buscarEmpresaPorId(idEmpresa);
-
-        if (empresa == null) {
-            throw new IllegalArgumentException("Empresa nao encontrada.");
-        }
-
-        reclamacoesVBoxEmpresa.getChildren().clear();
-
-        List<Reclamacao> reclamacoes = empresa.getReclamacoesRecebidas();
-        List<Reclamacao> reclamacoesNaoRespondidas = reclamacoes.stream()
-                .filter(reclamacao -> reclamacao.getStatus() == StatusReclamacao.NAO_RESPONDIDA)
-                .collect(Collectors.toList());
-
-        if (reclamacoesNaoRespondidas.isEmpty()) {
-            Label semReclamacoesLabel = new Label("Nenhuma reclamacao encontrada.");
-            semReclamacoesLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-            reclamacoesVBoxEmpresa.getChildren().add(semReclamacoesLabel);
-        } else {
-            for (Reclamacao reclamacao : reclamacoesNaoRespondidas) {
-                BorderPane pane = new BorderPane();
-                pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
-
-                VBox labelsVBox = new VBox(3);
-                labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
-
-                Label novaReclamacaoLabel = new Label("Você tem uma nova reclamação:");
-                novaReclamacaoLabel
-                        .setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-                Cliente cliente = ClienteController.buscarClientePorId(reclamacao.getClienteId());
-                Label nomeLabel = new Label(
-                        "Nome do Cliente: " + (cliente != null ? cliente.getNome() : "Desconhecido"));
-
-                Label motivoLabel = new Label("Motivo: " + reclamacao.getMotivo());
-                motivoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-                nomeLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-                novaReclamacaoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: red;");
-                motivoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
-
-                labelsVBox.getChildren().addAll(novaReclamacaoLabel, nomeLabel, motivoLabel);
-                pane.setCenter(labelsVBox);
-                reclamacoesVBoxEmpresa.getChildren().add(pane);
-
-                pane.setOnMouseClicked(event -> {
-                    responderReclamacao(reclamacao, cliente);
-                });
-            }
-        }
-    }
-
-    private void responderReclamacao(Reclamacao reclamacao, Cliente cliente) {
-
-        nomeEmpresa.setVisible(false);
-        esconderElementosDentroDoLogin();
-        responderReclamacaoBackground.setVisible(true);
-
-        motivoReclamacaoLabel.setText(reclamacao.getMotivo());
-        motivoReclamacaoLabel.setVisible(true);
-        motivoReclamacaoLabel.toFront();
-
-        nomeClienteReclamacaoLabel.setText(cliente.getNome());
-        nomeClienteReclamacaoLabel.setVisible(true);
-        nomeClienteReclamacaoLabel.toFront();
-
-        cpfClienteReclamacaoLabel.setText(String.valueOf(cliente.getCpf()));
-        cpfClienteReclamacaoLabel.setVisible(true);
-        cpfClienteReclamacaoLabel.toFront();
-
-        emailClienteReclamacaoLabel.setText(cliente.getEmail());
-        emailClienteReclamacaoLabel.setVisible(true);
-        emailClienteReclamacaoLabel.toFront();
-
-        detalhamentoClienteReclamacaoLabel.setText(reclamacao.getDescricao());
-        detalhamentoClienteReclamacaoLabel.setVisible(true);
-        detalhamentoClienteReclamacaoLabel.toFront();
-
-        respostaReclamacaoTextArea.setVisible(true);
-        respostaReclamacaoTextArea.toFront();
-
-        botaoResponderReclamacao.setVisible(true);
-        botaoResponderReclamacao.toFront();
-
-        logOutSymbol.setVisible(false);
-
-        botaoResponderReclamacao.setOnAction(event -> {
-            String resposta = respostaReclamacaoTextArea.getText();
-            reclamacao.setResposta(resposta);
-            reclamacao.setStatus(StatusReclamacao.RESPONDIDA);
-
-            Empresa empresa = Empresa.buscarEmpresaPorId(reclamacao.getEmpresaId());
+        } else if (opcaoDevolucaoReembolso.isSelected()) {
+            devolucao.setStatus(StatusDevolucao.APROVADO);
+            System.out.println("Opção Reembolso selecionada.");
+            Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
             if (empresa != null) {
-                empresa.atualizarReclamacao(reclamacao);
-                motivoReclamacaoLabel.setVisible(false);
-                nomeClienteReclamacaoLabel.setVisible(false);
-                cpfClienteReclamacaoLabel.setVisible(false);
-                emailClienteReclamacaoLabel.setVisible(false);
-                detalhamentoClienteReclamacaoLabel.setVisible(false);
-                respostaReclamacaoTextArea.setVisible(false);
-                botaoResponderReclamacao.setVisible(false);
-                responderReclamacaoBackground.setVisible(false);
-                motivoReclamacaoLabel.setText("");
-                nomeClienteReclamacaoLabel.setText("");
-                cpfClienteReclamacaoLabel.setText("");
-                emailClienteReclamacaoLabel.setText("");
-                detalhamentoClienteReclamacaoLabel.setText("");
-                respostaReclamacaoTextArea.clear();
-                fadeOutTransition(sucessoEnvioReclamacao);
-                sucessoResponderReclamacao.setVisible(true);
-                botaoRespostaReclamacaoEnviada.setVisible(true);
-
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erro");
-                alert.setHeaderText(null);
-                alert.setContentText("Empresa nao encontrada.");
-                alert.showAndWait();
+                limparECamposDevolucao();
+                fadeOutTransition(sucessoConcederDevolucao);
+                concederDevolucaoBackground.setVisible(false);
+                mostrarHomeEmpresa();
             }
-        });
-
-        botaoRespostaReclamacaoEnviada.setOnAction(event -> {
-            sucessoResponderReclamacao.setVisible(false);
-            botaoRespostaReclamacaoEnviada.setVisible(false);
-
-            mostrarHomeEmpresa();
-        });
-
-    }
-
-    private void buscarTodasAsReclamacoesDaEmpresa() {
+        } else if (opcaoDevolucaoSubsituicao.isSelected()) {
+            devolucao.setStatus(StatusDevolucao.APROVADO);
+            System.out.println("Opção Substituição selecionada.");
+            Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
+            if (empresa != null) {
+                limparECamposDevolucao();
+                fadeOutTransition(sucessoConcederDevolucao);
+                concederDevolucaoBackground.setVisible(false);
+                mostrarHomeEmpresa();
+            }
+        } else if (opcaoDevolucaoNegar.isSelected()) {
+            devolucao.setStatus(StatusDevolucao.NEGADO);
+            System.out.println("Opção Negação selecionada.");
+            Empresa empresa = Empresa.buscarEmpresaPorId(devolucao.getEmpresaId());
+            if (empresa != null) {
+                limparECamposDevolucao();
+                fadeOutTransition(negacaoConcederDevolucao);
+                concederDevolucaoBackground.setVisible(false);
+                mostrarHomeEmpresa();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, selecione uma opção: Reembolso ou Substituição.");
+            alert.showAndWait();
+        }
+    });
+}
+ 
+    private void buscarTodasAsReclamacoesAgrupadasPorEmpresa() {
         try {
-            // Verificação de inicialização dos objetos FXML
-            if (reclamacoesVBoxEmpresa == null || mainVBoxReclamacaoesEmpresa == null) {
-                throw new IllegalArgumentException("Os objetos FXML devem ser inicializados.");
+            String sqlQuery = "SELECT e_id, COUNT(*) as total_reclamacoes " +
+                              "FROM app.reclamacao " +
+                              "WHERE status = 'NAO_RESPONDIDA' " +
+                              "GROUP BY e_id";
+    
+            try (Connection connection = new ConnectionFactory().getConnection();
+                 PreparedStatement pst = connection.prepareStatement(sqlQuery);
+                 ResultSet rs = pst.executeQuery()) {
+    
+                System.out.println("Consulta de Reclamações Agrupadas por Empresa:");
+                while (rs.next()) {
+                    int empresaId = rs.getInt("e_id");
+                    int totalReclamacoes = rs.getInt("total_reclamacoes");
+    
+                    Empresa empresa = Empresa.buscarEmpresaPorId(empresaId);
+                    if (empresa != null) {
+                        System.out.println("Empresa: " + empresa.getNome() + " - Reclamações não respondidas: " + totalReclamacoes);
+    
+                        String reclamacoesQuery = "SELECT * FROM app.reclamacao WHERE e_id = ? AND status = 'NAO_RESPONDIDA'";
+                        try (PreparedStatement pstReclamacoes = connection.prepareStatement(reclamacoesQuery)) {
+                            pstReclamacoes.setInt(1, empresaId);
+                            try (ResultSet rsReclamacoes = pstReclamacoes.executeQuery()) {
+                                while (rsReclamacoes.next()) {
+                                    int cId = rsReclamacoes.getInt("c_id");
+                                    int produtoId = rsReclamacoes.getInt("produto_id");
+                                    String descricao = rsReclamacoes.getString("descricao");
+                                    int id = rsReclamacoes.getInt("id");
+                                    String motivo = rsReclamacoes.getString("motivo");
+    
+                                    System.out.println("ID do Cliente: " + cId);
+                                    System.out.println("Produto ID: " + produtoId);
+                                    System.out.println("Descrição: " + descricao);
+                                    System.out.println("ID da Reclamação: " + id);
+                                    System.out.println("Motivo: " + motivo);
+                                    System.out.println("-----");
+                                }
+                            }
+                        }
+                    }
+                }
             }
-    
-            reclamacoesVBoxEmpresa.getChildren().clear();
-    
-            // Busca pela empresa e verificação se a empresa é nula
-            Empresa empresa = Empresa.buscarEmpresaPorId(idEmpresa);
-            if (empresa == null) {
-                throw new IllegalArgumentException("Empresa não encontrada.");
-            }
-    
-            // Obtenção das reclamações
-            List<Reclamacao> reclamacoes = empresa.getReclamacoesRecebidas();
-    
-            for (Reclamacao reclamacao : reclamacoes) {
-                adicionarReclamacaoEmpresa(reclamacao, empresa);
-            }
-    
-            mainVBoxReclamacaoesEmpresa.setVisible(true);
-            reclamacoesVBoxEmpresa.setVisible(true);
-    
-        } catch (IllegalArgumentException e) {
-            exibirMensagemErro(e.getMessage());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            // Adicione tratamento de erro aqui, se necessário
         }
     }
     
+  
+/*----------------------------------------------------------------------------------------------------------------------------- */
+private void exibirMensagemErro(String mensagem) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Erro no preenchimento dos dados!");
+    alert.setHeaderText(null);
+    alert.setContentText(mensagem);
+    alert.showAndWait();
+}
 
-    public void adicionarReclamacaoEmpresa(Reclamacao reclamacao, Empresa empresa) {
+          
+    public void adicionarReclamacaoEmpresa(int cId, int eId, int produtoId, String descricao, int id, String status, String motivo) {
 
+    
         BorderPane pane = new BorderPane();
         pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 10;");
 
         VBox labelsVBox = new VBox(3);
         labelsVBox.setStyle("-fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 10px;");
 
-        Label empresaLabel = new Label("Empresa: " + empresa.getNome());
-        empresaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
+        Label clienteIdLabel = new Label("Id do Cliente: " + cId);
+        clienteIdLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label produtoLabel = new Label("Produto ID: " + reclamacao.getProdutoId());
+        Label produtoLabel = new Label("Produto ID: " + produtoId);
         produtoLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label justificativaLabel = new Label("Justificativa: " + reclamacao.getDescricao());
+        Label justificativaLabel = new Label("Justificativa: " + descricao);
         justificativaLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        Label statusLabel = new Label("Status: " + reclamacao.getStatus().toString());
+        Label statusLabel = new Label("Status:" + status);
         statusLabel.setStyle("-fx-font-family: 'DM Sans'; -fx-font-weight: bold; -fx-text-fill: #8F8E8E;");
 
-        labelsVBox.getChildren().addAll(empresaLabel, produtoLabel,
-                justificativaLabel, statusLabel);
+        labelsVBox.getChildren().addAll(clienteIdLabel, produtoLabel, justificativaLabel,statusLabel);
 
         pane.setCenter(labelsVBox);
         reclamacoesVBox.getChildren().add(pane);
+
     }
 
     private void fadeInBackground(Node background) {
@@ -1486,17 +1495,34 @@ public class ControllerGeral implements Initializable {
         opcaoDevolucaoSubsituicao.setSelected(false);
     }
 
-    @FXML
+   @FXML
     private void voltarParaOInicio() {
-        homeBackground.setVisible(false);
-        botaoPedirDevolucao.setVisible(false);
-        botaoFazerReclamacao.setVisible(false);
-        nomeCliente.setVisible(false);
-        complaintForm.setVisible(false);
-        jumpingBackLoginReclamacao.setVisible(false);
-        esconderElementosDentroDoLogin();
-        logOutSymbol.setVisible(false);
-        telaInicial();
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmacao");
+        alert.setHeaderText("Confirmacao de saida");
+        alert.setContentText("Tem certeza que deseja voltar para a tela inicial?");
+
+        ButtonType buttonTypeSim = new ButtonType("Sim", ButtonData.YES);
+        ButtonType buttonTypeNao = new ButtonType("Não", ButtonData.NO);
+
+        alert.getButtonTypes().setAll(buttonTypeSim, buttonTypeNao);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == buttonTypeSim) {
+            homeBackground.setVisible(false);
+            botaoPedirDevolucao.setVisible(false);
+            botaoFazerReclamacao.setVisible(false);
+            nomeCliente.setVisible(false);
+            complaintViewer.setVisible(false);
+            complaintForm.setVisible(false);
+            jumpingBackLoginReclamacao.setVisible(false);
+            esconderElementosDentroDoLogin();
+            logOutSymbol.setVisible(false);
+            telaInicial();
+        }
+
     }
 
     private void mostrarHomeCliente() {
@@ -1537,9 +1563,10 @@ public class ControllerGeral implements Initializable {
         mainVBoxDevolucoesEmpresa.setVisible(true);
         devolucoesVBoxEmpresa.setVisible(true);
         logOutSymbol.setVisible(true);
-        apresentarReclamacoesParaAEmpresa(idEmpresa);
-        apresentarDevolucoesParaAEmpresa(idEmpresa);
+        apresentarReclamacoesParaAEmpresa();
+        apresentarDevolucoesParaAEmpresa();
     }
+
 
     @FXML
     private void fazerReclamacao() {
@@ -1557,7 +1584,7 @@ public class ControllerGeral implements Initializable {
         botaoVerReclamacao.setVisible(false);
         botaoVerDevolucao.setVisible(false);
         homeSymbol.setVisible(false);
-        buscarTodasAsReclamacoesDaEmpresa();
+        //buscarTodasAsReclamacoesDaEmpresa();
 
     }
 

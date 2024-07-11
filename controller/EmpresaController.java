@@ -22,7 +22,7 @@ public class EmpresaController {
             empresas.add(empresa);
         }
     }
-
+/* 
     public List<Empresa> getEmpresas() {
         return Empresa.getEmpresas();
     }
@@ -56,6 +56,6 @@ public class EmpresaController {
             }
         }
         return null;
-    }
+    }*/
 
 }

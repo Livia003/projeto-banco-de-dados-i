@@ -85,7 +85,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
             if (resultSet != null && resultSet.next()) {
                 reclamacao = new Reclamacao(
                     resultSet.getInt("c_id"),
-                    resultSet.getInt("e_d"),
+                    resultSet.getInt("e_id"),
                     resultSet.getInt("produto_id"),
                     resultSet.getString("descricao"),
                     resultSet.getString("motivo")
@@ -105,7 +105,7 @@ public class ReclamacaoDAOjbdc implements IReclamacaoDAO {
 
     @Override
     public void updateReclamacao(Reclamacao reclamacao) {
-        String sqlQuery = "UPDATE app.Reclamacao SET clienteId=?, empresaId=?, produtoId=?, descricao=?, motivo=?, resposta=?, status=? WHERE id=?";
+        String sqlQuery = "UPDATE app.Reclamacao SET c_id=?, e_id=?, produto_Id=?, descricao=?, motivo=?, resposta=?, status=? WHERE id=?";
         PreparedStatement pst;
         Connection connection;
         try {

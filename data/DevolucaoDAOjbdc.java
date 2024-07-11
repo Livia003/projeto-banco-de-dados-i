@@ -1,6 +1,7 @@
 package data;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,8 +31,10 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
                         resultSet.getInt("produto_id");
                         resultSet.getString("descricao");
                         resultSet.getString("motivo");
+                        resultSet.getString("justificativa");
                         resultSet.getInt("quantidade");
                         resultSet.getInt("id_substituicao");
+                        resultSet.getDate("dataCompra");
                     devolucao.setId(resultSet.getInt("id"));
                     devolucao.setStatus(StatusDevolucao.valueOf(resultSet.getString("status")));
                     devolucaos.add(devolucao);
@@ -48,7 +51,7 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
 
     @Override
     public void createDevolucao(Devolucao devolucao) {
-        String sqlQuery = "insert into app.Devolucao (c_id, e_id, produto_id, descricao, motivo, quantidade, id_substituicao, status) values (?, ?, ?, ?, ?, ?, ?, ?);";
+        String sqlQuery = "insert into app.Devolucao (c_id, e_id, produto_id, descricao, justificativa, quantidade, id_substituicao,status,dataCompra, motivo, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
         PreparedStatement pst;
         Connection connection;
         try {
@@ -62,6 +65,9 @@ public class DevolucaoDAOjbdc implements IDevolucaoDAO {
             pst.setInt(6, devolucao.getQuantidade());
             pst.setInt(7, devolucao.getIdSubstituicao());
             pst.setString(8, devolucao.getStatus().toString());
+            pst.setDate(9, (Date) devolucao.getDataCompra());
+            pst.setString(10, devolucao.getJustificativa());
+            pst.setInt(11, devolucao.getId());
             pst.execute();
             pst.close();
             connection.close();

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Cliente;
-import model.Empresa;
+
 
 public class ClienteDAOjbdc implements IClienteDAO{
 
@@ -33,9 +33,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente.setEndereco(resultSet.getString("endereco"));
           cliente.setEmail(resultSet.getString("c_email"));
           cliente.setNome(resultSet.getString("nome"));
-          cliente.setSenha(resultSet.getString("c_senha"));
-          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
-          //cliente.setReclamacoes(resultSet.getInt("reclamacoes"));
+          cliente.setSenha(resultSet.getString("c_senha"));;
           clientes.add(cliente);
         }
         resultSet.close();
@@ -95,7 +93,6 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente.setEndereco(resultSet.getString("endereco"));
           cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
           cliente.setId(resultSet.getInt("cliente_id"));
-          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
         }
         resultSet.close();
         pst.close();
@@ -130,7 +127,6 @@ public class ClienteDAOjbdc implements IClienteDAO{
           cliente.setEndereco(resultSet.getString("endereco"));
           cliente.setDataNascimento(resultSet.getDate("dt_nascimento"));
           cliente.setId(resultSet.getInt("cliente_id"));
-          cliente.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
         }
         resultSet.close();
         pst.close();
@@ -170,7 +166,7 @@ public class ClienteDAOjbdc implements IClienteDAO{
 
   @Override
   public void updateCliente(Cliente cliente) {
-    String sqlQuery = "update app.cliente set c_senha=?, c_email=?, telefone=?, nome=?, cpf=?, reclamacoesrecebidas =?, endereco=?,dt_nascimento=? where cliente_id=?";
+    String sqlQuery = "update app.cliente set c_senha=?, c_email=?, telefone=?, nome=?, cpf=?, endereco=?,dt_nascimento=? where cliente_id=?";
     PreparedStatement pst;
     Connection connection;
     try {
@@ -181,7 +177,6 @@ public class ClienteDAOjbdc implements IClienteDAO{
       pst.setLong(3, cliente.getTelefone());
       pst.setString(4, cliente.getNome());
       pst.setLong(5, cliente.getCpf());
-      pst.setInt(6,cliente.getRec_id());
       pst.setString(7, cliente.getEndereco());
       pst.setDate(8, (Date) cliente.getDataNascimento());
       pst.setInt(9, cliente.getId());

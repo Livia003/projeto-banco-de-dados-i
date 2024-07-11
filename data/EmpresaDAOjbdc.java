@@ -1,7 +1,5 @@
 package data;
 
-import java.security.spec.ECFieldFp;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Empresa;
-import model.Reclamacao;
-
 
 public class EmpresaDAOjbdc implements IEmpresaDAO {
 
@@ -38,7 +34,6 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setNome(resultSet.getString("nome"));
           Empresa.setSenha(resultSet.getString("e_senha"));          
           Empresa.setId(resultSet.getInt("empresa_id"));
-          Empresa.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
           Empresas.add(Empresa);
         }
         resultSet.close();
@@ -61,12 +56,11 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           pst = connection.prepareStatement(sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS);
           pst.setString(1, empresa.getSenha());
           pst.setString(2, empresa.getEmail());
-          pst.setDate(3, new Date(empresa.getdt_nascimento().getTime()));
+          pst.setDate(3, (Date) empresa.getdt_nascimento());
           pst.setString(4, empresa.getDescricao());
           pst.setString(5, empresa.getNome());
           pst.setLong(6, empresa.getCnpj());      
           pst.setInt(7, empresa.getId());
-         // pst.setInt(8, empresa.getRec_id());
           pst.execute();
           pst.close();
           connection.close();
@@ -96,7 +90,6 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setSenha(resultSet.getString("e_senha"));
           Empresa.setDescricao(resultSet.getString("descricao"));
           Empresa.setId(resultSet.getInt("empresa_id"));
-          Empresa.setRec_id(resultSet.getInt("reclamacoes recebidas"));
         }
         resultSet.close();
         pst.close();
@@ -156,7 +149,6 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           Empresa.setdt_nascimento(resultSet.getDate("dt_nascimento"));
           Empresa.setDescricao(resultSet.getString("descricao"));
           Empresa.setSenha(resultSet.getString("e_senha"));
-          Empresa.setRec_id(resultSet.getInt("reclamacoesrecebidas"));
         }
         resultSet.close();
         pst.close();
@@ -170,7 +162,7 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
 
   @Override
   public void updateEmpresa(Empresa empresa) {
-      String sqlQuery = "UPDATE app.Empresa SET e_senha = ?, e_email = ?, descricao = ?, empresa_id = ?, reclamacoesrecebidas = ?, dt_nascimento = ? WHERE nome = ?";
+      String sqlQuery = "UPDATE app.Empresa SET e_senha = ?, e_email = ?, descricao = ?, empresa_id = ?, dt_nascimento = ? WHERE nome = ?";
       PreparedStatement pst;
       Connection connection;
       try {
@@ -180,7 +172,6 @@ public class EmpresaDAOjbdc implements IEmpresaDAO {
           pst.setString(2, empresa.getEmail());
           pst.setString(3, empresa.getDescricao());
           pst.setInt(4, empresa.getId());
-          pst.setInt(5, empresa.getRec_id());
           pst.setDate(6, new Date(empresa.getdt_nascimento().getTime()));
           pst.setString(7, empresa.getNome());
           pst.execute();

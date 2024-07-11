@@ -1,9 +1,6 @@
 package model;
-
-import java.time.LocalDate;
 import java.util.Date;
 
-import javafx.scene.control.OverrunStyle;
 
 public class Devolucao {
     private int id;
@@ -24,14 +21,14 @@ public class Devolucao {
 
     // Construtor
     public Devolucao(int clienteId, int empresaId, int produtoId, String descricao,
-            String motivo, int quantidade, int idSubstituicao, String justificativa, Date dataCompra2) {
+            String motivo, int quantidade, int idSubstituicao, String justificativa, Date dataCompra) {
         this.id = produtoId++;
         this.clienteId = clienteId;
         this.empresaId = empresaId;
         this.produtoId = produtoId;
         this.descricao = descricao;
         this.motivo = motivo;
-        this.dataCompra = dataCompra2;
+        this.dataCompra = dataCompra;
         this.justicativa = justificativa;
         this.quantidade = quantidade;
         this.idSubstituicao = idSubstituicao;
@@ -40,7 +37,6 @@ public class Devolucao {
     }
 
     public Devolucao() {
-        // TODO Auto-generated constructor stub
     }
 
     // Getters
