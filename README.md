@@ -16,9 +16,9 @@ O projeto foi desenvolvido utilizando Java 8, JavaFX e MySQL.
 
 Este projeto foi desenvolvido por:
 
-- **[Lívia](https://github.com/Livia003)
-- **[Lis](https://github.com/LisLoureiro)
-- **[Ana Carolina](https://github.com/Karolacxc)
+- [Lívia](https://github.com/Livia003)
+- [Lis](https://github.com/LisLoureiro)
+- [Ana Carolina](https://github.com/Karolacxc)
 
 
 
